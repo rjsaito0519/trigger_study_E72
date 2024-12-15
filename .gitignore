@@ -1,1 +1,5 @@
+.build
+bin
+results
 include/paths.h
+scripts/__pycache__

@@ -1,3 +1,0 @@
-/mnt/c/Users/saito/physics/root/trigger_study_E72/code/.build/CMakeFiles/htof_energy_deposit.dir
-/mnt/c/Users/saito/physics/root/trigger_study_E72/code/.build/CMakeFiles/edit_cache.dir
-/mnt/c/Users/saito/physics/root/trigger_study_E72/code/.build/CMakeFiles/rebuild_cache.dir
