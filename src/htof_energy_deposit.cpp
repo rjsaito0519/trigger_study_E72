@@ -205,13 +205,9 @@ void analyze(TString path){
     // +----------------+
     // | Draw histogram |
     // +----------------+
-    // -- create window -----
-    TGMainFrame *main = new TGMainFrame(gClient->GetRoot(), 1000, 800);
-    main->Connect("CloseWindow()", "TApplication", gApplication, "Terminate()");
-    TGTab *tab = new TGTab(main, 1000, 800);
 
     // -- HTOF hitpat -----
-    TCanvas *c_hitpat = ana_helper::add_tab(tab, "hitpat");
+    TCanvas *c_hitpat = new TCanvas("", "", 1500, 1200);
     c_hitpat->Print(pdf_name + "[");
     c_hitpat->cd(1);
     TLegend *l_hitpat = new TLegend( 0.7, 0.58, 0.9, 0.88);
@@ -243,7 +239,7 @@ void analyze(TString path){
 
 
     // -- HTOF hitpat -----
-    TCanvas *c_multi1_hitpat = ana_helper::add_tab(tab, "hitpat");
+    TCanvas *c_multi1_hitpat = new TCanvas("", "", 1500, 1200);
     c_multi1_hitpat->cd(1);
     TLegend *l_multi1_hitpat = new TLegend( 0.7, 0.58, 0.9, 0.88);
     l_multi1_hitpat->SetFillStyle(0);
@@ -273,7 +269,7 @@ void analyze(TString path){
     c_multi1_hitpat->Print(pdf_name);
 
     // -- HTOF edep -----
-    TCanvas *c_edep = ana_helper::add_tab(tab, "edep");
+    TCanvas *c_edep = new TCanvas("", "", 1500, 1200);
     c_edep->cd(1);
     TLegend *l_edep = new TLegend( 0.7, 0.58, 0.9, 0.88);
     l_edep->SetFillStyle(0);
@@ -304,7 +300,7 @@ void analyze(TString path){
 
 
     // -- HTOF edep -----
-    TCanvas *c_multi1_edep = ana_helper::add_tab(tab, "edep");
+    TCanvas *c_multi1_edep = new TCanvas("", "", 1500, 1200);
     c_multi1_edep->cd(1);
     TLegend *l_multi1_edep = new TLegend( 0.7, 0.58, 0.9, 0.88);
     l_multi1_edep->SetFillStyle(0);
@@ -335,31 +331,25 @@ void analyze(TString path){
 
 
     // -- HTOF hitpat vs edep -----
-    TCanvas *c_hitpat_vs_edep = ana_helper::add_tab(tab, "hitpat_edep");
+    TCanvas *c_hitpat_vs_edep = new TCanvas("", "", 1500, 1200);
     c_hitpat_vs_edep->cd(1);
     h_hitpat_vs_edep->Draw("colz");
     c_hitpat_vs_edep->Print(pdf_name);
 
 
     // -- HTOF hitpat vs edep -----
-    TCanvas *c_multi1_hitpat_vs_edep = ana_helper::add_tab(tab, "hitpat_edep");
+    TCanvas *c_multi1_hitpat_vs_edep = new TCanvas("", "", 1500, 1200);
     c_multi1_hitpat_vs_edep->cd(1);
     h_multi1_hitpat_vs_edep->Draw("colz");
     c_multi1_hitpat_vs_edep->Print(pdf_name);
 
-
     // -- HTOF Multiplicity -----
-    TCanvas *c_multi = ana_helper::add_tab(tab, "multi");
+    TCanvas *c_multi = new TCanvas("", "", 1500, 1200);
     c_multi->cd(1);
     h_multi->Draw();
     c_multi->Print(pdf_name);
     c_multi->Print(pdf_name + "]");
 
-    // -- add tab and draw window
-    main->AddFrame(tab, new TGLayoutHints(kLHintsExpandX | kLHintsExpandY));
-    main->MapSubwindows();
-    main->Resize(main->GetDefaultSize());
-    main->MapWindow();
 
     // -- close output root file -----
     fout.cd(); // 明示的にカレントディレクトリを設定
@@ -411,11 +401,7 @@ Int_t main(int argc, char** argv) {
         return 1;
     }
     TString path = argv[1];
-
-    TApplication *theApp = new TApplication("App", &argc, argv);
     analyze(path);
-    theApp->Run();
-
     return 0;
 
 }
