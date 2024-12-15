@@ -5,6 +5,7 @@
 #include <vector>
 #include <random>
 #include <algorithm>
+#include <set>
 
 // ROOT
 #include <TFile.h>
@@ -62,6 +63,7 @@ void analyze(TString path){
     }
     TTreeReader reader("g4hyptpc", f);
     TTreeReaderValue<Int_t> generator(reader, "generator");
+    TTreeReaderValue<Int_t> decay_particle_code(reader, "decay_particle_code"); 
     TTreeReaderValue<std::vector<TParticle>> HTOF(reader, "HTOF");
 
     // +---------------------------------------+
@@ -121,17 +123,17 @@ void analyze(TString path){
         
     auto h_multi1_hitpat_vs_edep = new TH2D("multi1_hitpat_vs_edep", "HTOF (multi < 2) hitpat vs edep", conf.max_htof_ch, conf.htof_seg_min, conf.htof_seg_max, conf.edep_bin_num, conf.edep_min, conf.edep_max);
 
+
     // +----------------------+
     // | check and fill event |
     // +----------------------+
     reader.Restart();
     while (reader.Next()){
-        if (*generator != conf.beam_generator) {
-            Int_t htof_multi = 0;
-
+        if (*generator != conf.beam_generator && *decay_particle_code == conf.focus_decay_particle[*generator][0]) {
+            std::set<Int_t> htof_seg_unique;
             for (const auto& item : (*HTOF)) {
                 if (item.GetWeight() > conf.edep_threshold) {
-                    htof_multi++;
+                    htof_seg_unique.insert(item.GetMother(1));
                     h_hitpat_all->Fill(item.GetMother(1));
                     h_edep_all->Fill(item.GetWeight());
                     h_hitpat_vs_edep->Fill(item.GetMother(1), item.GetWeight());
@@ -162,6 +164,7 @@ void analyze(TString path){
                     }
                 }
             }
+            Int_t htof_multi = htof_seg_unique.size();
             h_multi->Fill(htof_multi);
 
             // -- HTOF mp 1 -----
@@ -201,6 +204,7 @@ void analyze(TString path){
             }
         }
     }
+
 
     // +----------------+
     // | Draw histogram |

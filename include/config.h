@@ -27,8 +27,6 @@ public:
     Double_t edep_max = 11.5;
 
 
-
-
     std::unordered_map<Int_t, std::vector<Int_t>> focus_decay_particle = {
         { 7202, {2212, -211} }, // eta Lambda
         { 7203, {2212, -211} }, // pi0 Lambda

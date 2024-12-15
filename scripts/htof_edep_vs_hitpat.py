@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ptick
+from matplotlib.colors import LogNorm
 import numpy as np
 import uproot
 import os
@@ -30,25 +31,19 @@ def get_hist_data(file, key):
 def plot(arg_dict):
     root_file_path = os.path.join(script_dir, "../results/root/{}".format(arg_dict["data"]))
     file = uproot.open(root_file_path)
-
-    # fig = plt.figure(figsize=(12, 8))
-    # ax  = fig.add_subplot(111)
-
-    # # -- histogram -----
-    # center, edge, value = get_hist_data(file, "hitpat_all")
-    # ax.hist(center, bins=edge, weights=value, lw = 1.5, histtype='step', color="k", zorder = 2)
-    # ax.xaxis.set_major_formatter(ptick.EngFormatter())
-    # ax.yaxis.set_major_formatter(ptick.EngFormatter())
     
-
+    prefix = ""
+    if arg_dict["mp1"]:
+        prefix = "multi1_"
+    
     edep_list = [
         # hist_name       color  label
-        ["edep_proton",   "C3", "proton"],
-        ["edep_piplus",   "C1", r"$\pi^+$"],
-        ["edep_piminus",  "C0", r"$\pi^-$"],
-        ["edep_kminus",   "C2", r"$K^-$"],
-        ["edep_electron", "C5", r"$e^-, e^+$"],
-        ["edep_muon",     "C6", r"$\mu^-, \^mu^+$"],
+        [f"{prefix}edep_proton",   "C3", "proton"],
+        [f"{prefix}edep_piplus",   "C1", r"$\pi^+$"],
+        [f"{prefix}edep_piminus",  "C0", r"$\pi^-$"],
+        [f"{prefix}edep_kminus",   "C2", r"$K^-$"],
+        [f"{prefix}edep_electron", "C5", r"$e^-, e^+$"],
+        [f"{prefix}edep_muon",     "C6", r"$\mu^-, \mu^+$"],
     ]
 
     fig, ax = plt.subplots(2, 1, figsize=(10, 10), gridspec_kw={'height_ratios': [2, 3]})
@@ -65,42 +60,48 @@ def plot(arg_dict):
     ax1.grid(True)
     ax1.set_axisbelow(True)
     ax1.set_title(arg_dict["title"])
-    # ax1.legend(fontsize = 20, handletextpad = 0.5, handlelength=0.7, loc = "upper left")
-    ax1.legend(fontsize = 20, handletextpad = 0.5, handlelength=0.7)
+    ax1.legend(fontsize = 20, handletextpad = 0.5, handlelength=0.7, loc = "upper left", bbox_to_anchor=(1.01, 1.0), borderaxespad=0)
 
     # -- hit pattern -----
     ax2 = ax[1]
-    values, edges_x, edges_y = file["hitpat_vs_edep"].to_numpy()  # ヒストグラムのデータを取得
+    values, edges_x, edges_y = file[f"{prefix}hitpat_vs_edep"].to_numpy()  # ヒストグラムのデータを取得
     masked_values = np.ma.masked_where(values == 0, values)       # 値が0またはNaNの部分をマスクする
-    mesh = ax2.pcolormesh(
-        edges_y, edges_x, masked_values,  # xとyを逆にしているので転置は不要
-        shading="flat", cmap='viridis'
-    )
 
+    if arg_dict["log"]:
+        mesh = ax2.pcolormesh(
+            edges_y, edges_x, masked_values,  # xとyを逆にしているので転置は不要
+            shading="flat", cmap='viridis', norm=LogNorm(vmin=1, vmax=np.max(masked_values.flatten()))
+        )
+    else:
+        mesh = ax2.pcolormesh(
+            edges_y, edges_x, masked_values,  # xとyを逆にしているので転置は不要
+            shading="flat", cmap='viridis'
+        )
 
-    # if arg_dict["log"]:
-    #     counts, xedges, yedges, cbar = ax2.hist2d(edep_vs_seg[:, 0], edep_vs_seg[:, 1], bins=[np.linspace(0., 12, 121), np.linspace(-0.5, 33.5, 35)], cmap=cmap, norm=matplotlib.colors.LogNorm())
-    # else:
-    #     counts, xedges, yedges, cbar = ax2.hist2d(edep_vs_seg[:, 0], edep_vs_seg[:, 1], bins=[np.linspace(0., 12, 121), np.linspace(-0.5, 33.5, 35)], cmap=cmap)
-    # cbar.set_clim(1, np.max(counts))
     # ax2.add_patch( patches.Rectangle(xy=rec, width=13, height=n_seg, ec='C3', lw = 3, fill=False) )
     ax2.set_ylabel("HTOF segment")
     ax2.set_xlabel("Energy deposit [MeV]")
 
     # #余白の調整
-    plt.subplots_adjust(left = 0.12, right=0.89, top=0.91)
-    plt.subplots_adjust(wspace=0.02, hspace=0.01)
-    cax = plt.axes([0.895, 0.1, 0.025, 0.484])
+    plt.subplots_adjust(left = 0.11, right=0.85, top=0.93, bottom = 0.1, wspace=0.02, hspace=0.01)
+    cax = plt.axes([0.855, 0.1, 0.03, 0.495])
     fig.colorbar(mesh, cax=cax, pad=0.01, fraction=0.1)
-    # plt.savefig(f"./img/{name}.png", dpi=600, transparent=True)
-    plt.show()
 
+
+    img_save_path = os.path.join(
+        script_dir, 
+        "../results/img/htof/{}{}.png".format(prefix, os.path.splitext(os.path.basename(arg_dict["data"]))[0])
+    )
+    os.makedirs(os.path.dirname(img_save_path), exist_ok=True)
+    plt.savefig(img_save_path, format='png', bbox_inches='tight', dpi=600, transparent=True)
+    plt.show()
 
 
 if __name__ == '__main__':
     arg_dict = {
         "data": "htof_mom735_eta_lambda.root",
-        "title": r"$K^-p\rightarrow \eta\Lambda$",
+        "title": r"$K^-p\rightarrow \eta\Lambda$ ($\Lambda \rightarrow p\pi^-$)",
+        "mp1": False,
         "log": False
     }
     plot(arg_dict)
