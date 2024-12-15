@@ -1,0 +1,17 @@
+-- The C compiler identification is GNU 11.4.0
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Found Vdt: /usr/local/share/applications/root_v6.30.04/include (found version "0.4") 
+-- Executable created: htof_energy_deposit
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /mnt/c/Users/saito/physics/root/trigger_study_E72/code/.build
