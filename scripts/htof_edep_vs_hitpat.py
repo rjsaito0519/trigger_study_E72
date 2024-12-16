@@ -1,9 +1,11 @@
 import matplotlib.pyplot as plt
 import matplotlib.ticker as ptick
 from matplotlib.colors import LogNorm
+import matplotlib.patches as patches
 import numpy as np
 import uproot
 import os
+import sys
 
 plt.rcParams['font.family'] = 'Times New Roman' #全体のフォントを設定
 plt.rcParams['mathtext.fontset'] = 'stix'
@@ -31,7 +33,7 @@ def get_hist_data(file, key):
 def plot(arg_dict):
     root_file_path = os.path.join(script_dir, "../results/root/{}".format(arg_dict["data"]))
     file = uproot.open(root_file_path)
-    
+
     prefix = ""
     if arg_dict["mp1"]:
         prefix = "multi1_"
@@ -78,11 +80,17 @@ def plot(arg_dict):
             shading="flat", cmap='viridis'
         )
 
-    # ax2.add_patch( patches.Rectangle(xy=rec, width=13, height=n_seg, ec='C3', lw = 3, fill=False) )
+    if arg_dict["rec"]:
+        rec = (3.0, 10-0.5)
+        n_seg = 20
+        ax1.axvline(3.0, ls = "dashed", color = "C3", lw = 2)
+        ax2.add_patch( patches.Rectangle(xy=rec, width=13, height=n_seg, ec='C3', lw = 3, fill=False) )
+
+    ax1.set_xlim(0, 11.9)
+    ax2.set_xlim(0, 11.9)
     ax2.set_ylabel("HTOF segment")
     ax2.set_xlabel("Energy deposit [MeV]")
 
-    # #余白の調整
     plt.subplots_adjust(left = 0.11, right=0.85, top=0.93, bottom = 0.1, wspace=0.02, hspace=0.01)
     cax = plt.axes([0.855, 0.1, 0.03, 0.495])
     fig.colorbar(mesh, cax=cax, pad=0.01, fraction=0.1)
@@ -93,116 +101,127 @@ def plot(arg_dict):
         "../results/img/htof/{}{}.png".format(prefix, os.path.splitext(os.path.basename(arg_dict["data"]))[0])
     )
     os.makedirs(os.path.dirname(img_save_path), exist_ok=True)
-    plt.savefig(img_save_path, format='png', bbox_inches='tight', dpi=600, transparent=True)
+    plt.savefig(img_save_path, format='png', bbox_inches='tight', dpi=300, transparent=True)
     plt.show()
 
 
 if __name__ == '__main__':
+
     arg_dict = {
-        "data": "htof_mom735_eta_lambda.root",
+        "data": "htof_mom735_beam_9999.root",
         "title": r"$K^-p\rightarrow \eta\Lambda$ ($\Lambda \rightarrow p\pi^-$)",
         "mp1": False,
-        "log": False
+        "log": True,
+        "rec": True
+    }
+    plot(arg_dict)
+    # sys.exit()
+
+    # +------------+
+    # | eta Lambda |
+    # +------------+
+    arg_dict = {
+        "data": "htof_mom735_eta_lambda_2212.root",
+        "title": r"$K^-p\rightarrow \eta\Lambda$ ($\Lambda \rightarrow p\pi^-$)",
+        "mp1": False,
+        "log": False,
+        "rec": False
+    }
+    plot(arg_dict)
+
+    arg_dict = {
+        "data": "htof_mom735_eta_lambda_2212.root",
+        "title": r"$K^-p\rightarrow \eta\Lambda$ ($\Lambda \rightarrow p\pi^-$)",
+        "mp1": True,
+        "log": False,
+        "rec": False
+    }
+    plot(arg_dict)
+    
+
+    # +----+
+    # | Kp |
+    # +----+
+    arg_dict = {
+        "data": "htof_mom735_kp_0.root",
+        "title": r"$K^-p\rightarrow K^-p$",
+        "mp1": False,
+        "log": False,
+        "rec": True
+    }
+    plot(arg_dict)
+
+    arg_dict = {
+        "data": "htof_mom735_kp_0.root",
+        "title": r"$K^-p\rightarrow K^-p$",
+        "mp1": True,
+        "log": False,
+        "rec": True
+    }
+    plot(arg_dict)    
+    
+
+    # +------------+
+    # | pi- Sigma+ |
+    # +------------+
+    arg_dict = {
+        "data": "htof_mom735_pi-sigma+_2212.root",
+        "title": r"$K^-p\rightarrow \pi^-\Sigma^+$ ($\Sigma^+ \rightarrow p\pi^0$)",
+        "mp1": False,
+        "log": False,
+        "rec": True
+    }
+    plot(arg_dict)
+
+    arg_dict = {
+        "data": "htof_mom735_pi-sigma+_2212.root",
+        "title": r"$K^-p\rightarrow \pi^-\Sigma^+$ ($\Sigma^+ \rightarrow p\pi^0$)",
+        "mp1": True,
+        "log": False,
+        "rec": True
     }
     plot(arg_dict)
 
 
+    # +------------+
+    # | pi0 Sigma0 |
+    # +------------+
+    arg_dict = {
+        "data": "htof_mom735_pi0sigma0_2212.root",
+        "title": r"$K^-p\rightarrow \pi^0\Sigma^0$ ($\Sigma^0 \rightarrow \Lambda\gamma \rightarrow p\pi^-\gamma$)",
+        "mp1": False,
+        "log": False,
+        "rec": True
+    }
+    plot(arg_dict)
 
-# log_flag = False
-
-# # -- eta lambda -----
-# name = "mom735_eta_lambda_htof"
-# title = r"$K^-p\rightarrow \eta\Lambda$"
-# rec = (4.0, 17-0.5)
-# n_seg = 5
-
-# # -- Kp -----
-# name = "mom735_kp_htof"
-# title = r"$K^-p\rightarrow K^-p$"
-# rec = (4.0, 15-0.5)
-# n_seg = 11
-
-# # -- pi- Sigma+ -----
-# name = "mom735_pi-sigma+_htof"
-# title = r"$K^-p\rightarrow \pi^-\Sigma^+$"
-# rec = (3.0, 15-0.5)
-# n_seg = 11
-
-# # -- beam -----
-# name = "mom735_beam_htof"
-# title = r"$K^-$ beam"
-# rec = (3.0, 6-0.5)
-# n_seg = 28
-# log_flag = True
+    arg_dict = {
+        "data": "htof_mom735_pi0sigma0_2212.root",
+        "title": r"$K^-p\rightarrow \pi^0\Sigma^0$ ($\Sigma^0 \rightarrow \Lambda\gamma \rightarrow p\pi^-\gamma$)",
+        "mp1": True,
+        "log": False,
+        "rec": True
+    }
+    plot(arg_dict)
 
 
-# def load_data(path):
-#     data = np.genfromtxt(path, skip_header=1, delimiter=",")
-#     if len(data) == 0:
-#         data = np.array([[np.nan, np.nan]])
-#     elif len(data) == 2:
-#         data = np.vstack((data, [np.nan, np.nan]))
-#     return data
+    # +------------+
+    # | pi0 Lambda |
+    # +------------+
+    arg_dict = {
+        "data": "htof_mom735_pi0lambda_2212.root",
+        "title": r"$K^-p\rightarrow \pi^0\Lambda$ ($\Lambda \rightarrow p\pi^-$)",
+        "mp1": False,
+        "log": False,
+        "rec": True
+    }
+    plot(arg_dict)
 
-# data_proton = load_data(f"../.csv_data/{name}_proton.csv")
-# data_piplus = load_data(f"../.csv_data/{name}_piplus.csv")
-# data_piminus = load_data(f"../.csv_data/{name}_piminus.csv")
-# data_kaon = load_data(f"../.csv_data/{name}_kaon.csv")
-# data_electron = load_data(f"../.csv_data/{name}_electron.csv")
-# data_muon = load_data(f"../.csv_data/{name}_muon.csv")
-
-# edep = {
-#     2212 : data_proton[:, 0],
-#      211 : data_piplus[:, 0],
-#     -211 : data_piminus[:, 0],
-#     -321 : data_kaon[:, 0],
-#       11 : data_electron[:, 0],
-#       13 : data_muon[:, 0]
-# }
-
-# edep_vs_seg = np.vstack((
-#     data_proton,
-#     data_piplus,
-#     data_piminus,
-#     data_kaon,
-#     data_electron,
-#     data_muon
-# ))
-
-# fig, ax = plt.subplots(2, 1, figsize=(10, 10), gridspec_kw={'height_ratios': [2, 3]})
-# ax1 = ax[0]
-# ax1.hist(edep[2212], bins = np.linspace(0., 12, 121), histtype='step', color = "C3", label = "proton")
-# ax1.hist(edep[211],  bins = np.linspace(0., 12, 121), histtype='step', color = "C1", label = r"$\pi^+$")
-# ax1.hist(edep[-211], bins = np.linspace(0., 12, 121), histtype='step', color = "C0", label = r"$\pi^-$")
-# ax1.hist(edep[-321], bins = np.linspace(0., 12, 121), histtype='step', color = "C2", label = r"$K^-$")
-# ax1.hist(edep[11], bins = np.linspace(0., 12, 121), histtype='step', color = "C5", label = r"$e^-, e^+$")
-# ax1.hist(edep[13], bins = np.linspace(0., 12, 121), histtype='step', color = "C6", label = r"$\mu^-, \mu^+$")
-
-# ax1.yaxis.set_major_formatter(ptick.EngFormatter())
-# ax1.set_xticks([0, 2, 4, 6, 8, 10, 12])
-# ax1.axes.xaxis.set_ticklabels([])
-# ax1.grid(True)
-# ax1.set_axisbelow(True)
-# ax1.set_title(title)
-# # ax1.legend(fontsize = 20, handletextpad = 0.5, handlelength=0.7, loc = "upper left")
-# ax1.legend(fontsize = 20, handletextpad = 0.5, handlelength=0.7)
-
-# ax2 = ax[1]
-# cmap = copy.copy(plt.cm.viridis)
-# cmap.set_under('w', 1) # 下限以下の色を設定
-# if log_flag:
-#     counts, xedges, yedges, cbar = ax2.hist2d(edep_vs_seg[:, 0], edep_vs_seg[:, 1], bins=[np.linspace(0., 12, 121), np.linspace(-0.5, 33.5, 35)], cmap=cmap, norm=matplotlib.colors.LogNorm())
-# else:
-#     counts, xedges, yedges, cbar = ax2.hist2d(edep_vs_seg[:, 0], edep_vs_seg[:, 1], bins=[np.linspace(0., 12, 121), np.linspace(-0.5, 33.5, 35)], cmap=cmap)
-# cbar.set_clim(1, np.max(counts))
-# ax2.add_patch( patches.Rectangle(xy=rec, width=13, height=n_seg, ec='C3', lw = 3, fill=False) )
-# ax2.set_ylabel("HTOF segment")
-# ax2.set_xlabel("Energy deposit [MeV]")
-
-# #余白の調整
-# plt.subplots_adjust(left = 0.12, right=0.89, top=0.91)
-# plt.subplots_adjust(wspace=0.02, hspace=0.01)
-# cax = plt.axes([0.895, 0.1, 0.025, 0.484])
-# fig.colorbar(cbar, cax=cax, pad=0.01, fraction=0.1)
-# plt.savefig(f"./img/{name}.png", dpi=600, transparent=True)
-# plt.show()
+    arg_dict = {
+        "data": "htof_mom735_pi0lambda_2212.root",
+        "title": r"$K^-p\rightarrow \pi^0\Lambda$ ($\Lambda \rightarrow p\pi^-$)",
+        "mp1": True,
+        "log": False,
+        "rec": True
+    }
+    plot(arg_dict)

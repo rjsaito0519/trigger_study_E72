@@ -26,16 +26,26 @@ public:
     Double_t edep_min = -0.5;
     Double_t edep_max = 11.5;
 
+    Int_t hitpos_bin_num = 800;
+    Double_t hitpos_min = -400.0;
+    Double_t hitpos_max =  400.0;
+    
 
-    std::unordered_map<Int_t, std::vector<Int_t>> focus_decay_particle = {
-        { 7202, {2212, -211} }, // eta Lambda
-        { 7203, {2212, -211} }, // pi0 Lambda
-        { 7204, {+211, -211} }, // pi+ Sigma-
-        { 7205, {2212, -211} }, // pi0 Sigma0
-        { 7206, {-211, +211, 2212} }, // pi- Sigma+
-        { 7207, {-321, 2212} }, // K p
-        { 7208, {+211, -211} }  // k0 n
-    };
+    // -- for Forward Proton trigger -----
+    std::vector<Int_t> forward_seg_narrow{17, 18, 19, 20, 21};
+    std::vector<Int_t> forward_seg_wide{10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29};
+    std::vector<Int_t> forward_seg_all{6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33};
+
+
+    // std::unordered_map<Int_t, std::vector<Int_t>> focus_decay_particle = {
+    //     { 7202, {2212, -211} }, // eta Lambda
+    //     { 7203, {2212, -211} }, // pi0 Lambda
+    //     { 7204, {+211, -211} }, // pi+ Sigma-
+    //     { 7205, {2212, -211} }, // pi0 Sigma0
+    //     { 7206, {-211, +211, 2212} }, // pi- Sigma+
+    //     { 7207, {-321, 2212} }, // K p
+    //     { 7208, {+211, -211} }  // k0 n
+    // };
 
 
     Int_t n_bin = 100;
@@ -49,12 +59,9 @@ public:
     Double_t daq_eff = 0.9;
 
 
-    // void bac_initialize(Int_t tmp_npe_bin_num = 525) {
-    //     adjust_adc_bin_num = 1024;
-    //     sumadc_bin_num = 1024;
-    //     npe_bin_num = tmp_npe_bin_num;
-    //     threshold_fit_range_max = 100.0;
-    // }
+    void beam_initialize() {
+        beam_generator = -1;
+    }
     
 
 private:

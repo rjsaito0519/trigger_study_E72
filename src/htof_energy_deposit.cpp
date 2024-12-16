@@ -34,7 +34,7 @@ void hist_setting(TH1D *h, TLegend *l, Color_t color, TString label){
     l->AddEntry(h, label.Data(), "l");
 }
 
-void analyze(TString path){
+void analyze(TString path, Int_t focus_pdg_code){
     Config& conf = Config::getInstance();
     
     // +---------+
@@ -75,11 +75,11 @@ void analyze(TString path){
     for (Int_t i = sla_index+1; i < dot_index; i++) save_name += path[i];
 
     // -- pdf file -----
-    TString pdf_name = Form("%s/img/htof_%s.pdf", OUTPUT_DIR.Data(), save_name.Data());
+    TString pdf_name = Form("%s/img/htof_%s_%d.pdf", OUTPUT_DIR.Data(), save_name.Data(), focus_pdg_code);
     if (std::ifstream(pdf_name.Data())) std::remove(pdf_name.Data());
 
     // -- root file -----
-    TString output_path = Form("%s/root/htof_%s.root", OUTPUT_DIR.Data(), save_name.Data());
+    TString output_path = Form("%s/root/htof_%s_%d.root", OUTPUT_DIR.Data(), save_name.Data(), focus_pdg_code);
     if (std::ifstream(output_path.Data())) std::remove(output_path.Data());
     TFile fout(output_path.Data(), "create");
 
@@ -123,13 +123,18 @@ void analyze(TString path){
         
     auto h_multi1_hitpat_vs_edep = new TH2D("multi1_hitpat_vs_edep", "HTOF (multi < 2) hitpat vs edep", conf.max_htof_ch, conf.htof_seg_min, conf.htof_seg_max, conf.edep_bin_num, conf.edep_min, conf.edep_max);
 
+    auto h_hitpos_all      = new TH2D("hitpos_all", "hitpos_all", conf.max_htof_ch, conf.htof_seg_min, conf.htof_seg_max, conf.hitpos_bin_num, conf.hitpos_min, conf.hitpos_max);
+    auto h_hitpos_proton   = new TH2D("hitpos_proton", "hitpos_proton", conf.max_htof_ch, conf.htof_seg_min, conf.htof_seg_max, conf.hitpos_bin_num, conf.hitpos_min, conf.hitpos_max);
+    auto h_multi1_hitpos_all      = new TH2D("multi1_hitpos_all", "multi1_hitpos_all", conf.max_htof_ch, conf.htof_seg_min, conf.htof_seg_max, conf.hitpos_bin_num, conf.hitpos_min, conf.hitpos_max);
+    auto h_multi1_hitpos_proton   = new TH2D("multi1_hitpos_proton", "multi1_hitpos_proton", conf.max_htof_ch, conf.htof_seg_min, conf.htof_seg_max, conf.hitpos_bin_num, conf.hitpos_min, conf.hitpos_max);
+
 
     // +----------------------+
     // | check and fill event |
     // +----------------------+
     reader.Restart();
     while (reader.Next()){
-        if (*generator != conf.beam_generator && *decay_particle_code == conf.focus_decay_particle[*generator][0]) {
+        if (*generator != conf.beam_generator && (*decay_particle_code == focus_pdg_code || focus_pdg_code == 9999)) {
             std::set<Int_t> htof_seg_unique;
             for (const auto& item : (*HTOF)) {
                 if (item.GetWeight() > conf.edep_threshold) {
@@ -137,10 +142,12 @@ void analyze(TString path){
                     h_hitpat_all->Fill(item.GetMother(1));
                     h_edep_all->Fill(item.GetWeight());
                     h_hitpat_vs_edep->Fill(item.GetMother(1), item.GetWeight());
+                    h_hitpos_all->Fill(item.GetMother(1), item.Vy());
 
                     if (item.GetPdgCode() == 2212) { // proton
                         h_hitpat_proton->Fill(item.GetMother(1));
                         h_edep_proton->Fill(item.GetWeight());
+                        h_hitpos_proton->Fill(item.GetMother(1), item.Vy());
                     }
                     else if (item.GetPdgCode() == 211) { // pi+
                         h_hitpat_piplus->Fill(item.GetMother(1));
@@ -174,10 +181,12 @@ void analyze(TString path){
                         h_multi1_hitpat_all->Fill(item.GetMother(1));
                         h_multi1_edep_all->Fill(item.GetWeight());
                         h_multi1_hitpat_vs_edep->Fill(item.GetMother(1), item.GetWeight());
+                        h_multi1_hitpos_all->Fill(item.GetMother(1), item.Vy());
 
                         if (item.GetPdgCode() == 2212) { // proton
                             h_multi1_hitpat_proton->Fill(item.GetMother(1));
                             h_multi1_edep_proton->Fill(item.GetWeight());
+                            h_multi1_hitpos_proton->Fill(item.GetMother(1), item.Vy());
                         }
                         else if (item.GetPdgCode() == 211) { // pi+
                             h_multi1_hitpat_piplus->Fill(item.GetMother(1));
@@ -352,7 +361,25 @@ void analyze(TString path){
     c_multi->cd(1);
     h_multi->Draw();
     c_multi->Print(pdf_name);
-    c_multi->Print(pdf_name + "]");
+
+    // -- HTOF hitpos -----
+    TCanvas *c_hitpos = new TCanvas("", "", 1500, 1200);
+    c_hitpos->cd(1);
+
+    // h_hitpos_all->Draw();
+    h_hitpos_proton->Draw("colz");
+
+    c_hitpos->Print(pdf_name);
+
+    // -- HTOF hitpos Mp1 -----
+    TCanvas *c_multi1_hitpos = new TCanvas("", "", 1500, 1200);
+    c_multi1_hitpos->cd(1);
+
+    // h_multi1_hitpos_all->Draw();
+    h_multi1_hitpos_proton->Draw("colz");
+
+    c_multi1_hitpos->Print(pdf_name);
+    c_multi1_hitpat->Print(pdf_name + "]");
 
 
     // -- close output root file -----
@@ -394,6 +421,12 @@ void analyze(TString path){
 
     h_multi1_hitpat_vs_edep->Write();
 
+    h_hitpos_all->Write();
+    h_hitpos_proton->Write();
+    h_multi1_hitpos_all->Write();
+    h_multi1_hitpos_proton->Write();
+    
+
 }
 
 Int_t main(int argc, char** argv) {
@@ -405,7 +438,22 @@ Int_t main(int argc, char** argv) {
         return 1;
     }
     TString path = argv[1];
-    analyze(path);
+    
+    // -- for beam data -----
+    if (path.Contains("beam")) {
+        conf.beam_initialize();
+        std::cout << " ---" << std::endl;
+    }
+
+    Int_t focus_pdg_code = 9999;
+    if (argc >= 3) {
+        focus_pdg_code = std::atoi(argv[2]);
+        std::cout << "focus_pdg_code: " << focus_pdg_code << std::endl;
+    } else {
+        std::cout << "No optional focus_pdg_code provided." << std::endl;
+    }
+
+    analyze(path, focus_pdg_code);
     return 0;
 
 }
