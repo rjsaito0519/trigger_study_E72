@@ -96,8 +96,8 @@ void analyze(TString path, Int_t focus_pdg_code){
             
             if (*trig_flag != 0) {
                 h_cos_theta_trig->Fill(*cos_theta);
-                if (*trig_flag == 1) h_cos_theta_mp2->Fill(*cos_theta);
-                else if (*trig_flag == 2) h_cos_theta_htofp->Fill(*cos_theta);
+                if (*trig_flag == 1 || *trig_flag == 3) h_cos_theta_mp2->Fill(*cos_theta);
+                if (*trig_flag == 2 || *trig_flag == 3) h_cos_theta_htofp->Fill(*cos_theta);
             }
         }
     }
@@ -107,8 +107,11 @@ void analyze(TString path, Int_t focus_pdg_code){
     // +-------+
     // -- cal acceptance -----
     h_acceptance->Divide( h_cos_theta_trig, h_cos_theta_raw, 1, 1 );
+    h_acceptance->GetYaxis()->SetRangeUser(0, 1.05);
     h_acceptance_mp2->Divide( h_cos_theta_mp2, h_cos_theta_raw, 1, 1 );
+    h_acceptance_mp2->GetYaxis()->SetRangeUser(0, 1.05);
     h_acceptance_htofp->Divide( h_cos_theta_htofp, h_cos_theta_raw, 1, 1 );
+    h_acceptance_htofp->GetYaxis()->SetRangeUser(0, 1.05);
 
     // -- write -----
     fout.cd();
