@@ -106,6 +106,7 @@ void analyze(TString path, Int_t focus_pdg_code){
     // | check and fill event |
     // +----------------------+
     Int_t n_cs_points = cross_sec_container.size();
+    std::cout  << n_cs_points << std::endl;
 
     std::vector<std::vector<std::tuple<Bool_t, Double_t, Double_t>>> container(n_cs_points, std::vector<std::tuple<Bool_t, Double_t, Double_t>>());
     Int_t evnum = 0;
