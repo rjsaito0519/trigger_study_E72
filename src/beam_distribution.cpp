@@ -26,10 +26,13 @@
 #include "config.h"
 #include "ana_helper.h"
 #include "paths.h"
+#include "progress_bar.h"
 
-static std::vector<Double_t> n_kaon_container;
+static std::vector<Double_t> n_kaon_container_scan;
+static std::vector<Double_t> n_kaon_container_all;
 
-void data_fill(TString path, TH1D *h, Double_t factor)
+
+void data_fill(TString path, TH1D *h, Double_t factor, Bool_t do_fill_scan = true)
 {
     Config& conf = Config::getInstance();
     // +-----------+
@@ -42,6 +45,7 @@ void data_fill(TString path, TH1D *h, Double_t factor)
     TTreeReaderValue<std::vector<TParticle>> BH2(reader, "BH2");
     TTreeReaderValue<std::vector<TParticle>> BAC(reader, "BAC");
     TTreeReaderValue<std::vector<TParticle>> TGT(reader, "TGT");
+    Int_t total_entry = reader.GetEntries();
 
     // +----------------------+
     // | check and fill event |
@@ -49,8 +53,9 @@ void data_fill(TString path, TH1D *h, Double_t factor)
     Int_t n_points = conf.n_mom_points;
     std::vector<Double_t> tmp_n_kaon_container(n_points, 0.0);
     Int_t tot_num = 0;
+    Int_t evnum = 0;
     reader.Restart();
-    while (reader.Next()){
+    while (reader.Next()){ displayProgressBar(++evnum, total_entry);
         // -- kaon beam -----
         Bool_t is_kaon_at_bac = false, kaon_beam = false;   
         std::set<Int_t> bh2_seg_unique;
@@ -75,7 +80,10 @@ void data_fill(TString path, TH1D *h, Double_t factor)
         }
     }
 
-    for (Int_t i = 0; i < n_points; i++) n_kaon_container[i] += tmp_n_kaon_container[i] * factor / tot_num;
+    for (Int_t i = 0; i < n_points; i++) {
+        if (do_fill_scan) n_kaon_container_scan[i] += tmp_n_kaon_container[i] * factor / tot_num;
+        n_kaon_container_all[i] += tmp_n_kaon_container[i] * factor / tot_num;
+    }
     delete f;
 
     std::cout << "finish: " << path << std::endl;
@@ -152,7 +160,7 @@ void analyze(TString dir){
     h_momall->Add(h_mom765, 1.0);
 
     factor = kaon_intensity->Eval(735.0) * t_measure_735 / conf.spill_length;
-    data_fill(Form("%s/beam_mom735.root", dir.Data()), h_mom735, factor);
+    data_fill(Form("%s/beam_mom735.root", dir.Data()), h_mom735, factor, false);
     h_mom735->Scale( factor / h_mom735->GetEntries() );
     h_momall->Add(h_mom735, 1.0);
 
@@ -164,7 +172,8 @@ void analyze(TString dir){
     if (std::ifstream(output_path.Data())) std::remove(output_path.Data());
     TFile fout(output_path.Data(), "create");
     TTree output_tree("tree", "");
-    output_tree.Branch("n_kaon", &n_kaon_container);
+    output_tree.Branch("n_kaon_scan", &n_kaon_container_scan);
+    output_tree.Branch("n_kaon_all", &n_kaon_container_all);
     output_tree.Fill();    
     output_tree.Write();
 
@@ -191,7 +200,8 @@ Int_t main(int argc, char** argv) {
     }
     TString dir = argv[1];
     
-    n_kaon_container.resize(conf.n_mom_points, 0.0);
+    n_kaon_container_scan.resize(conf.n_mom_points, 0.0);
+    n_kaon_container_all.resize(conf.n_mom_points, 0.0);
     analyze(dir);
     return 0;
 }

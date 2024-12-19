@@ -3,3 +3,4 @@ bin
 results
 include/paths.h
 scripts/__pycache__
+data
