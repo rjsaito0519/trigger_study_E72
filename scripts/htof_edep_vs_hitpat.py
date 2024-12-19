@@ -109,13 +109,13 @@ if __name__ == '__main__':
 
     arg_dict = {
         "data": "htof_mom735_beam_9999.root",
-        "title": r"$K^-p\rightarrow \eta\Lambda$ ($\Lambda \rightarrow p\pi^-$)",
+        "title": r"$K^-$ beam",
         "mp1": False,
         "log": True,
         "rec": True
     }
     plot(arg_dict)
-    # sys.exit()
+    sys.exit()
 
     # +------------+
     # | eta Lambda |

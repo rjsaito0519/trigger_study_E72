@@ -48,13 +48,17 @@ public:
     // };
 
 
-    Int_t n_bin = 100;
+    Int_t cos_theta_n_bin = 100;
+
+    // -- for momentum binning -----
     Int_t n_mom_points = 600;
     Double_t mom_step_size = 0.5; // MeV/c
     Double_t mom_start = 600.0; // MeV
 
+
+    Double_t spill_length = 4.24; // second
     Double_t density_LH2 = 0.07085; // g/cm^3
-    Double_t Na = 6.02214076 * TMath::Power(10.0, 23); // /mol
+    Double_t Na = 6.02214076 * TMath::Power(10.0, 23.0); // /mol
     Double_t d = 6.898; // cm
     Double_t daq_eff = 0.9;
 

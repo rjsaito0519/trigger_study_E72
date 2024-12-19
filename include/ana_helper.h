@@ -29,9 +29,8 @@
 #include "config.h"
 
 namespace ana_helper {
-    // -- general -----
     TCanvas* add_tab(TGTab *tab, const char* tabName);
-
+    Int_t get_index(Double_t mom_value);
 }
 
 #endif  // ANA_HELPER_

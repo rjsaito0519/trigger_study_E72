@@ -88,19 +88,36 @@ void analyze(TString path, Int_t focus_pdg_code){
     // +----------------------+
     // | check and fill event |
     // +----------------------+
+    Int_t n_entry = 0, n_trig = 0, n_trig_mp2 = 0, n_trig_htofp = 0;
     reader.Restart();
     while (reader.Next()){
         if (*decay_particle_code == focus_pdg_code || focus_pdg_code == 9999) {   
+            n_entry++;
             h_mom_dist->Fill(*mom_kaon_lab);
             h_cos_theta_raw->Fill(*cos_theta);
             
             if (*trig_flag != 0) {
+                n_trig++;
                 h_cos_theta_trig->Fill(*cos_theta);
-                if (*trig_flag == 1 || *trig_flag == 3) h_cos_theta_mp2->Fill(*cos_theta);
-                if (*trig_flag == 2 || *trig_flag == 3) h_cos_theta_htofp->Fill(*cos_theta);
+                if (*trig_flag == 1 || *trig_flag == 3) {
+                    n_trig_mp2++;
+                    h_cos_theta_mp2->Fill(*cos_theta);
+                }
+                if (*trig_flag == 2 || *trig_flag == 3) {
+                    n_trig_htofp++;
+                    h_cos_theta_htofp->Fill(*cos_theta);
+                }
             }
         }
     }
+    std::cout << "-----------------------------------------" << std::endl;
+    std::cout << "pdg_code: " << focus_pdg_code << std::endl;
+    std::cout << "n_entry: " << n_entry << std::endl;
+    std::cout << "n_trig: " << n_trig << std::endl;
+    std::cout << "acceptance:       " << static_cast<Double_t>(n_trig) / static_cast<Double_t>(n_entry) * 100.0 << std::endl;
+    std::cout << "acceptance mp2:   " << static_cast<Double_t>(n_trig_mp2) / static_cast<Double_t>(n_entry) * 100.0 << std::endl;
+    std::cout << "acceptance htofp: " << static_cast<Double_t>(n_trig_htofp) / static_cast<Double_t>(n_entry) * 100.0 << std::endl; 
+    std::cout << "------------------------------------------" << std::endl;
 
     // +-------+
     // | Write |
@@ -108,10 +125,18 @@ void analyze(TString path, Int_t focus_pdg_code){
     // -- cal acceptance -----
     h_acceptance->Divide( h_cos_theta_trig, h_cos_theta_raw, 1, 1 );
     h_acceptance->GetYaxis()->SetRangeUser(0, 1.05);
+    h_acceptance->SetLineColor(kBlack);
+    h_acceptance->SetLineWidth(2);
+
     h_acceptance_mp2->Divide( h_cos_theta_mp2, h_cos_theta_raw, 1, 1 );
     h_acceptance_mp2->GetYaxis()->SetRangeUser(0, 1.05);
+    h_acceptance_mp2->SetLineColor(kBlue);
+    h_acceptance_mp2->SetLineWidth(2);
+
     h_acceptance_htofp->Divide( h_cos_theta_htofp, h_cos_theta_raw, 1, 1 );
     h_acceptance_htofp->GetYaxis()->SetRangeUser(0, 1.05);
+    h_acceptance_htofp->SetLineColor(kOrange);
+    h_acceptance_htofp->SetLineWidth(2);
 
     // -- write -----
     fout.cd();
