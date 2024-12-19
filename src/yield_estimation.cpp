@@ -6,6 +6,7 @@
 #include <random>
 #include <algorithm>
 #include <set>
+#include <tuple>
 
 // ROOT
 #include <TFile.h>
@@ -35,159 +36,170 @@
 static std::vector<Double_t> cross_sec_container;
 static std::vector<Double_t> n_react_container;
 
-// void analyze(TString path, Int_t focus_pdg_code){
-//     Config& conf = Config::getInstance();
+void analyze(TString path, Int_t focus_pdg_code){
+    Config& conf = Config::getInstance();
     
-//     // +---------+
-//     // | setting |
-//     // +---------+
-//     gROOT->GetColor(kBlue)->SetRGB(0.12156862745098039, 0.4666666666666667, 0.7058823529411765);
-//     gROOT->GetColor(kOrange)->SetRGB(1.0, 0.4980392156862745, 0.054901960784313725);
-//     gROOT->GetColor(kGreen)->SetRGB(44.0/256, 160.0/256, 44.0/256);
+    // +---------+
+    // | setting |
+    // +---------+
+    gROOT->GetColor(kBlue)->SetRGB(0.12156862745098039, 0.4666666666666667, 0.7058823529411765);
+    gROOT->GetColor(kOrange)->SetRGB(1.0, 0.4980392156862745, 0.054901960784313725);
+    gROOT->GetColor(kGreen)->SetRGB(44.0/256, 160.0/256, 44.0/256);
     
-//     gStyle->SetOptStat(0);
-//     gStyle->SetLabelSize(0.06, "XY");
-//     gStyle->SetTitleSize(0.06, "x"); // x軸のタイトルサイズ
-//     gStyle->SetTitleSize(0.06, "y"); // y軸のタイトルサイズ
-//     gStyle->SetTitleFontSize(0.06);
-//     gStyle->SetPadLeftMargin(0.15);
-//     gStyle->SetPadBottomMargin(0.15);
-//     gROOT->GetColor(0)->SetAlpha(0.01);
+    gStyle->SetOptStat(0);
+    gStyle->SetLabelSize(0.06, "XY");
+    gStyle->SetTitleSize(0.06, "x"); // x軸のタイトルサイズ
+    gStyle->SetTitleSize(0.06, "y"); // y軸のタイトルサイズ
+    gStyle->SetTitleFontSize(0.06);
+    gStyle->SetPadLeftMargin(0.15);
+    gStyle->SetPadBottomMargin(0.15);
+    gROOT->GetColor(0)->SetAlpha(0.01);
 
-//     // +-----------+
-//     // | load file |
-//     // +-----------+
-//     auto *f = new TFile( path.Data() );
-//     if (!f || f->IsZombie()) {
-//         std::cerr << "Error: Could not open file : " << path << std::endl;
-//         return;
-//     }
-//     TTreeReader reader("g4hyptpc_light", f);
-//     TTreeReaderValue<Double_t> mom_kaon_lab(reader, "mom_kaon_lab");
-//     TTreeReaderValue<Double_t> cos_theta(reader, "cos_theta");
-//     TTreeReaderValue<Int_t> trig_flag(reader, "trig_flag");
-//     TTreeReaderValue<Int_t> pdg_code(reader, "decay_particle_code");
-//     Int_t total_entry = reader.GetEntries();
+    // +-----------+
+    // | load file |
+    // +-----------+
+    auto *f = new TFile( path.Data() );
+    if (!f || f->IsZombie()) {
+        std::cerr << "Error: Could not open file : " << path << std::endl;
+        return;
+    }
+    TTreeReader reader("g4hyptpc_light", f);
+    TTreeReaderValue<Double_t> mom_kaon_lab(reader, "mom_kaon_lab");
+    TTreeReaderValue<Double_t> cos_theta(reader, "cos_theta");
+    TTreeReaderValue<Int_t> trig_flag(reader, "trig_flag");
+    TTreeReaderValue<Int_t> pdg_code(reader, "decay_particle_code");
+    Int_t total_entry = reader.GetEntries();
 
 
-//     // +--------------------------+
-//     // | prepare output root file |
-//     // +--------------------------+
-//     TString save_name;
-//     Int_t dot_index = path.Last('.');
-//     Int_t sla_index = path.Last('/');
-//     for (Int_t i = sla_index+1; i < dot_index; i++) save_name += path[i];
-//     TString output_path = Form("%s/root/yield_%s_%d.root", OUTPUT_DIR.Data(), save_name.Data(), focus_pdg_code);
-//     if (std::ifstream(output_path.Data())) std::remove(output_path.Data());
-//     TFile fout(output_path.Data(), "create");
+    // +--------------------------+
+    // | prepare output root file |
+    // +--------------------------+
+    TString save_name;
+    Int_t dot_index = path.Last('.');
+    Int_t sla_index = path.Last('/');
+    for (Int_t i = sla_index+1; i < dot_index; i++) save_name += path[i];
+    TString output_path = Form("%s/root/yield_%s_%d.root", OUTPUT_DIR.Data(), save_name.Data(), focus_pdg_code);
+    if (std::ifstream(output_path.Data())) std::remove(output_path.Data());
+    TFile fout(output_path.Data(), "create");
 
-//     // +-------------------+
-//     // | prepare histogram |
-//     // +-------------------+
-//     TH1D *h_cos_theta_raw[varMan::n_mom_points];
-//     TH1D *h_cos_theta_trig[varMan::n_mom_points];
-//     for (Int_t i = 0; i < varMan::n_mom_points; i++) {
-//         h_cos_theta_raw[i]  = new TH1D(Form("cos_theta_raw%d", i), Form("%f , %f", varMan::mom_start+i*varMan::mom_step_size, varMan::mom_start+(i+1)*varMan::mom_step_size), varMan::n_bin, -1, 1);
-//         h_cos_theta_trig[i] = new TH1D(Form("cos_theta_trig%d", i), Form("%f , %f", varMan::mom_start+i*varMan::mom_step_size, varMan::mom_start+(i+1)*varMan::mom_step_size), varMan::n_bin, -1, 1);
-//     }
-//     auto *h_mom_dist_raw = new TH1D("mom_dist_raw", "mom_dist", 600, 600, 900);
-//     auto *h_mom_dist_trig = new TH1D("mom_dist_trig", "mom_dist", 600, 600, 900);
+    // +-------------------+
+    // | prepare histogram |
+    // +-------------------+
+    TH1D *h_cos_theta_raw[conf.n_mom_points];
+    TH1D *h_cos_theta_trig[conf.n_mom_points];
+    for (Int_t i = 0; i < conf.n_mom_points; i++) {
+        h_cos_theta_raw[i]  = new TH1D(
+            Form("cos_theta_raw%d", i),
+            Form("%f , %f", conf.mom_start+i*conf.mom_step_size, conf.mom_start+(i+1)*conf.mom_step_size), 
+            conf.cos_theta_bin_num, -1.0, 1.0
+        );
+        h_cos_theta_trig[i] = new TH1D(
+            Form("cos_theta_trig%d", i),
+            Form("%f , %f", conf.mom_start+i*conf.mom_step_size, conf.mom_start+(i+1)*conf.mom_step_size),
+            conf.cos_theta_bin_num, -1.0, 1.0
+        );
+    }
+    auto *h_mom_dist_raw = new TH1D("mom_dist_raw", "mom_dist", 600, 600.0, 900.0);
+    auto *h_mom_dist_trig = new TH1D("mom_dist_trig", "mom_dist", 600, 600.0, 900.0);
 
-//     // +----------------------+
-//     // | check and fill event |
-//     // +----------------------+
-//     Int_t n_cs_points = cross_sec_container.size();
+    // +----------------------+
+    // | check and fill event |
+    // +----------------------+
+    Int_t n_cs_points = cross_sec_container.size();
 
-//     std::vector<std::vector<std::vector<Double_t>>> container(n_cs_points);
-//     Int_t evnum = 0;
-//     reader.Restart();
-//     while (reader.Next()){ displayProgressBar(++evnum, total_entry);
-//         // -- re-make trig_flag and prepare fill data-----
-//         Double_t trig_flag_include_branch = 0.0;
-//         if (*trig_flag != 0 && (focus_pdg_code == 9999 || *pdg_code == focus_pdg_code) ) trig_flag_include_branch = 1.0;
-//         std::vector<Double_t> fill_data{ trig_flag_include_branch, *mom_kaon_lab, *cos_theta };
+    std::vector<std::vector<std::tuple<Bool_t, Double_t, Double_t>>> container(n_cs_points);
+    Int_t evnum = 0;
+    reader.Restart();
+    while (reader.Next()){ displayProgressBar(++evnum, total_entry);
+        // -- re-make trig_flag and prepare fill data-----
+        Bool_t trig_flag_include_branch = false;
+        if (*trig_flag != 0 && (focus_pdg_code == 9999 || *pdg_code == focus_pdg_code) ) trig_flag_include_branch = true;
 
-//         Int_t index = get_index( *mom_kaon_lab );
-//         if (index != -1) container[index].push_back(fill_data);        
-//     }
+        Int_t index = ana_helper::get_index( *mom_kaon_lab );
+        if (index != -1) container[index].emplace_back(trig_flag_include_branch, *mom_kaon_lab, *cos_theta);        
+    }
 
-//     // -- check statistics -----
-//     Bool_t exit_flag = false;
-//     for (Int_t i = 0; i < n_cs_points; i++) if (container[i].size() < n_react_container[i]*3.0*varMan::daq_eff) {
-//         std::cout << "not enough data: " << cross_sec_container[i][0] << ", " << static_cast<Int_t>(n_react_container[i]*3.0*varMan::daq_eff) - container[i].size() << std::endl;
-//         exit_flag = true;
-//     }
-//     if (exit_flag) {
-//         fout.Close(); 
-//         return;
-//     }
+    // -- check statistics -----
+    Bool_t exit_flag = false;
+    for (Int_t i = 0; i < n_cs_points; i++) if (container[i].size() < n_react_container[i]*conf.daq_eff) {
+        std::cout << "not enough data: " <<  conf.mom_start+i*conf.mom_step_size << " - " << conf.mom_start+(i+1)*conf.mom_step_size << ", " << static_cast<Int_t>(n_react_container[i]*conf.daq_eff) - container[i].size() << std::endl;
+        exit_flag = true;
+    }
+    if (exit_flag) {
+        fout.Close(); 
+        return;
+    }
 
-//     // +--------------------+
-//     // | ramdomize and fill |
-//     // +--------------------+
-//     for (Int_t i = 0; i < n_cs_points; i++) {
-//         unsigned int seed = 72*(i+1);
-//         std::mt19937 gen(seed);
-//         std::vector<Int_t> indices(container[i].size());
-//         std::iota(indices.begin(), indices.end(), 0);
-//         std::shuffle(indices.begin(), indices.end(), gen);
-//         for (Int_t j = 0; j < static_cast<Int_t>(n_react_container[i]*n_half_day*varMan::daq_eff); j++) {
-//             std::vector<Double_t> data = container[i][indices[j]];
-//             Int_t index = get_index(data[1]);
-//             h_cos_theta_raw[index]->Fill(data[2]);
-//             h_mom_dist_raw->Fill(data[1]);
-//             if (data[0] == 1.0) {
-//                 h_cos_theta_trig[index]->Fill(data[2]);
-//                 h_mom_dist_trig->Fill(data[1]);
-//             }
-//         }
-//     }
+    // +--------------------+
+    // | ramdomize and fill |
+    // +--------------------+
+    for (Int_t i = 0; i < n_cs_points; i++) {
+        unsigned int seed = 72*(i+1);
+        std::mt19937 gen(seed);
+        std::vector<Int_t> indices(container[i].size());
+        std::iota(indices.begin(), indices.end(), 0);
+        std::shuffle(indices.begin(), indices.end(), gen);
+        for (Int_t j = 0; j < static_cast<Int_t>(n_react_container[i]*conf.daq_eff); j++) {
+            // std::tuple<Bool_t, Double_t, Double_t> data = container[i][indices[j]];
+            Bool_t flag;
+            Double_t tmp_mom, tmp_cos_theta;
+            std::tie(flag, tmp_mom, tmp_cos_theta) = container[i][indices[j]];
+            
+            Int_t index = ana_helper::get_index(tmp_mom);
+            h_cos_theta_raw[index]->Fill(tmp_cos_theta);
+            h_mom_dist_raw->Fill(tmp_mom);
+            if (flag) {
+                h_cos_theta_trig[index]->Fill(tmp_cos_theta);
+                h_mom_dist_trig->Fill(tmp_mom);
+            }
+        }
+    }
 
-//     // +-----------+
-//     // | Print PDF |
-//     // +-----------+
-//     // -- prepare pdf -----
-//     Int_t nth_pad = 1;
-//     Int_t rows = 4;
-//     Int_t cols = 4;
-//     Int_t max_pads = rows * cols;
-//     TString pdf_name = Form("./img/%s_%d_yield.pdf", save_name.Data(), focus_pdg_code);
+    // // +-----------+
+    // // | Print PDF |
+    // // +-----------+
+    // // -- prepare pdf -----
+    // Int_t nth_pad = 1;
+    // Int_t rows = 4;
+    // Int_t cols = 4;
+    // Int_t max_pads = rows * cols;
+    // TString pdf_name = Form("./img/%s_%d_yield.pdf", save_name.Data(), focus_pdg_code);
 
-//     auto *c = new TCanvas("yield", "", 1500, 1200);
-//     c->Divide(cols, rows);
-//     c->Print(pdf_name + "["); // start
-//     for (Int_t i = 0; i < varMan::n_mom_points; i++) {
-//         if (nth_pad > max_pads) {
-//             c->Print(pdf_name);
-//             c->Clear();
-//             c->Divide(cols, rows);
-//             nth_pad = 1;
-//         }
-//         c->cd(nth_pad);
-//         h_cos_theta_raw[i]->SetLineColor(kBlack);
-//         h_cos_theta_raw[i]->GetYaxis()->SetRangeUser(0.0, h_cos_theta_raw[i]->GetMaximum()*1.2);
-//         h_cos_theta_raw[i]->Draw();
-//         h_cos_theta_trig[i]->SetLineColor(kRed);
-//         h_cos_theta_trig[i]->Draw("same");   
-//         nth_pad++;
-//     }
-//     c->Print(pdf_name);
-//     c->Print(pdf_name + "]"); // end
-//     delete c;
+    // auto *c = new TCanvas("yield", "", 1500, 1200);
+    // c->Divide(cols, rows);
+    // c->Print(pdf_name + "["); // start
+    // for (Int_t i = 0; i < conf.n_mom_points; i++) {
+    //     if (nth_pad > max_pads) {
+    //         c->Print(pdf_name);
+    //         c->Clear();
+    //         c->Divide(cols, rows);
+    //         nth_pad = 1;
+    //     }
+    //     c->cd(nth_pad);
+    //     h_cos_theta_raw[i]->SetLineColor(kBlack);
+    //     h_cos_theta_raw[i]->GetYaxis()->SetRangeUser(0.0, h_cos_theta_raw[i]->GetMaximum()*1.2);
+    //     h_cos_theta_raw[i]->Draw();
+    //     h_cos_theta_trig[i]->SetLineColor(kRed);
+    //     h_cos_theta_trig[i]->Draw("same");   
+    //     nth_pad++;
+    // }
+    // c->Print(pdf_name);
+    // c->Print(pdf_name + "]"); // end
+    // delete c;
 
-//     // +------------+
-//     // | Write data |
-//     // +------------+
-//     for (Int_t i = 0; i < varMan::n_mom_points; i++) {
-//         h_cos_theta_raw[i]->Write();
-//         h_cos_theta_trig[i]->Write();
-//     }
-//     h_mom_dist_raw->Write();
-//     h_mom_dist_trig->Write();
+    // +------------+
+    // | Write data |
+    // +------------+
+    for (Int_t i = 0; i < conf.n_mom_points; i++) {
+        h_cos_theta_raw[i]->Write();
+        h_cos_theta_trig[i]->Write();
+    }
+    h_mom_dist_raw->Write();
+    h_mom_dist_trig->Write();
 
-//     fout.Close(); 
+    fout.Close(); 
 
-// }
+}
 
 Int_t main(int argc, char** argv) {
     Config& conf = Config::getInstance();
@@ -218,7 +230,7 @@ Int_t main(int argc, char** argv) {
     // +-------------+
     auto *f_kaon = new TFile(Form("%s/data/n_kaon.root", WORK_DIR.Data()));
     TTreeReader reader_kaon("tree", f_kaon);
-    TTreeReaderValue<std::vector<Double_t>> n_kaon_container(reader_kaon, "n_kaon");
+    TTreeReaderValue<std::vector<Double_t>> n_kaon_container(reader_kaon, "n_kaon_all");
     reader_kaon.Restart();
     reader_kaon.Next();
 

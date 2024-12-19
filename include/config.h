@@ -54,6 +54,7 @@ public:
     Int_t n_mom_points = 600;
     Double_t mom_step_size = 0.5; // MeV/c
     Double_t mom_start = 600.0; // MeV
+    Int_t cos_theta_bin_num = 50;
 
 
     Double_t spill_length = 4.24; // second
