@@ -32,8 +32,6 @@
 #include "paths.h"
 #include "progress_bar.h"
 
-
-static std::vector<Double_t> cross_sec_container;
 static std::vector<Double_t> n_react_container;
 
 void analyze(TString path, Int_t focus_pdg_code){
@@ -105,10 +103,10 @@ void analyze(TString path, Int_t focus_pdg_code){
     // +----------------------+
     // | check and fill event |
     // +----------------------+
-    Int_t n_cs_points = cross_sec_container.size();
-    std::cout  << n_cs_points << std::endl;
+    Int_t n_points = n_react_container.size();
+    std::cout  << n_points << std::endl;
 
-    std::vector<std::vector<std::tuple<Bool_t, Double_t, Double_t>>> container(n_cs_points, std::vector<std::tuple<Bool_t, Double_t, Double_t>>());
+    std::vector<std::vector<std::tuple<Bool_t, Double_t, Double_t>>> container(n_points, std::vector<std::tuple<Bool_t, Double_t, Double_t>>());
     Int_t evnum = 0;
     reader.Restart();
     while (reader.Next()){ displayProgressBar(++evnum, total_entry);
@@ -122,7 +120,7 @@ void analyze(TString path, Int_t focus_pdg_code){
 
     // -- check statistics -----
     Bool_t exit_flag = false;
-    for (Int_t i = 0; i < n_cs_points; i++) if (container[i].size() < n_react_container[i]*conf.daq_eff) {
+    for (Int_t i = 0; i < n_points; i++) if (container[i].size() < n_react_container[i]*conf.daq_eff) {
         std::cout << "not enough data: " <<  conf.mom_start+i*conf.mom_step_size << " - " << conf.mom_start+(i+1)*conf.mom_step_size << ", " << static_cast<Int_t>(n_react_container[i]*conf.daq_eff) - container[i].size() << std::endl;
         exit_flag = true;
     }
@@ -134,7 +132,7 @@ void analyze(TString path, Int_t focus_pdg_code){
     // +--------------------+
     // | ramdomize and fill |
     // +--------------------+
-    for (Int_t i = 0; i < n_cs_points; i++) {
+    for (Int_t i = 0; i < n_points; i++) {
         unsigned int seed = 72*(i+1);
         std::mt19937 gen(seed);
         std::vector<Int_t> indices(container[i].size());
