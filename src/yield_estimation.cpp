@@ -300,6 +300,6 @@ Int_t main(int argc, char** argv) {
         else n_react_container.push_back(0.0);
     }
 
-    // analyze(path, focus_pdg_code);
+    analyze(path, focus_pdg_code);
     return 0;
 }
