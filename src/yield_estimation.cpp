@@ -112,7 +112,6 @@ void analyze(TString path, Int_t focus_pdg_code){
         // -- re-make trig_flag and prepare fill data-----
         Bool_t trig_flag_include_branch = false;
         if (*trig_flag != 0 && (focus_pdg_code == 9999 || *pdg_code == focus_pdg_code) ) trig_flag_include_branch = true;
-        std::cout << *trig_flag << ", " << *pdg_code << ", " <<  trig_flag_include_branch << std::endl;
 
         Int_t index = ana_helper::get_index( *mom_kaon_lab );
         if (index != -1) container[index].emplace_back(trig_flag_include_branch, *mom_kaon_lab, *cos_theta);        
@@ -142,7 +141,7 @@ void analyze(TString path, Int_t focus_pdg_code){
             Bool_t flag;
             Double_t tmp_mom, tmp_cos_theta;
             std::tie(flag, tmp_mom, tmp_cos_theta) = container[i][indices[j]];
-            
+            std::cout << j << ", " << flag << ", " << tmp_mom << ", " << tmp_cos_theta << std::endl;
             Int_t index = ana_helper::get_index(tmp_mom);
             h_cos_theta_raw[index]->Fill(tmp_cos_theta);
             h_mom_dist_raw->Fill(tmp_mom);
