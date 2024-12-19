@@ -107,7 +107,7 @@ void analyze(TString path, Int_t focus_pdg_code){
     // +----------------------+
     Int_t n_cs_points = cross_sec_container.size();
 
-    std::vector<std::vector<std::tuple<Bool_t, Double_t, Double_t>>> container(n_cs_points);
+    std::vector<std::vector<std::tuple<Bool_t, Double_t, Double_t>>> container(n_cs_points, std::vector<std::tuple<Bool_t, Double_t, Double_t>>());
     Int_t evnum = 0;
     reader.Restart();
     while (reader.Next()){ displayProgressBar(++evnum, total_entry);
