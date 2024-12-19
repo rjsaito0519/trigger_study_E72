@@ -141,11 +141,12 @@ void analyze(TString path, Int_t focus_pdg_code){
             Bool_t flag;
             Double_t tmp_mom, tmp_cos_theta;
             std::tie(flag, tmp_mom, tmp_cos_theta) = container[i][indices[j]];
-            std::cout << j << ", " << flag << ", " << tmp_mom << ", " << tmp_cos_theta << std::endl;
+            
             Int_t index = ana_helper::get_index(tmp_mom);
             h_cos_theta_raw[index]->Fill(tmp_cos_theta);
             h_mom_dist_raw->Fill(tmp_mom);
             if (flag) {
+            std::cout << j << ", " << flag << ", " << tmp_mom << ", " << tmp_cos_theta << std::endl;
                 h_cos_theta_trig[index]->Fill(tmp_cos_theta);
                 h_mom_dist_trig->Fill(tmp_mom);
             }
