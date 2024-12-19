@@ -104,7 +104,6 @@ void analyze(TString path, Int_t focus_pdg_code){
     // | check and fill event |
     // +----------------------+
     Int_t n_points = n_react_container.size();
-    std::cout  << n_points << std::endl;
 
     std::vector<std::vector<std::tuple<Bool_t, Double_t, Double_t>>> container(n_points, std::vector<std::tuple<Bool_t, Double_t, Double_t>>());
     Int_t evnum = 0;
@@ -113,6 +112,7 @@ void analyze(TString path, Int_t focus_pdg_code){
         // -- re-make trig_flag and prepare fill data-----
         Bool_t trig_flag_include_branch = false;
         if (*trig_flag != 0 && (focus_pdg_code == 9999 || *pdg_code == focus_pdg_code) ) trig_flag_include_branch = true;
+        std::cout << *trig_flag << ", " << *pdg_code << ", " <<  trig_flag_include_branch << std::endl;
 
         Int_t index = ana_helper::get_index( *mom_kaon_lab );
         if (index != -1) container[index].emplace_back(trig_flag_include_branch, *mom_kaon_lab, *cos_theta);        
@@ -139,7 +139,6 @@ void analyze(TString path, Int_t focus_pdg_code){
         std::iota(indices.begin(), indices.end(), 0);
         std::shuffle(indices.begin(), indices.end(), gen);
         for (Int_t j = 0; j < static_cast<Int_t>(n_react_container[i]*conf.daq_eff); j++) {
-            // std::tuple<Bool_t, Double_t, Double_t> data = container[i][indices[j]];
             Bool_t flag;
             Double_t tmp_mom, tmp_cos_theta;
             std::tie(flag, tmp_mom, tmp_cos_theta) = container[i][indices[j]];
