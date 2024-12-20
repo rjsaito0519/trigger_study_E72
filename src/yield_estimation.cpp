@@ -238,8 +238,8 @@ Int_t main(int argc, char** argv) {
     TString reaction1 = "eta_lambda";
     TString reaction2 = "kp";
     TString reaction3 = "k0n";
-    TString reaction4 = "pipsigmam";
-    TString reaction5 = "pimsigmap";
+    TString reaction4 = "pi+sigma-";
+    TString reaction5 = "pi-sigma+";
     TString reaction6 = "pi0sigma0";
     TString reaction7 = "pi0lambda";
     
