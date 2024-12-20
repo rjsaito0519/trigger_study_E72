@@ -152,37 +152,37 @@ void analyze(TString path, Int_t focus_pdg_code){
         }
     }
 
-    // // +-----------+
-    // // | Print PDF |
-    // // +-----------+
-    // // -- prepare pdf -----
-    // Int_t nth_pad = 1;
-    // Int_t rows = 4;
-    // Int_t cols = 4;
-    // Int_t max_pads = rows * cols;
-    // TString pdf_name = Form("./img/%s_%d_yield.pdf", save_name.Data(), focus_pdg_code);
+    // +-----------+
+    // | Print PDF |
+    // +-----------+
+    // -- prepare pdf -----
+    Int_t nth_pad = 1;
+    Int_t rows = 4;
+    Int_t cols = 4;
+    Int_t max_pads = rows * cols;
+    TString pdf_name = Form("%s/img/yield_%s_%d.pdf", OUTPUT_DIR.Data(), save_name.Data(), focus_pdg_code);
 
-    // auto *c = new TCanvas("yield", "", 1500, 1200);
-    // c->Divide(cols, rows);
-    // c->Print(pdf_name + "["); // start
-    // for (Int_t i = 0; i < conf.n_mom_points; i++) {
-    //     if (nth_pad > max_pads) {
-    //         c->Print(pdf_name);
-    //         c->Clear();
-    //         c->Divide(cols, rows);
-    //         nth_pad = 1;
-    //     }
-    //     c->cd(nth_pad);
-    //     h_cos_theta_raw[i]->SetLineColor(kBlack);
-    //     h_cos_theta_raw[i]->GetYaxis()->SetRangeUser(0.0, h_cos_theta_raw[i]->GetMaximum()*1.2);
-    //     h_cos_theta_raw[i]->Draw();
-    //     h_cos_theta_trig[i]->SetLineColor(kRed);
-    //     h_cos_theta_trig[i]->Draw("same");   
-    //     nth_pad++;
-    // }
-    // c->Print(pdf_name);
-    // c->Print(pdf_name + "]"); // end
-    // delete c;
+    auto *c = new TCanvas("yield", "", 1500, 1200);
+    c->Divide(cols, rows);
+    c->Print(pdf_name + "["); // start
+    for (Int_t i = 0; i < conf.n_mom_points; i++) {
+        if (nth_pad > max_pads) {
+            c->Print(pdf_name);
+            c->Clear();
+            c->Divide(cols, rows);
+            nth_pad = 1;
+        }
+        c->cd(nth_pad);
+        h_cos_theta_raw[i]->SetLineColor(kBlack);
+        h_cos_theta_raw[i]->GetYaxis()->SetRangeUser(0.0, h_cos_theta_raw[i]->GetMaximum()*1.2);
+        h_cos_theta_raw[i]->Draw();
+        h_cos_theta_trig[i]->SetLineColor(kRed);
+        h_cos_theta_trig[i]->Draw("same");   
+        nth_pad++;
+    }
+    c->Print(pdf_name);
+    c->Print(pdf_name + "]"); // end
+    delete c;
 
     // +------------+
     // | Write data |
@@ -213,7 +213,7 @@ Int_t main(int argc, char** argv) {
 
     // Load parameters
     TString path = argv[1];
-    Int_t focus_pdg_code = (argc > 2) ? std::atoi(argv[2]) : 9999; // Default: -9999
+    Int_t focus_pdg_code = (argc > 2) ? std::atoi(argv[2]) : 9999; // Default: 9999
 
     // Output parameters
     std::cout << "\n====================================" << std::endl;
