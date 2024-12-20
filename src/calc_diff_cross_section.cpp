@@ -457,10 +457,10 @@ int main(int argc, char** argv) {
         // -- for create hist -----
         mom_left = 724.0;
         mom_right = 770.0;
-        n_cluster = 1;
+        n_cluster = 2;
         branching_ratio = 0.641;
         // -- for fitting -----
-        n_rebin = 4;
+        n_rebin = 2;
         fit_left_index_offset  = 0;
         fit_right_index_offset = 0;
         n_coeff = 4;
