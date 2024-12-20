@@ -148,15 +148,15 @@ void analyze(TString path, Int_t focus_pdg_code){
         h_cos_theta_trig[i]->Draw("same");
 
         c->cd(++nth_pad);
-        h_ratio[i]->Divide( h_cos_theta_trig[i], h_cos_theta_raw[i], 1.0, 1.0 );
-        h_ratio[i]->SetLineColor(kBlack);
-        h_ratio[i]->GetYaxis()->SetRangeUser(0.0, 1.0);
-        h_ratio[i]->Draw();
+        h_acceptance[i]->Divide( h_cos_theta_trig[i], h_cos_theta_raw[i], 1.0, 1.0 );
+        h_acceptance[i]->SetLineColor(kBlack);
+        h_acceptance[i]->GetYaxis()->SetRangeUser(0.0, 1.0);
+        h_acceptance[i]->Draw();
 
-        auto h_smooth_ratio = (TH1D*)h_ratio[i]->Clone();
-        h_smooth_ratio->Smooth(5);
-        h_smooth_ratio->SetLineColor(kRed);
-        h_smooth_ratio->Draw("same");
+        auto h_smooth_acceptance = (TH1D*)h_acceptance[i]->Clone();
+        h_smooth_acceptance->Smooth(5);
+        h_smooth_acceptance->SetLineColor(kRed);
+        h_smooth_acceptance->Draw("same");
         
         nth_pad++;
     }
@@ -170,7 +170,7 @@ void analyze(TString path, Int_t focus_pdg_code){
     for (Int_t i = 0; i < conf.n_mom_points; i++) {
         h_cos_theta_raw[i]->Write();
         h_cos_theta_trig[i]->Write();
-        h_ratio[i]->Write();
+        h_acceptance[i]->Write();
     }
     fout.Close(); 
 

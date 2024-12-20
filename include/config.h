@@ -56,13 +56,15 @@ public:
     Double_t mom_start = 600.0; // MeV
     Int_t cos_theta_bin_num = 50;
 
-
+    // -- for yield estimation -----
     Double_t spill_length = 4.24; // second
     Double_t density_LH2 = 0.07085; // g/cm^3
     Double_t Na = 6.02214076 * TMath::Power(10.0, 23.0); // /mol
     Double_t d = 6.898; // cm
     Double_t daq_eff = 0.9;
 
+    // -- for dcs calc -----
+    Int_t n_smoothing = 5;
 
     void beam_initialize() {
         beam_generator = -1;
