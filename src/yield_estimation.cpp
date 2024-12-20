@@ -120,7 +120,7 @@ void analyze(TString path, Int_t focus_pdg_code){
     // -- check statistics -----
     Bool_t exit_flag = false;
     for (Int_t i = 0; i < n_points; i++) if (container[i].size() < n_react_container[i]*conf.daq_eff) {
-        std::cout << "not enough data: " <<  conf.mom_start+i*conf.mom_step_size << " - " << conf.mom_start+(i+1)*conf.mom_step_size << ", " << static_cast<Int_t>(n_react_container[i]*conf.daq_eff) - container[i].size() << std::endl;
+        std::cout << "not enough data: " <<  conf.mom_start+i*conf.mom_step_size << " - " << conf.mom_start+(i+1)*conf.mom_step_size << ", " << n_react_container[i]*conf.daq_eff - container[i].size() << std::endl;
         exit_flag = true;
     }
     if (exit_flag) {
@@ -263,6 +263,7 @@ Int_t main(int argc, char** argv) {
         return 1;
     }
     auto *f_spline = new TFile(spline_root_file_path.Data());
+    std::cout << "Loaded spline root file: " << spline_root_file_path << std::endl;
 
     // -- prepare spline func -----
     std::vector<TSpline3*> splines;
