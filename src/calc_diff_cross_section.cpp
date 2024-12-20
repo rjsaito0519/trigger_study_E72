@@ -154,9 +154,9 @@ void analyze(TString path_yield, TString path_acceptance){
     // | prepare output root file |
     // +--------------------------+
     TString save_name;
-    Int_t dot_index = path_acceptance.Last('.');
-    Int_t sla_index = path_acceptance.Last('/');
-    for (Int_t i = sla_index+11; i < dot_index; i++) save_name += path_acceptance[i];
+    Int_t dot_index = path_yield.Last('.');
+    Int_t sla_index = path_yield.Last('/');
+    for (Int_t i = sla_index+7; i < dot_index; i++) save_name += path_yield[i];
     TString output_path = Form("%s/root/dcs_%s.root", OUTPUT_DIR.Data(), save_name.Data());
     if (std::ifstream(output_path.Data())) std::remove(output_path.Data());
     TFile fout(output_path.Data(), "create");
@@ -420,91 +420,114 @@ void analyze(TString path_yield, TString path_acceptance){
 
 }
 
-Int_t main(int argc, char** argv) {
-    // =======================================================
-    // argv[1] yield root file path
-    // argv[2] acceptance root file path
-    // =======================================================
+#include <iostream>
+#include <TString.h>
 
+int main(int argc, char** argv) {
+    // Check the number of arguments
+    if (argc < 3) {
+        std::cerr << "Usage: " << argv[0] << " <yield_root_file_path> <acceptance_root_file_path>" << std::endl;
+        return 1;
+    }
+
+    // Retrieve file paths from command-line arguments
     TString path_yield = argv[1];
     TString path_acceptance = argv[2];
 
-    // // +------------+
-    // // | eta Lambda |
-    // // +------------+
-    // // -- for create hist -----
-    // mom_left = 723.0;
-    // mom_right = 771.0;
-    // n_cluster = 3;
-    // branching_ratio = 0.641;
-    // // -- for fitting -----
-    // fit_left_index_offset  = 0;
-    // fit_right_index_offset = 0;
-    // n_coeff = 4;
-    // f_legendre_str = "";
-    // for (Int_t order = 0; order < n_coeff; order++) f_legendre_str += Form(" + [%d]*ROOT::Math::legendre(%d,x)", order, order);
-    // old_legendre = load_data("csv_data/etaLambda_crystal_ball_legendre.csv");
-
-    // // +----+
-    // // | Kp |
-    // // +----+
-    // // -- for create hist -----
-    // mom_left = 659.0;
-    // mom_right = 787.0;
-    // n_cluster = 8;
-    // branching_ratio = 1.0;
-    // // -- for fitting -----
-    // // n_rebin = 4;
-    // // fit_left_index_offset  = 1;
-    // // fit_right_index_offset = 2;
-    // n_rebin = 2;
-    // fit_left_index_offset  = 3;
-    // fit_right_index_offset = 5;
-    // n_coeff = 6;
-    // f_legendre_str = "";
-    // for (Int_t order = 0; order < n_coeff; order++) f_legendre_str += Form(" + [%d]*ROOT::Math::legendre(%d,x)", order, order);
-    // old_legendre = load_data("csv_data/Kp_bubble_chamber1970_legendre.csv");
+    // Print the file paths for verification
+    std::cout << "====================================\n" << std::endl;
+    std::cout << "Yield ROOT file path: " << path_yield.Data() << std::endl;
+    std::cout << "Acceptance ROOT file path: " << path_acceptance.Data() << std::endl;
+    std::cout << "====================================\n" << std::endl;
 
 
-    // // +-----+
-    // // | K0n |
-    // // +-----+
-    // // -- for create hist -----
-    // // mom_left = 659.0;
-    // mom_left = 659.0+8.0;
-    // // mom_right = 787.0;
-    // mom_right = 787.0-8.0;
-    // n_cluster = 4;
-    // branching_ratio = 0.692;
-    // // -- for fitting -----
-    // n_rebin = 2;
-    // fit_left_index_offset  = 0;
-    // fit_right_index_offset = 0;
-    // n_coeff = 6;
-    // f_legendre_str = "";
-    // for (Int_t order = 0; order < n_coeff; order++) f_legendre_str += Form(" + [%d]*ROOT::Math::legendre(%d,x)", order, order);
-    // old_legendre = load_data("csv_data/K0n_bubble_chamber1970_legendre.csv");
+    // +-----------------------+
+    // | load spline root file |
+    // +-----------------------+
+    TString reaction1 = "eta_lambda";
+    TString reaction2 = "kp";
+    TString reaction3 = "k0n";
+    TString reaction4 = "pi+sigma-";
+    TString reaction5 = "pi-sigma+";
+    TString reaction6 = "pi0sigma0";
+    TString reaction7 = "pi0lambda";
+    
+    TString spline_root_file_path;
+    if (path_yield.Contains(reaction1)) {
+        // -- for create hist -----
+        mom_left = 723.0;
+        mom_right = 771.0;
+        n_cluster = 3;
+        branching_ratio = 0.641;
+        // -- for fitting -----
+        fit_left_index_offset  = 0;
+        fit_right_index_offset = 0;
+        n_coeff = 4;
+        f_legendre_str = "";
+        for (Int_t order = 0; order < n_coeff; order++) f_legendre_str += Form(" + [%d]*ROOT::Math::legendre(%d,x)", order, order);
+        old_legendre = ana_helper::load_data("data/legendre/etaLambda_crystal_ball_legendre.csv");
 
+    } else if (path_yield.Contains(reaction2)) {
+        // -- for create hist -----
+        mom_left = 659.0;
+        mom_right = 787.0;
+        n_cluster = 8;
+        branching_ratio = 1.0;
+        n_rebin = 2;
+        fit_left_index_offset  = 3;
+        fit_right_index_offset = 5;
+        n_coeff = 6;
+        f_legendre_str = "";
+        for (Int_t order = 0; order < n_coeff; order++) f_legendre_str += Form(" + [%d]*ROOT::Math::legendre(%d,x)", order, order);
+        old_legendre = ana_helper::load_data("data/legendre/Kp_bubble_chamber1970_legendre.csv");
 
+    } else if (path_yield.Contains(reaction3)) {
+        // -- for create hist -----
+        // mom_left = 659.0;
+        mom_left = 659.0+8.0;
+        // mom_right = 787.0;
+        mom_right = 787.0-8.0;
+        n_cluster = 4;
+        branching_ratio = 0.692;
+        // -- for fitting -----
+        n_rebin = 2;
+        fit_left_index_offset  = 0;
+        fit_right_index_offset = 0;
+        n_coeff = 6;
+        f_legendre_str = "";
+        for (Int_t order = 0; order < n_coeff; order++) f_legendre_str += Form(" + [%d]*ROOT::Math::legendre(%d,x)", order, order);
+        old_legendre = ana_helper::load_data("data/legendre/K0n_bubble_chamber1970_legendre.csv");
 
-    // +-----------+
-    // | pi+Sigma- |
-    // +-----------+
-    // -- for create hist -----
-    // mom_left = 659.0;
-    mom_left = 659.0+4.0;
-    // mom_right = 787.0;
-    mom_right = 787.0-12.0;
-    n_cluster = 8;
-    branching_ratio = 0.99848;
-    // -- for fitting -----
-    n_rebin = 2;
-    fit_left_index_offset  = 0;
-    fit_right_index_offset = 0;
-    n_coeff = 5;
-    f_legendre_str = "";
-    for (Int_t order = 0; order < n_coeff; order++) f_legendre_str += Form(" + [%d]*ROOT::Math::legendre(%d,x)", order, order);
-    old_legendre = ana_helper::load_data("data/legendre/pi+Sigma-_bubble_chamber1970_legendre.csv");
+    } else if (path_yield.Contains(reaction4)) {
+        // -- for create hist -----
+        // mom_left = 659.0;
+        mom_left = 659.0+4.0;
+        // mom_right = 787.0;
+        mom_right = 787.0-12.0;
+        n_cluster = 8;
+        branching_ratio = 0.99848;
+        // -- for fitting -----
+        n_rebin = 2;
+        fit_left_index_offset  = 0;
+        fit_right_index_offset = 0;
+        n_coeff = 5;
+        f_legendre_str = "";
+        for (Int_t order = 0; order < n_coeff; order++) f_legendre_str += Form(" + [%d]*ROOT::Math::legendre(%d,x)", order, order);
+        old_legendre = ana_helper::load_data("data/legendre/pi+Sigma-_bubble_chamber1970_legendre.csv");
+
+    } else if (path_yield.Contains(reaction5)) {
+        // spline_root_file_path_yield = Form("%s/data/spline/piMinusSigmaPlus_bubble1970_spline.root", WORK_DIR.Data());
+        return 1;
+    } else if (path_yield.Contains(reaction6)) {
+        // spline_root_file_path_yield = Form("%s/data/spline/pi0Sigma0_bubble1970_spline.root", WORK_DIR.Data());
+        return 1;
+    } else if (path_yield.Contains(reaction7)) {
+        // spline_root_file_path = Form("%s/data/spline/pi0Lambda_bubble1970_spline.root", WORK_DIR.Data());
+        return 1;
+    }else {
+        std::cerr << "Error: No matching reaction found in path: " << path_yield << std::endl;
+        return 1;
+    }
 
     analyze(path_yield, path_acceptance);
     return 0;
