@@ -460,7 +460,7 @@ int main(int argc, char** argv) {
         n_cluster = 1;
         branching_ratio = 0.641;
         // -- for fitting -----
-        n_rebin = 2;
+        n_rebin = 4;
         fit_left_index_offset  = 0;
         fit_right_index_offset = 0;
         n_coeff = 4;
