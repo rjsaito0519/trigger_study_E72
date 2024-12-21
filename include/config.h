@@ -60,7 +60,7 @@ public:
     Double_t spill_length = 4.24; // second
     Double_t density_LH2 = 0.07085; // g/cm^3
     Double_t Na = 6.02214076 * TMath::Power(10.0, 23.0); // /mol
-    Double_t d =  6.887; // cm
+    Double_t d =  6.931; // cm
     Double_t daq_eff = 0.9;
 
     // -- for dcs calc -----
