@@ -37,6 +37,7 @@ void data_fill(TString path, TH1D *h)
     auto *f = new TFile(path.Data());
 
     TTreeReader reader("g4hyptpc", f);
+    TTreeReaderValue<Int_t> decay_particle_code(reader, "decay_particle_code");
     TTreeReaderValue<Double_t> effective_thickness(reader, "effective_thickness");
     Int_t total_entry = reader.GetEntries();
 
@@ -46,7 +47,7 @@ void data_fill(TString path, TH1D *h)
     Int_t evnum = 0;
     reader.Restart();
     while (reader.Next()){ displayProgressBar(++evnum, total_entry);
-        if (*effective_thickness > 0) h->Fill(*effective_thickness);
+        if (*effective_thickness > 0 && *decay_particle_code == 0) h->Fill(*effective_thickness);
     }
     delete f;
 
