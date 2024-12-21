@@ -85,10 +85,56 @@ void analyze(TString save_name){
         spline[order]->SetName(Form("A%d_spline", order));
     }
     
+
+    // +------------------------------+
+    // | For python prepare tree data |
+    // +------------------------------+
+    TTree* tree = new TTree("tree", "");
+
+    std::vector<std::vector<Double_t>> x_values(n_coeff);
+    std::vector<std::vector<Double_t>> y_values(n_coeff);
+    std::vector<std::vector<Double_t>> mom_values(n_coeff);
+    std::vector<std::vector<Double_t>> coeff_values(n_coeff);
+    
+    for (Int_t order = 0; order < n_coeff; order++) {
+        Double_t x_min = spline[order]->GetXmin();
+        Double_t x_max = spline[order]->GetXmax();
+        
+        // 等間隔に分割する点
+        Double_t num_points = 10000.0;
+        Double_t step = (x_max - x_min) / (num_points - 1.0);
+
+        // x, y の値を計算して保存
+        std::vector<Double_t> x_vec, y_vec;
+        for (Double_t i = 0.0; i < num_points; ++i) {
+            Double_t x = x_min + i * step;
+            Double_t y = spline[order]->Eval(x);
+            x_vec.push_back(x);
+            y_vec.push_back(y);
+        }
+
+        // ブランチ用の vector に追加
+        x_values[order] = x_vec;
+        y_values[order] = y_vec;
+
+        tree->Branch(Form("A%d_spline_x", order), &x_values[order]);
+        tree->Branch(Form("A%d_spline_y", order), &y_values[order]);
+
+        // -- for coeff data itself -----
+        for (const auto &mom : mom_kaons) {
+            mom_values[order].push_back(mom);
+            coeff_values[order].push_back(legendre_coeff.at(mom)[order]);
+        }
+        tree->Branch(Form("A%d_coeff_x", order), &mom_values[order]);
+        tree->Branch(Form("A%d_coeff_y", order), &coeff_values[order]);
+    }
+    tree->Fill();
+
     // +------------+
     // | Write data |
     // +------------+
     fout.cd(); 
+    tree->Write();
     for (Int_t order = 0; order < n_coeff; order++) {
         spline[order]->Write();
         g_coeff[order]->Write();
