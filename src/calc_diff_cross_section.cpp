@@ -457,7 +457,7 @@ int main(int argc, char** argv) {
         // -- for create hist -----
         mom_left = 724.0;
         mom_right = 770.0;
-        n_cluster = 2;
+        n_cluster = 4;
         branching_ratio = 0.641;
         // -- for fitting -----
         n_rebin = 2;
@@ -471,12 +471,12 @@ int main(int argc, char** argv) {
     } else if (path_yield.Contains(reaction2)) {
         // -- for create hist -----
         mom_left = 659.0;
-        mom_right = 787.0;
-        n_cluster = 8;
+        mom_right = 786.0;
+        n_cluster = 4;
         branching_ratio = 1.0;
         n_rebin = 2;
-        fit_left_index_offset  = 3;
-        fit_right_index_offset = 5;
+        fit_left_index_offset  = 2;
+        fit_right_index_offset = 3;
         n_coeff = 6;
         f_legendre_str = "";
         for (Int_t order = 0; order < n_coeff; order++) f_legendre_str += Form(" + [%d]*ROOT::Math::legendre(%d,x)", order, order);
