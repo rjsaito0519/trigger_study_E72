@@ -222,7 +222,7 @@ void analyze(TString path_yield, TString path_acceptance){
                 }
             }
             // -- error management ---
-            if (n_stat == 0 || std::isinf(diff_cs_val)) {
+            if (n_stat == 0 || std::isinf(diff_cs_val) || std::isnan(diff_cs_val)) {
                 diff_cs_val = 0.0;
                 n_stat = 1.0;
             }
@@ -367,7 +367,6 @@ void analyze(TString path_yield, TString path_acceptance){
 
         // -- legendre fit -----
         // -- initialize -----
-        fit_cos_theta.clear(); fit_cos_theta_err.clear(); fit_diff_cs.clear(); fit_diff_cs_err.clear();
         fit_cos_theta.assign(cos_theta_container[i].begin()+fit_left_index_offset, cos_theta_container[i].end()-fit_right_index_offset);
         fit_cos_theta_err.assign(cos_theta_err_container[i].begin()+fit_left_index_offset, cos_theta_err_container[i].end()-fit_right_index_offset);
         fit_diff_cs.assign(diff_cs_container[i].begin()+fit_left_index_offset, diff_cs_container[i].end()-fit_right_index_offset);
@@ -464,8 +463,8 @@ int main(int argc, char** argv) {
         fit_left_index_offset  = 0;
         fit_right_index_offset = 0;
         n_coeff = 4;
-        f_legendre_str = "";
-        for (Int_t order = 0; order < n_coeff; order++) f_legendre_str += Form(" + [%d]*ROOT::Math::legendre(%d,x)", order, order);
+        f_legendre_str = "[0]*ROOT::Math::legendre(0,x)";
+        for (Int_t order = 1; order < n_coeff; order++) f_legendre_str += Form(" + [%d]*ROOT::Math::legendre(%d,x)", order, order);
         old_legendre = ana_helper::load_data("data/legendre/etaLambda_crystal_ball_legendre.csv");
 
     } else if (path_yield.Contains(reaction2)) {
@@ -478,8 +477,8 @@ int main(int argc, char** argv) {
         fit_left_index_offset  = 2;
         fit_right_index_offset = 3;
         n_coeff = 6;
-        f_legendre_str = "";
-        for (Int_t order = 0; order < n_coeff; order++) f_legendre_str += Form(" + [%d]*ROOT::Math::legendre(%d,x)", order, order);
+        f_legendre_str = "[0]*ROOT::Math::legendre(0,x)";
+        for (Int_t order = 1; order < n_coeff; order++) f_legendre_str += Form(" + [%d]*ROOT::Math::legendre(%d,x)", order, order);
         old_legendre = ana_helper::load_data("data/legendre/Kp_bubble_chamber1970_legendre.csv");
 
     } else if (path_yield.Contains(reaction3)) {
@@ -495,8 +494,8 @@ int main(int argc, char** argv) {
         fit_left_index_offset  = 0;
         fit_right_index_offset = 0;
         n_coeff = 6;
-        f_legendre_str = "";
-        for (Int_t order = 0; order < n_coeff; order++) f_legendre_str += Form(" + [%d]*ROOT::Math::legendre(%d,x)", order, order);
+        f_legendre_str = "[0]*ROOT::Math::legendre(0,x)";
+        for (Int_t order = 1; order < n_coeff; order++) f_legendre_str += Form(" + [%d]*ROOT::Math::legendre(%d,x)", order, order);
         old_legendre = ana_helper::load_data("data/legendre/K0n_bubble_chamber1970_legendre.csv");
 
     } else if (path_yield.Contains(reaction4)) {
@@ -512,8 +511,8 @@ int main(int argc, char** argv) {
         fit_left_index_offset  = 0;
         fit_right_index_offset = 0;
         n_coeff = 5;
-        f_legendre_str = "";
-        for (Int_t order = 0; order < n_coeff; order++) f_legendre_str += Form(" + [%d]*ROOT::Math::legendre(%d,x)", order, order);
+        f_legendre_str = "[0]*ROOT::Math::legendre(0,x)";
+        for (Int_t order = 1; order < n_coeff; order++) f_legendre_str += Form(" + [%d]*ROOT::Math::legendre(%d,x)", order, order);
         old_legendre = ana_helper::load_data("data/legendre/pi+Sigma-_bubble_chamber1970_legendre.csv");
 
     } else if (path_yield.Contains(reaction5)) {
