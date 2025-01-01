@@ -231,7 +231,7 @@ void analyze(TString path_yield, TString path_acceptance){
 
             // unit is mb
             diff_cs_val /= n_kaon * conf.density_LH2 * conf.Na * conf.d * conf.daq_eff * 2*TMath::Pi()*delta_cos_theta * TMath::Power(10.0, -27);
-            Double_t diff_cs_err = diff_cs_val / TMath::Sqrt(n_stat);
+            Double_t diff_cs_err = diff_cs_val != 0.0 ? diff_cs_val / TMath::Sqrt(n_stat) : 1.0/(n_kaon * conf.density_LH2 * conf.Na * conf.d * conf.daq_eff * 2*TMath::Pi()*delta_cos_theta * TMath::Power(10.0, -27));
 
             diff_cs_container[push_back_index].push_back(diff_cs_val);
             diff_cs_err_container[push_back_index].push_back(diff_cs_err);
@@ -454,8 +454,8 @@ int main(int argc, char** argv) {
     TString spline_root_file_path;
     if (path_yield.Contains(reaction1)) {
         // -- for create hist -----
-        mom_left = 724.0;
-        mom_right = 770.0;
+        mom_left = 723.0;
+        mom_right = 769.0;
         n_cluster = 4;
         branching_ratio = 0.641;
         // -- for fitting -----
@@ -469,13 +469,13 @@ int main(int argc, char** argv) {
 
     } else if (path_yield.Contains(reaction2)) {
         // -- for create hist -----
-        mom_left = 659.0;
-        mom_right = 786.0;
-        n_cluster = 4;
+        mom_left = 660.0;
+        mom_right = 783.0;
+        n_cluster = 6;
         branching_ratio = 1.0;
-        n_rebin = 2;
-        fit_left_index_offset  = 2;
-        fit_right_index_offset = 3;
+        n_rebin = 1;
+        fit_left_index_offset  = 4;
+        fit_right_index_offset = 7;
         n_coeff = 6;
         f_legendre_str = "[0]*ROOT::Math::legendre(0,x)";
         for (Int_t order = 1; order < n_coeff; order++) f_legendre_str += Form(" + [%d]*ROOT::Math::legendre(%d,x)", order, order);
@@ -483,10 +483,8 @@ int main(int argc, char** argv) {
 
     } else if (path_yield.Contains(reaction3)) {
         // -- for create hist -----
-        // mom_left = 659.0;
-        mom_left = 659.0+8.0;
-        // mom_right = 787.0;
-        mom_right = 787.0-8.0;
+        mom_left = 665.0;
+        mom_right = 779.0;
         n_cluster = 4;
         branching_ratio = 0.692;
         // -- for fitting -----
@@ -500,11 +498,9 @@ int main(int argc, char** argv) {
 
     } else if (path_yield.Contains(reaction4)) {
         // -- for create hist -----
-        // mom_left = 659.0;
-        mom_left = 659.0+4.0;
-        // mom_right = 787.0;
-        mom_right = 787.0-12.0;
-        n_cluster = 8;
+        mom_left = 663.0;
+        mom_right = 779.0;
+        n_cluster = 4;
         branching_ratio = 0.99848;
         // -- for fitting -----
         n_rebin = 2;

@@ -53,7 +53,7 @@ def plot(arg_dict):
     ax1.yaxis.set_major_formatter(ptick.EngFormatter())
     ax1.set_xlabel(r"$p_{K}^{\rm Lab}$ [MeV/c]")
     ax1.set_ylabel("Expected Yields [/(MeV/c)]")
-    ax1.axvline(723.2931, ls = "dashed", color="red")
+    # ax1.axvline(723.2931, ls = "dashed", color="red")
     ax1.set_xlim(721, 775)
     ax1.set_title(arg_dict["title"])
     ax1.legend()

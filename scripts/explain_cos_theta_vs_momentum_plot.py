@@ -103,6 +103,7 @@ if __name__ == '__main__':
     # +----+
     arg_dict = {
         "data": "explain_mom735_flat_kp.root",
+        # "data" : "explain_mom735_flat_pi-sigma+.root",
         "title": r"$K^-p\rightarrow K^-p$",
     }
     plot(arg_dict)
