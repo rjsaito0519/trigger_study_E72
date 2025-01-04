@@ -11,7 +11,7 @@ plt.rcParams['font.family'] = 'Times New Roman' #全体のフォントを設定
 plt.rcParams['mathtext.fontset'] = 'stix'
 plt.rcParams['font.size'] = 28
 plt.rcParams['axes.linewidth'] = 1.0# 軸の線幅edge linewidth。囲みの太さ
-plt.rcParams['axes.grid'] = False
+plt.rcParams['axes.grid'] = True
 plt.rcParams["xtick.direction"] = "in"               #x軸の目盛線を内向きへ
 plt.rcParams["ytick.direction"] = "in"               #y軸の目盛線を内向きへ
 plt.rcParams["xtick.minor.visible"] = True           #x軸補助目盛りの追加
@@ -30,23 +30,23 @@ def get_hist_data(file, key):
     return bin_centers, bin_edges, bin_values
 
 
-root_file_path = os.path.join(script_dir, "../results/root/thickness.root")
+root_file_path = os.path.join(script_dir, "../data/angle.root")
 file = uproot.open(root_file_path)
 
-fig = plt.figure(figsize=(10, 8))
+fig = plt.figure(figsize=(8, 5))
 ax1 = fig.add_subplot(111)
 sum_n_kaon_scan = 0
 
-center, edge, value = get_hist_data(file, f"thickness")
-ax1.hist(center, bins=edge, weights=value, lw = 1.5, histtype='step', color="k", zorder = 3)
+center, edge, value = get_hist_data(file, f"angle")
+ax1.hist(center, bins=edge, weights=value, lw = 1., histtype='step', color="k", zorder = 3)
 
 ax1.yaxis.set_major_formatter(ptick.EngFormatter())
-ax1.set_xlabel(r"thickness [mm]")
+ax1.set_xlabel(r"Angle [deg]")
+ax1.set_xlim(12, 29)
 
-
-plt.subplots_adjust(left = 0.15, right=0.98, top=0.98, bottom = 0.12)
-# img_save_path = os.path.join(script_dir, "../results/img/yield/beam_distribution_scan.pdf")
-# os.makedirs(os.path.dirname(img_save_path), exist_ok=True)
-# plt.savefig(img_save_path, format='pdf', bbox_inches='tight', dpi=600, transparent=True)
+plt.subplots_adjust(left = 0.15, right=0.98, top=0.98, bottom = 0.16)
+img_save_path = os.path.join(script_dir, "../results/img/KVC_angle.pdf")
+os.makedirs(os.path.dirname(img_save_path), exist_ok=True)
+plt.savefig(img_save_path, format='pdf', bbox_inches='tight', dpi=600, transparent=True)
 
 plt.show()
