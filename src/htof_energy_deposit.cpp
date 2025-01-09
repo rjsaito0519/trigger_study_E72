@@ -103,6 +103,7 @@ void analyze(TString path, Int_t focus_pdg_code){
     auto h_edep_muon     = new TH1D("edep_muon", "edep_muon", conf.edep_bin_num, conf.edep_min, conf.edep_max);
     
     auto h_hitpat_vs_edep = new TH2D("hitpat_vs_edep", "HTOF hitpat vs edep", conf.max_htof_ch, conf.htof_seg_min, conf.htof_seg_max, conf.edep_bin_num, conf.edep_min, conf.edep_max);
+    auto h_hitpat_vs_edep_proton = new TH2D("hitpat_vs_edep_proton", "HTOF hitpat vs edep", conf.max_htof_ch, conf.htof_seg_min, conf.htof_seg_max, conf.edep_bin_num, conf.edep_min, conf.edep_max);
     auto h_multi = new TH1D("multiplicity", "Multiplicity", conf.max_htof_ch, conf.htof_seg_min, conf.htof_seg_max);
 
     auto h_multi1_hitpat_all      = new TH1D("multi1_hitpat_all", "multi1_hitpat_all", conf.max_htof_ch, conf.htof_seg_min, conf.htof_seg_max);
@@ -122,6 +123,8 @@ void analyze(TString path, Int_t focus_pdg_code){
     auto h_multi1_edep_muon     = new TH1D("multi1_edep_muon", "multi1_edep_muon", conf.edep_bin_num, conf.edep_min, conf.edep_max);
         
     auto h_multi1_hitpat_vs_edep = new TH2D("multi1_hitpat_vs_edep", "HTOF (multi < 2) hitpat vs edep", conf.max_htof_ch, conf.htof_seg_min, conf.htof_seg_max, conf.edep_bin_num, conf.edep_min, conf.edep_max);
+    auto h_multi1_hitpat_vs_edep_proton = new TH2D("multi1_hitpat_vs_edep_proton", "HTOF (multi < 2) hitpat vs edep", conf.max_htof_ch, conf.htof_seg_min, conf.htof_seg_max, conf.edep_bin_num, conf.edep_min, conf.edep_max);
+    
 
     auto h_hitpos_all      = new TH2D("hitpos_all", "hitpos_all", conf.max_htof_ch, conf.htof_seg_min, conf.htof_seg_max, conf.hitpos_bin_num, conf.hitpos_min, conf.hitpos_max);
     auto h_hitpos_proton   = new TH2D("hitpos_proton", "hitpos_proton", conf.max_htof_ch, conf.htof_seg_min, conf.htof_seg_max, conf.hitpos_bin_num, conf.hitpos_min, conf.hitpos_max);
@@ -148,6 +151,7 @@ void analyze(TString path, Int_t focus_pdg_code){
                         h_hitpat_proton->Fill(item.GetMother(1));
                         h_edep_proton->Fill(item.GetWeight());
                         h_hitpos_proton->Fill(item.GetMother(1), item.Vy());
+                        h_hitpat_vs_edep_proton->Fill(item.GetMother(1), item.GetWeight());
                     }
                     else if (item.GetPdgCode() == 211) { // pi+
                         h_hitpat_piplus->Fill(item.GetMother(1));
@@ -187,6 +191,7 @@ void analyze(TString path, Int_t focus_pdg_code){
                             h_multi1_hitpat_proton->Fill(item.GetMother(1));
                             h_multi1_edep_proton->Fill(item.GetWeight());
                             h_multi1_hitpos_proton->Fill(item.GetMother(1), item.Vy());
+                            h_multi1_hitpat_vs_edep_proton->Fill(item.GetMother(1), item.GetWeight());
                         }
                         else if (item.GetPdgCode() == 211) { // pi+
                             h_multi1_hitpat_piplus->Fill(item.GetMother(1));
@@ -401,6 +406,7 @@ void analyze(TString path, Int_t focus_pdg_code){
     h_edep_muon->Write();
 
     h_hitpat_vs_edep->Write();
+    h_hitpat_vs_edep_proton->Write();
     h_multi->Write();
 
     h_multi1_hitpat_all->Write();
@@ -420,6 +426,7 @@ void analyze(TString path, Int_t focus_pdg_code){
     h_multi1_edep_muon->Write();
 
     h_multi1_hitpat_vs_edep->Write();
+    h_multi1_hitpat_vs_edep_proton->Write();
 
     h_hitpos_all->Write();
     h_hitpos_proton->Write();

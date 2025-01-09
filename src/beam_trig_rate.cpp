@@ -139,7 +139,7 @@ void analyze(TString path){
             }
         }
 
-        if (n_kaon_all >= 100000) break;
+        if (n_kaon_all >= 38000) break; // 1 spill (Kaon)
     }
 
     // +--------------+

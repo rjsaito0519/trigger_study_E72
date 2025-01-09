@@ -54,12 +54,15 @@ def plot(arg_dict):
     ax1.set_xlabel(r"$p_{K}^{\rm Lab}$ [MeV/c]")
     ax1.set_ylabel("Expected Yields [/(MeV/c)]")
     # ax1.axvline(723.2931, ls = "dashed", color="red")
-    ax1.set_xlim(721, 775)
+    # ax1.set_xlim(721, 775)
+    ax1.set_xlim(649, 791)
     ax1.set_title(arg_dict["title"])
     ax1.legend()
 
     plt.subplots_adjust(left = 0.15, right=0.98, top=0.92, bottom = 0.12)
-    img_save_path = os.path.join(script_dir, "../results/img/yield/yield_distribution_LambdaEta.pdf")
+    # img_save_path = os.path.join(script_dir, "../results/img/yield/yield_distribution_LambdaEta.pdf")
+    img_save_path = os.path.join(script_dir, "../results/img/yield/yield_distribution_Kp.pdf")
+    
     os.makedirs(os.path.dirname(img_save_path), exist_ok=True)
     plt.savefig(img_save_path, format='pdf', bbox_inches='tight', dpi=600, transparent=True)
 
@@ -68,12 +71,22 @@ def plot(arg_dict):
 
 if __name__ == '__main__':
     
-    # +------------+
-    # | eta Lambda |
-    # +------------+
+    # # +------------+
+    # # | eta Lambda |
+    # # +------------+
+    # arg_dict = {
+    #     "data1": "yield_eta_lambda_2212.root",
+    #     "data2": "yield_eta_lambda_2212_onlyscan.root",
+    #     "title": r"$K^-p\rightarrow \eta\Lambda$ ($\Lambda \rightarrow p\pi^-$)",
+    # }
+    # plot(arg_dict)
+
+    # +----+
+    # | Kp |
+    # +----+
     arg_dict = {
-        "data1": "yield_eta_lambda_2212.root",
-        "data2": "yield_eta_lambda_2212_onlyscan.root",
-        "title": r"$K^-p\rightarrow \eta\Lambda$ ($\Lambda \rightarrow p\pi^-$)",
+        "data1": "yield_kp_9999.root",
+        "data2": "yield_kp_9999_onlyscan.root",
+        "title": r"$K^-p\rightarrow K^-p$",
     }
     plot(arg_dict)

@@ -87,7 +87,7 @@ for ax, path in zip( axs, path_list ):
     tmp_data = np.genfromtxt(path, skip_header=2, delimiter=",")
     mom = int(path[path.find("mom")+3:path.find(".csv")])
 
-    CB = ax.errorbar(tmp_data[:, 0], tmp_data[:, 1], xerr = cos_theta[:, 1], yerr = tmp_data[:, 2], fmt = "s", capsize = 0, markeredgecolor = "red", ms = 0, ecolor='red', color='gray', markeredgewidth = 0.2, zorder = 3, label = "Crystal Ball")
+    CB = ax.errorbar(tmp_data[:, 0], tmp_data[:, 1], xerr = cos_theta[:, 1], yerr = tmp_data[:, 2], fmt = "s", capsize = 0, markeredgecolor = "k", ms = 0, ecolor='k', color='gray', markeredgewidth = 0.2, zorder = 3, label = "Crystal Ball")
     
     s = np.sqrt( (np.sqrt(mom**2 + mK**2) + mP)**2 - mom**2 )
     ax.text(0, 0.25, r"$p_K^{\rm lab}$" + " = {} MeV/c".format(mom), fontsize =18,  va = "center", ha = "center")
@@ -107,7 +107,7 @@ for ax, path in zip( axs, path_list ):
 
     E72 = ax.errorbar(
         tree["cos_theta"][index], tree["diff_cs"][index], xerr = tree["cos_theta_err"][index], yerr=tree["diff_cs_err"][index], 
-        fmt = "s", capsize = 0, markeredgecolor = "k", ms = 0, ecolor='k', color = "w", zorder = 5, elinewidth = 1.5, label = "E72"
+        fmt = "s", capsize = 0, markeredgecolor = "red", ms = 0, ecolor='red', color = "w", zorder = 5, elinewidth = 2, label = "E72 (expected)"
     )
 
     # -- for check error -----
@@ -124,8 +124,8 @@ ax15.legend(
 )    
 ax15.axis("off")
 
-fig.suptitle(r"Differential Cross Section of $K^-p \rightarrow \eta\Lambda$", fontsize=26)
-fig.supxlabel(r"$\cos \theta$")
+fig.suptitle(r"Differential Cross Section of $K^-p \rightarrow \Lambda\eta$", fontsize=26)
+fig.supxlabel(r"$\cos \theta_{\rm CM}$")
 fig.supylabel(r"d$\sigma$/d$\Omega$ [mb/sr]")
 
 
