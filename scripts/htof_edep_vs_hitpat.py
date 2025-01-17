@@ -40,11 +40,11 @@ def plot(arg_dict):
     
     edep_list = [
         # hist_name       color  label
-        [f"{prefix}edep_proton",   "C3", "proton"],
+        # [f"{prefix}edep_proton",   "C3", "proton"],
         [f"{prefix}edep_piplus",   "C1", r"$\pi^+$"],
         [f"{prefix}edep_piminus",  "C0", r"$\pi^-$"],
         [f"{prefix}edep_kminus",   "C2", r"$K^-$"],
-        [f"{prefix}edep_electron", "C5", r"$e^-, e^+$"],
+        # [f"{prefix}edep_electron", "C5", r"$e^-, e^+$"],
         [f"{prefix}edep_muon",     "C6", r"$\mu^-, \mu^+$"],
     ]
 
@@ -110,7 +110,7 @@ if __name__ == '__main__':
     arg_dict = {
         "data": "htof_mom735_beam_9999.root",
         "title": r"$K^-$ beam",
-        "mp1": False,
+        "mp1": True,
         "log": True,
         "rec": True
     }
