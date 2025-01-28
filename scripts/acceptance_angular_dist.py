@@ -53,10 +53,10 @@ def plot(arg_dict):
 
     img_save_path = os.path.join(
         script_dir, 
-        "../results/img/acceptance/{}.pdf".format(os.path.splitext(os.path.basename(arg_dict["data"]))[0])
+        "../results/img/acceptance/{}.{}".format(os.path.splitext(os.path.basename(arg_dict["data"]))[0], arg_dict["img_type"])
     )
     os.makedirs(os.path.dirname(img_save_path), exist_ok=True)
-    plt.savefig(img_save_path, format='pdf', bbox_inches='tight', dpi=400, transparent=True)
+    plt.savefig(img_save_path, format=arg_dict["img_type"], bbox_inches='tight', dpi=400, transparent=True)
 
     # -- for legend plot -----
     fig_legend = plt.figure(figsize=(8, 8))  # 凡例専用のFigureを作成
@@ -65,19 +65,22 @@ def plot(arg_dict):
         labels=ax.get_legend_handles_labels()[1],   # ラベル（凡例テキスト）
         loc='center',  # 凡例の位置
     )    
-    fig_legend.savefig(os.path.join(script_dir, "../results/img/acceptance/legend.pdf"), format='pdf', bbox_inches='tight', dpi=400, transparent=True)
+    fig_legend.savefig(os.path.join(script_dir, "../results/img/acceptance/legend.{}".format(arg_dict["img_type"])), format=arg_dict["img_type"], bbox_inches='tight', dpi=400, transparent=True)
     plt.close(fig_legend)
 
     plt.show()
 
 if __name__ == '__main__':
     
+    img_type = "png"
+
     # +------------+
     # | eta Lambda |
     # +------------+
     arg_dict = {
         "data": "acceptance_mom735_flat_eta_lambda_2212.root",
         "title": r"$K^-p\rightarrow \eta\Lambda$ ($\Lambda \rightarrow p\pi^-$)",
+        "img_type": img_type
     }
     plot(arg_dict)
 
@@ -88,6 +91,7 @@ if __name__ == '__main__':
     arg_dict = {
         "data": "acceptance_mom735_flat_kp_0.root",
         "title": r"$K^-p\rightarrow K^-p$",
+        "img_type": img_type
     }
     plot(arg_dict)
     
@@ -97,6 +101,7 @@ if __name__ == '__main__':
     arg_dict = {
         "data": "acceptance_mom735_flat_k0n_211.root",
         "title": r"$K^-p\rightarrow \overline{K}^0_sn$ ($\overline{K}^0_s \rightarrow \pi^+\pi^-$)",
+        "img_type": img_type
     }
     plot(arg_dict)
     
@@ -106,6 +111,7 @@ if __name__ == '__main__':
     arg_dict = {
         "data": "acceptance_mom735_flat_pi+sigma-_2112.root",
         "title": r"$K^-p\rightarrow \pi^+\Sigma^-$ ($\Sigma^- \rightarrow n\pi^-$)",
+        "img_type": img_type
     }
     plot(arg_dict)
 
@@ -115,12 +121,14 @@ if __name__ == '__main__':
     arg_dict = {
         "data": "acceptance_mom735_flat_pi-sigma+_2212.root",
         "title": r"$K^-p\rightarrow \pi^-\Sigma^+$ ($\Sigma^+ \rightarrow p\pi^0$)",
+        "img_type": img_type
     }
     plot(arg_dict)
 
     arg_dict = {
         "data": "acceptance_mom735_flat_pi-sigma+_2112.root",
         "title": r"$K^-p\rightarrow \pi^-\Sigma^+$ ($\Sigma^+ \rightarrow n\pi^+$)",
+        "img_type": img_type
     }
     plot(arg_dict)
     
@@ -131,6 +139,7 @@ if __name__ == '__main__':
     arg_dict = {
         "data": "acceptance_mom735_flat_pi0sigma0_2212.root",
         "title": r"$K^-p\rightarrow \pi^0\Sigma^0$ ($\Sigma^0 \rightarrow \Lambda\gamma \rightarrow p\pi^-\gamma$)",
+        "img_type": img_type
     }
     plot(arg_dict)
 
@@ -141,5 +150,6 @@ if __name__ == '__main__':
     arg_dict = {
         "data": "acceptance_mom735_flat_pi0lambda_2212.root",
         "title": r"$K^-p\rightarrow \pi^0\Lambda$ ($\Lambda \rightarrow p\pi^-$)",
+        "img_type": img_type
     }
     plot(arg_dict)

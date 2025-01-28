@@ -97,12 +97,15 @@ def plot(arg_dict):
     fig.supxlabel(r"$\cos \theta_{\rm CM}$", x = 0.12+(0.99-0.12)/2)
     fig.supylabel(r"d$\sigma$/d$\Omega$ [mb/sr]")
     
-    img_path = os.path.join(script_dir, "../results/img/yield/{}".format(arg_dict["savename"]))
-    plt.savefig(img_path, format='pdf', dpi=600, transparent=True)
+    img_path = os.path.join(script_dir, "../results/img/yield/{}.{}".format(arg_dict["savename"], arg_dict["img_type"]))
+    plt.savefig(img_path, format=arg_dict["img_type"], dpi=600, transparent=True)
+    
     plt.show()
 
 
 if __name__ == '__main__':
+
+    img_type = "png"
 
     # +----+
     # | Kp |
@@ -112,7 +115,8 @@ if __name__ == '__main__':
         "n_x" : 6,
         "n_y" : 7,
         "title": r"$K^-p\rightarrow K^-p$ (E72 Expected result)",
-        "savename": "kp_legendre_result.pdf"
+        "savename": "kp_legendre_result",
+        "img_type": img_type
     }
     plot(arg_dict)
 
@@ -124,7 +128,8 @@ if __name__ == '__main__':
         "n_x" : 6,
         "n_y" : 10,
         "title": r"$K^-p \rightarrow \overline{K}^0n$ (E72 Expected result)",
-        "savename": "k0n_legendre_result.pdf"
+        "savename": "k0n_legendre_result",
+        "img_type": img_type
     }
     plot(arg_dict)
 
@@ -136,6 +141,7 @@ if __name__ == '__main__':
         "n_x" : 6,
         "n_y" : 10,
         "title": r"$K^-p \rightarrow \pi^+\Sigma^-$ (E72 Expected result)",
-        "savename": "pi+sigma-_legendre_result.pdf"    
+        "savename": "pi+sigma-_legendre_result",    
+        "img_type": img_type
     }
     plot(arg_dict)

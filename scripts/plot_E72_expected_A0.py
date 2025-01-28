@@ -182,6 +182,9 @@ def plot(arg_dict1, arg_dict2, arg_dict3):
 
     img_path = os.path.join(script_dir, "../results/img/yield/Expected_A0_plot.pdf")
     plt.savefig(img_path, format='pdf', dpi=600, transparent=True)
+    img_path = os.path.join(script_dir, "../results/img/yield/Expected_A0_plot.png")
+    plt.savefig(img_path, format='png', dpi=600, transparent=True)
+
     plt.show()
 
 def plot_up_panel(arg_dict1, arg_dict2, arg_dict3):
@@ -239,6 +242,8 @@ def plot_up_panel(arg_dict1, arg_dict2, arg_dict3):
 
     img_path = os.path.join(script_dir, "../results/img/yield/Expected_A0_plot_uppanel.pdf")
     plt.savefig(img_path, format='pdf', dpi=600, transparent=True)
+    img_path = os.path.join(script_dir, "../results/img/yield/Expected_A0_plot_uppanel.png")
+    plt.savefig(img_path, format='png', dpi=600, transparent=True)
     plt.show()
 
 
@@ -280,6 +285,8 @@ def legend_plot():
         loc='center', handletextpad = 0.5, handlelength=0.5
     )    
     fig_legend.savefig(os.path.join(script_dir, "../results/img/yield/A0_legend.pdf"), format='pdf', bbox_inches='tight', dpi=600, transparent=True)
+    fig_legend.savefig(os.path.join(script_dir, "../results/img/yield/A0_legend.png"), format='png', bbox_inches='tight', dpi=600, transparent=True)
+
     plt.close(fig_legend)
     plt.close(fig)
 
@@ -332,6 +339,6 @@ if __name__ == '__main__':
         "title": r"$K^-p \rightarrow \pi^+\Sigma^-$",
         "savename": "pi+sigma-_coeff_result"
     }
-    # plot(arg_dict1, arg_dict2, arg_dict3)
-    plot_up_panel(arg_dict1, arg_dict2, arg_dict3)
+    plot(arg_dict1, arg_dict2, arg_dict3)
+    # plot_up_panel(arg_dict1, arg_dict2, arg_dict3)
     
