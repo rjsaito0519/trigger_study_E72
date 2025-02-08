@@ -81,13 +81,13 @@ def plot(arg_dict):
         )
 
     if arg_dict["rec"]:
-        # rec = (3.0, 10-0.5)
-        # n_seg = 20
-        rec = (4.0, 16-0.5)
-        n_seg = 22-16+1
+        rec = (3.0, 10-0.5)
+        n_seg = 20
+        # rec = (4.0, 16-0.5)
+        # n_seg = 22-16+1
         
-        # ax1.axvline(3.0, ls = "dashed", color = "C3", lw = 2)
-        ax1.axvline(4.0, ls = "dashed", color = "C3", lw = 2)
+        ax1.axvline(3.0, ls = "dashed", color = "C3", lw = 2)
+        # ax1.axvline(4.0, ls = "dashed", color = "C3", lw = 2)
         ax2.add_patch( patches.Rectangle(xy=rec, width=13, height=n_seg, ec='C3', lw = 3, fill=False) )
 
     ax1.set_xlim(0, 11.9)
@@ -121,28 +121,28 @@ if __name__ == '__main__':
     # plot(arg_dict)
     # sys.exit()
 
-    # +------------+
-    # | eta Lambda |
-    # +------------+
-    arg_dict = {
-        "data": "htof_mom735_eta_lambda_2212.root",
-        "title": r"$K^-p\rightarrow \Lambda\eta$ ($\Lambda \rightarrow p\pi^-$)",
-        "mp1": False,
-        "log": False,
-        "rec": False
-    }
-    plot(arg_dict)
+    # # +------------+
+    # # | eta Lambda |
+    # # +------------+
+    # arg_dict = {
+    #     "data": "htof_mom735_eta_lambda_2212.root",
+    #     "title": r"$K^-p\rightarrow \Lambda\eta$ ($\Lambda \rightarrow p\pi^-$)",
+    #     "mp1": False,
+    #     "log": False,
+    #     "rec": False
+    # }
+    # plot(arg_dict)
 
-    arg_dict = {
-        "data": "htof_mom735_eta_lambda_2212.root",
-        "title": r"$K^-p\rightarrow \Lambda\eta$ ($\Lambda \rightarrow p\pi^-$)",
-        "mp1": True,
-        "log": False,
-        "rec": True
-    }
-    plot(arg_dict)
+    # arg_dict = {
+    #     "data": "htof_mom735_eta_lambda_2212.root",
+    #     "title": r"$K^-p\rightarrow \Lambda\eta$ ($\Lambda \rightarrow p\pi^-$)",
+    #     "mp1": True,
+    #     "log": False,
+    #     "rec": True
+    # }
+    # plot(arg_dict)
 
-    sys.exit()
+    # sys.exit()
     
 
     # +----+

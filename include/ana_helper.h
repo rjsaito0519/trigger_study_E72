@@ -25,8 +25,10 @@
 #include <TROOT.h>
 #include <TLatex.h>
 #include <TProfile.h>
+#include <TH2Poly.h>
 
 #include "config.h"
+#include "pad_helper.h"
 
 // -- fitting result container -----
 struct FitResult {

@@ -82,8 +82,8 @@ void analyze(TString path){
     reader.Restart();
     while (reader.Next()){
         if (*generator != conf.beam_generator) {
-            h_cos_theta_vs_mom_meson->Fill(*cos_theta, (*PRM)[0].P());
-            h_cos_theta_vs_mom_baryon->Fill(*cos_theta, (*PRM)[1].P());
+            h_cos_theta_vs_mom_meson->Fill(*cos_theta, (*PRM)[1].P());
+            h_cos_theta_vs_mom_baryon->Fill(*cos_theta, (*PRM)[0].P());
         }
     }
 
