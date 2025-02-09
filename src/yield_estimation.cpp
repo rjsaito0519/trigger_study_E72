@@ -193,9 +193,13 @@ void analyze(TString path, Int_t focus_pdg_code){
     }
     h_mom_dist_raw->Write();
     h_mom_dist_trig->Write();
-
+    
     fout.Close(); 
 
+    std::cout << "-----------------------------------------" << std::endl;
+    std::cout << "Yield: " << h_mom_dist_trig->GetEntries() << std::endl;
+    std::cout << "-----------------------------------------" << std::endl;
+    
 }
 
 Int_t main(int argc, char** argv) {
