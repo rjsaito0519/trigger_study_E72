@@ -469,12 +469,12 @@ int main(int argc, char** argv) {
 
     } else if (path_yield.Contains(reaction2)) {
         // -- for create hist -----
-        mom_left = 660.0;
-        mom_right = 783.0;
+        mom_left = 662.0;
+        mom_right = 782.0;
         n_cluster = 6;
         branching_ratio = 1.0;
         n_rebin = 1;
-        fit_left_index_offset  = 4;
+        fit_left_index_offset  = 1;
         fit_right_index_offset = 7;
         n_coeff = 6;
         f_legendre_str = "[0]*ROOT::Math::legendre(0,x)";

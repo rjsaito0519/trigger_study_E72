@@ -39,7 +39,10 @@ def plot(arg_dict):
     n_x = arg_dict["n_x"]
     n_y = arg_dict["n_y"]
 
-    fig, axes = plt.subplots(n_y, n_x, figsize=(10, 12))
+    if n_y == 7:
+        fig, axes = plt.subplots(n_y, n_x, figsize=(10, 8.4))
+    else:
+        fig, axes = plt.subplots(n_y, n_x, figsize=(10, 12))
 
     ylim_list = []
     tmp_ylim = []
@@ -105,7 +108,7 @@ def plot(arg_dict):
 
 if __name__ == '__main__':
 
-    img_type = "png"
+    img_type = "pdf"
 
     # +----+
     # | Kp |

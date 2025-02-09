@@ -339,6 +339,6 @@ if __name__ == '__main__':
         "title": r"$K^-p \rightarrow \pi^+\Sigma^-$",
         "savename": "pi+sigma-_coeff_result"
     }
-    plot(arg_dict1, arg_dict2, arg_dict3)
-    # plot_up_panel(arg_dict1, arg_dict2, arg_dict3)
+    # plot(arg_dict1, arg_dict2, arg_dict3)
+    plot_up_panel(arg_dict1, arg_dict2, arg_dict3)
     
