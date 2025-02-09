@@ -187,6 +187,11 @@ void analyze(TString path, Int_t focus_pdg_code){
     // +------------+
     // | Write data |
     // +------------+
+    std::cout << "-----------------------------------------" << std::endl;
+    std::cout << "Yield: " << h_mom_dist_trig->GetEntries() << std::endl;
+    std::cout << "-----------------------------------------" << std::endl;
+    
+
     for (Int_t i = 0; i < conf.n_mom_points; i++) {
         h_cos_theta_raw[i]->Write();
         h_cos_theta_trig[i]->Write();
@@ -196,9 +201,6 @@ void analyze(TString path, Int_t focus_pdg_code){
     
     fout.Close(); 
 
-    std::cout << "-----------------------------------------" << std::endl;
-    std::cout << "Yield: " << h_mom_dist_trig->GetEntries() << std::endl;
-    std::cout << "-----------------------------------------" << std::endl;
     
 }
 
