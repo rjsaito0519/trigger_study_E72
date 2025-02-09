@@ -121,28 +121,28 @@ if __name__ == '__main__':
     # plot(arg_dict)
     # sys.exit()
 
-    # # +------------+
-    # # | eta Lambda |
-    # # +------------+
-    # arg_dict = {
-    #     "data": "htof_mom735_eta_lambda_2212.root",
-    #     "title": r"$K^-p\rightarrow \Lambda\eta$ ($\Lambda \rightarrow p\pi^-$)",
-    #     "mp1": False,
-    #     "log": False,
-    #     "rec": False
-    # }
-    # plot(arg_dict)
+    # +------------+
+    # | eta Lambda |
+    # +------------+
+    arg_dict = {
+        "data": "htof_mom735_eta_lambda_2212.root",
+        "title": r"$K^-p\rightarrow \Lambda\eta$ ($\Lambda \rightarrow p\pi^-$)",
+        "mp1": False,
+        "log": False,
+        "rec": False
+    }
+    plot(arg_dict)
 
-    # arg_dict = {
-    #     "data": "htof_mom735_eta_lambda_2212.root",
-    #     "title": r"$K^-p\rightarrow \Lambda\eta$ ($\Lambda \rightarrow p\pi^-$)",
-    #     "mp1": True,
-    #     "log": False,
-    #     "rec": True
-    # }
-    # plot(arg_dict)
+    arg_dict = {
+        "data": "htof_mom735_eta_lambda_2212.root",
+        "title": r"$K^-p\rightarrow \Lambda\eta$ ($\Lambda \rightarrow p\pi^-$)",
+        "mp1": True,
+        "log": False,
+        "rec": False
+    }
+    plot(arg_dict)
 
-    # sys.exit()
+    sys.exit()
     
 
     # +----+

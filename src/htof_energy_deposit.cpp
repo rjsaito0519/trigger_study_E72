@@ -441,7 +441,7 @@ Int_t main(int argc, char** argv) {
 
     // -- check argments -----
     if (argc < 2) {
-        std::cerr << "Usage: " << argv[0] << " <root file path>" << std::endl;
+        std::cerr << "Usage: " << argv[0] << " <root file path> [focus_pdg_code]" << std::endl;
         return 1;
     }
     TString path = argv[1];

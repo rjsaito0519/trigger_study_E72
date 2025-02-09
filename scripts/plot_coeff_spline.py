@@ -45,7 +45,7 @@ def plot(arg_dict):
 
         point_x = tree[f"A{i}_coeff_x"][0]
         point_y = tree[f"A{i}_coeff_y"][0]
-        ax.plot(point_x, point_y, "o", ms = 5, color = "C3")
+        ax.plot(point_x, point_y, "o", ms = 7, color = "red")
 
         if (ax not in [ax3, ax6]):
             ax.set_xticklabels([])
