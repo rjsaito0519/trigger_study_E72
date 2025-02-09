@@ -26,6 +26,7 @@
 #include "config.h"
 #include "ana_helper.h"
 #include "paths.h"
+#include "progress_bar.h"
 
 static const TDatabasePDG *pdg_database = new TDatabasePDG();
 static Double_t htof_threshold = 3.0;
@@ -85,8 +86,9 @@ void analyze(TString path){
     std::unordered_map<Int_t, Int_t> n_trig_mp2;
     std::unordered_map<Int_t, Int_t> n_trig_htofp;
 
+    Int_t evnum = 0;
     reader.Restart();
-    while (reader.Next()){
+    while (reader.Next()){ displayProgressBar(++evnum, total_entry);
         // -- kaon beam -----
         Bool_t is_kaon_at_bac = false, kaon_beam = false;   
         std::set<Int_t> bh2_seg_unique;
@@ -139,7 +141,7 @@ void analyze(TString path){
             }
         }
 
-        if (n_kaon_all >= 19000) break; // 1 sec (Kaon)
+        // if (n_kaon_all >= 19000) break; // 1 sec (Kaon)
     }
 
     // +--------------+

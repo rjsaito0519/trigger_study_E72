@@ -93,18 +93,18 @@ void analyze(TString path, Int_t focus_pdg_code, Int_t n_rand){
                 std::vector<Double_t> x;
                 std::vector<Double_t> z;
 
-                m_canvas_tpc->Clear();
-                auto *m_tpc_adc2d = new TH2Poly("h_tpc_adc2d", "TPC ADC;Z;X", DrawMinZ, DrawMaxZ, DrawMinX, DrawMaxX);
+                // m_canvas_tpc->Clear();
+                // auto *m_tpc_adc2d = new TH2Poly("h_tpc_adc2d", "TPC ADC;Z;X", DrawMinZ, DrawMaxZ, DrawMinX, DrawMaxX);
                 
-                TPC_pad_template(m_tpc_adc2d);
+                //     TPC_pad_template(m_tpc_adc2d);
+                    
+                //     for (Int_t i = 0; i < *nhTpc; i++) {
+                //         Int_t pad = padHelper::getPadID( (*layerTpc)[i], (*rowTpc)[i] );
+                //         Bool_t found = std::binary_search(padHelper::noisy_pad.begin(), padHelper::noisy_pad.end(), pad);
+                //         if (found && removeNoisyPad) continue;
+                //         m_tpc_adc2d->SetBinContent(pad+1, (*deTpc)[i]);
+                //     }
                 
-                for (Int_t i = 0; i < *nhTpc; i++) {
-                    Int_t pad = padHelper::getPadID( (*layerTpc)[i], (*rowTpc)[i] );
-                    Bool_t found = std::binary_search(padHelper::noisy_pad.begin(), padHelper::noisy_pad.end(), pad);
-                    if (found && removeNoisyPad) continue;
-                    m_tpc_adc2d->SetBinContent(pad+1, (*deTpc)[i]);
-                }
-            
 
                 // -- kaon beam -----
                 for(const auto& item : (beam_bac)) {
