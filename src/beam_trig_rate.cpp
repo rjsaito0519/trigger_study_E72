@@ -147,7 +147,7 @@ void analyze(TString path){
     // +--------------+
     // | Print result |
     // +--------------+
-    Double_t Kaon_rate2024_at_735MeV = 20; // kHz
+    Double_t Kaon_rate2024_at_735MeV = 19.2; // kHz
     std::cout << "-----------------------------------------" << std::endl;
     std::cout << "total entries: " << total_entry << std::endl;
     std::cout << "n_kaon: " << n_kaon_all << std::endl;
