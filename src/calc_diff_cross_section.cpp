@@ -9,6 +9,7 @@
 #include <tuple>
 
 // ROOT
+#include <TString.h>
 #include <TFile.h>
 #include <TTree.h>
 #include <TTreeReader.h>
@@ -418,9 +419,6 @@ void analyze(TString path_yield, TString path_acceptance){
     fout.Close(); 
 
 }
-
-#include <iostream>
-#include <TString.h>
 
 int main(int argc, char** argv) {
     // Check the number of arguments

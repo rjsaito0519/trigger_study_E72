@@ -290,6 +290,96 @@ def legend_plot():
     plt.close(fig_legend)
     plt.close(fig)
 
+def plot_only_kp(arg_dict):
+    fig = plt.figure(figsize=(5, 5))
+    ax   = fig.add_subplot(111)
+    kp_spark         = np.genfromtxt(os.path.join(script_dir,"../data/legendre/Kp_spark_chamber_legendre.csv"), skip_header=1, delimiter=",")
+    k0n_bubble1      = np.genfromtxt(os.path.join(script_dir,"../data/legendre/K0n_bubble_chamber1970_legendre.csv"), skip_header=1, delimiter=",")
+
+    root_file_path = os.path.join(script_dir, "../results/root/dcs_kp_9999.root")
+    file = uproot.open(root_file_path)
+    tree = file["tree"].arrays(library="np")
+
+    legends = []
+    i = 0
+    for data, key in zip([k0n_bubble1, kp_spark], ["bubble1970", "spark"]):
+        buf = ax.errorbar(sqrt_s(data[:, 0]), data[:, 2*i+2], xerr = sqrt_s_err(data[:, 0], data[:, 1]), yerr = data[:, 2*i+3], fmt = marker_dict[key], capsize = 0, markeredgecolor = color_dict[key], ms = 12, ecolor='k', color="w", markeredgewidth = 1.5, label = key)
+        legends.append(buf)
+
+    # -- E72 -----
+    a0     = [item[0] for item in tree["coeff"]]
+    a0_err = [item[0] for item in tree["coeff_err"]]
+    buf = ax.errorbar(
+        sqrt_s(tree["mom"])/1000, a0, 
+        xerr = sqrt_s_err(tree["mom"], tree["mom_err"])/1000, 
+        yerr = a0_err, 
+        fmt = "o", capsize = 0, markeredgecolor = "red", ms = 0, ecolor='red', color = "w", zorder = 5, elinewidth = 2, label = "E72"
+    )
+    legends.append(buf)
+
+    fig_legend = plt.figure(figsize=(8, 8))  # 凡例専用のFigureを作成
+    fig_legend.legend(
+        handles=legends,
+        labels=["bubble chamber", "spark chamber", "J-PARC E72 (expected)"],   # ラベル（凡例テキスト）
+        loc='center', handletextpad = 0.5, handlelength=0.5
+    )    
+    fig_legend.savefig(os.path.join(script_dir, "../results/img/yield/kp_A0_legend.png"), format='png', bbox_inches='tight', dpi=600, transparent=True)
+
+    plt.close(fig_legend)
+    plt.close(fig)
+
+
+    fig = plt.figure(figsize=(8, 8))
+    ax  = fig.add_subplot(111)
+
+    root_file_path = os.path.join(script_dir, "../results/root/{}".format(arg_dict["rootdata"]))
+    file = uproot.open(root_file_path)
+    tree = file["tree"].arrays(library="np")
+
+    for rawdata, key in zip(arg_dict["data"], arg_dict["data_key"]):
+        mask = (range_left < sqrt_s(rawdata[:, 0])) * (sqrt_s(rawdata[:, 0]) < range_right)
+        data = rawdata[mask]
+        ax.errorbar(
+            sqrt_s(data[:, 0])/1000, data[:, 2], 
+            xerr = sqrt_s_err(data[:, 0], data[:, 1])/1000, 
+            yerr = data[:, 3], 
+            fmt = marker_dict[key], 
+            capsize = 0, 
+            markeredgecolor = color_dict[key], 
+            ms = 12 if marker_dict[key] == "*" else 8, 
+            ecolor='gray', 
+            color="w", 
+            markeredgewidth = 1.5, 
+            label = key,
+            zorder = 3
+        )
+        
+        # -- E72 -----
+        a0     = [item[0] for item in tree["coeff"]]
+        a0_err = [item[0] for item in tree["coeff_err"]]
+        ax.errorbar(
+            sqrt_s(tree["mom"])/1000, a0, 
+            xerr = sqrt_s_err(tree["mom"], tree["mom_err"])/1000, 
+            yerr = a0_err, 
+            fmt = "o", capsize = 0, markeredgecolor = "red", ms = 0, ecolor='red', color = "w", zorder = 5, elinewidth = 2, label = "E72"
+        )
+                
+    ax.axvline(mass_tot/1000, ls = "dashed", color="red", lw = 1.5, zorder = 0)
+    ax.grid(color="gray", linestyle="dotted", linewidth=1)
+    offset = 0.15*0.1
+    # ax.set_xlim(range_left/1000-offset, range_right/1000+offset)
+    ax.set_xlim(mass_tot/1000 - 0.075, mass_tot/1000 + 0.075)
+        
+    plt.subplots_adjust(left = 0.15, right=0.95, top=0.88, bottom = 0.17)
+    ax.set_title(r"$K^-p\rightarrow K^-p$")
+    ax.set_xlabel(r"$W$ [GeV]")
+    ax.set_ylabel(r"$A_0$", fontsize = 35)
+
+    img_path = os.path.join(script_dir, "../results/img/yield/kp_Expected_A0_plot_uppanel.png")
+    plt.savefig(img_path, format='png', dpi=600, transparent=True)
+    plt.show()
+
+
 if __name__ == '__main__':
 
     legend_plot()
@@ -306,6 +396,9 @@ if __name__ == '__main__':
         "data_key": ["bubble1970", "spark"],
         "title": r"$K^-p\rightarrow K^-p$",
     }
+
+    plot_only_kp(arg_dict1)
+    sys.exit()
 
     # +-----+
     # | K0n |

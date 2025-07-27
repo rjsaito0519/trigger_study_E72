@@ -106,6 +106,10 @@ ax4.fill_betweenx([y_min, y_max], 23.2-2.6*4, 23.2+2.6*4, fc="C2", alpha = 0.2, 
 ax5.fill_betweenx([y_min, y_max], 26.8-2.6*4, 26.8+2.6*4, fc="C2", alpha = 0.2, ec = "None", zorder = 0)
 
 plt.subplots_adjust(left = 0.05, right=0.98, top=0.98, bottom = 0.12, wspace = 0.02)
+img_save_path = os.path.join(script_dir, "../results/img/beam.png")
+os.makedirs(os.path.dirname(img_save_path), exist_ok=True)
+plt.savefig(img_save_path, format='png', bbox_inches='tight', dpi=600, transparent=True)
+
 plt.show()
 
 sys.exit()
