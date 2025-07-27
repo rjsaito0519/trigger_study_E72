@@ -27,7 +27,7 @@ plt.rcParams.update({
 # ROOTファイル読み込み
 # ------------------------------
 script_dir = os.path.dirname(os.path.abspath(__file__))
-root_file_path = os.path.join(script_dir, "../results/root/htof_test_hit_position.root")
+root_file_path = os.path.join(script_dir, "../data/htof/htof_mom735_eta_lambda_hit_position.root")
 file = uproot.open(root_file_path)
 tree = file["tree"].arrays(library="np")
 
