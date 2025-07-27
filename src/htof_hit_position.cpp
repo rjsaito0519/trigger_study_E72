@@ -26,6 +26,7 @@
 #include "config.h"
 #include "ana_helper.h"
 #include "paths.h"
+#include "progress_bar.h"
 
 // +------------------------+
 // | Main Analysis Function |
@@ -60,8 +61,8 @@ void analyze(TString path) {
 
     TTreeReader reader("g4hyptpc", f);
     TTreeReaderValue<Int_t> generator(reader, "generator");
-    TTreeReaderValue<Int_t> decay_particle_code(reader, "decay_particle_code");
     TTreeReaderValue<std::vector<TParticle>> HTOF(reader, "HTOF");
+    Int_t total_entry = reader.GetEntries();
 
     // +--------------------------+
     // | Prepare Output Root File |
@@ -85,8 +86,9 @@ void analyze(TString path) {
     // +----------------------+
     // | Event Loop & Filling |
     // +----------------------+
+    Int_t evnum = 0;
     reader.Restart();
-    while (reader.Next()) {
+    while (reader.Next()) { displayProgressBar(++evnum, total_entry);
         if (*generator != conf.beam_generator) {
             for (const auto& item : *HTOF) {
                 if (item.GetPdgCode() != 2212) continue;  // only protons
