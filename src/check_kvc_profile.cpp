@@ -102,8 +102,9 @@ void analyze(TString dir){
     // +--------------------------+
     TString output_path = Form("%s/root/kvc_profile.root", OUTPUT_DIR.Data());
     if (std::ifstream(output_path.Data())) std::remove(output_path.Data());
-    TFile fout(output_path.Data(), "create");
-    TTree output_tree("tree", "");
+    TFile* fout = TFile::Open(output_path.Data(), "RECREATE");
+
+    TTree output_tree("tree", "");    
     Double_t mom, z_pos, mean_val, mean_err, stdev_val, stdev_err;
     output_tree.Branch("mom", &mom, "mom/D");
     output_tree.Branch("z_pos", &z_pos, "z_pos/D");
@@ -143,13 +144,14 @@ void analyze(TString dir){
     // +-------------+
     // | save object |
     // +-------------+
+    fout->cd();
     for (Int_t i = 0; i < n_z_pos; i++) {
         h_mom645[i]->Write();
         h_mom735[i]->Write();
         h_mom805[i]->Write();
     }
     output_tree.Write();
-    fout.Close();
+    fout->Close();
 
 }
 
