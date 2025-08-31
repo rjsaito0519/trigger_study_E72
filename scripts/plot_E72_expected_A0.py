@@ -392,13 +392,13 @@ if __name__ == '__main__':
             np.genfromtxt(os.path.join(script_dir, "../data/legendre/Kp_bubble_chamber1970_legendre.csv"), skip_header=1, delimiter=","),
             np.genfromtxt(os.path.join(script_dir, "../data/legendre/Kp_spark_chamber_legendre.csv"), skip_header=1, delimiter=","),
         ],
-        "rootdata": "dcs_kp_9999.root",
+        "rootdata": "dcs_kp_9999_for_cusp_for_cusp.root",
         "data_key": ["bubble1970", "spark"],
         "title": r"$K^-p\rightarrow K^-p$",
     }
 
-    plot_only_kp(arg_dict1)
-    sys.exit()
+    # plot_only_kp(arg_dict1)
+    # sys.exit()
 
     # +-----+
     # | K0n |
@@ -412,7 +412,7 @@ if __name__ == '__main__':
             np.genfromtxt(os.path.join(script_dir, "../data/legendre/K0n_counter_legendre.csv"), skip_header=1, delimiter=","),
             
         ],
-        "rootdata": "dcs_k0n_211.root",
+        "rootdata": "dcs_k0n_211_for_cusp_for_cusp.root",
         "data_key": ["bubble1970", "bubble1968", "bubble1975", "crystal_ball", "counter"],
         "title": r"$K^-p \rightarrow \overline{K}^0n$",
         "savename": "k0n_coeff_result"
@@ -427,7 +427,7 @@ if __name__ == '__main__':
             np.genfromtxt(os.path.join(script_dir, "../data/legendre/pi+Sigma-_bubble_chamber1968_legendre.csv"), skip_header=1, delimiter=","),
             np.genfromtxt(os.path.join(script_dir, "../data/legendre/pi+Sigma-_bubble_chamber1975_legendre.csv"), skip_header=1, delimiter=","),            
         ],
-        "rootdata": "dcs_pi+sigma-_2112.root",
+        "rootdata": "dcs_pi+sigma-_2112_for_cusp_for_cusp.root",
         "data_key": ["bubble1970", "bubble1968", "bubble1975"],
         "title": r"$K^-p \rightarrow \pi^+\Sigma^-$",
         "savename": "pi+sigma-_coeff_result"
