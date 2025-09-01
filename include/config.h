@@ -15,8 +15,17 @@ public:
 
     Int_t beam_generator = 7201;
     Double_t refractive_index_kvc = 1.46;
+    Double_t refractive_index_bac = 1.115;
+    Double_t efficiency_bac = 0.99;
+    Double_t efficiency_kvc = 0.98;
 
-    Double_t edep_threshold = 0.2; // MeV
+    Double_t edep_threshold = 0.2; // MeV/cm
+    
+    const std::unordered_map<std::string, Int_t> counter_thickness{
+        { "bh2",  0.5 },
+        { "htof", 1.0 },
+    };
+
 
     // -- for histogram range -----
     Double_t htof_seg_min = -0.5;

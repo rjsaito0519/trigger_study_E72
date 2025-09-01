@@ -21,6 +21,7 @@
 #include <TApplication.h>
 #include <TDatabasePDG.h>
 #include <TParticle.h>
+#include <TRandom.h>
 
 // Custom headers
 #include "config.h"
@@ -59,6 +60,8 @@ void analyze(TString path){
     gStyle->SetPadBottomMargin(0.15);
     gROOT->GetColor(0)->SetAlpha(0.01);
     
+    gRandom->SetSeed(72);
+
     // +-----------+
     // | load file |
     // +-----------+
@@ -92,8 +95,18 @@ void analyze(TString path){
         // -- kaon beam -----
         Bool_t is_kaon_at_bac = false, kaon_beam = false;   
         std::set<Int_t> bh2_seg_unique;
-        for(const auto& item : (*BAC)) if (item.GetPdgCode() == -321) is_kaon_at_bac = true;
-        for(const auto& item : (*BH2)) if (item.GetWeight() >conf.edep_threshold) bh2_seg_unique.insert(item.GetMother(1));;
+        for(const auto& item : (*BAC)) {
+            // if (item.GetPdgCode() == -321) is_kaon_at_bac = true;
+            // -- calc beta -----
+            TParticlePDG *particle = pdg_database->GetParticle(item.GetPdgCode());
+            Double_t mass = particle->Mass()*1000.0; // MeV/c^2
+            Double_t mom  = item.P();                // MeV/c^2
+            Double_t beta = mom / TMath::Sqrt( mass*mass + mom*mom );
+            if (beta < 1.0/conf.refractive_index_bac) is_kaon_at_bac = true;
+        }
+        for(const auto& item : (*BH2)) 
+            if (item.GetWeight() >conf.edep_threshold*conf.counter_thickness.at("bh2")) 
+                bh2_seg_unique.insert(item.GetMother(1));
         Int_t bh2_multi = bh2_seg_unique.size();
         if ( is_kaon_at_bac && bh2_multi != 0 ) kaon_beam = true;
 
@@ -101,7 +114,7 @@ void analyze(TString path){
         std::set<Int_t> htof_seg_unique;
         Bool_t is_proton_forward_htof = false;
         for(const auto& item : (*HTOF))  {
-            if (item.GetWeight() >conf.edep_threshold) htof_seg_unique.insert(item.GetMother(1));
+            if (item.GetWeight() > conf.edep_threshold*conf.counter_thickness.at("htof")) htof_seg_unique.insert(item.GetMother(1));
             if (item.GetWeight() > htof_threshold && std::binary_search(forward_seg.begin(), forward_seg.end(), item.GetMother(1))) is_proton_forward_htof =true;
         }
         Int_t htof_multi = htof_seg_unique.size();
@@ -115,7 +128,7 @@ void analyze(TString path){
             Double_t mass = particle->Mass()*1000.0; // MeV/c^2
             Double_t mom  = item.P();                // MeV/c^2
             Double_t beta = mom / TMath::Sqrt( mass*mass + mom*mom );
-            if (beta > 1.0/conf.refractive_index_kvc) hit_anyseg_kvc = true;
+            if (beta > 1.0/conf.refractive_index_kvc &&  gRandom->Uniform(0.0, 1.0) < conf.efficiency_kvc) hit_anyseg_kvc = true;
             cherenkov_kvc.emplace_back( beta > 1.0/conf.refractive_index_kvc, item.GetMother(1) );
         }
 
