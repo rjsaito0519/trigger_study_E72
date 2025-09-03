@@ -85,7 +85,7 @@ void analyze(TString dir){
     // +-------------------+
     // | prepare histogram |
     // +-------------------+
-    Int_t n_z_pos = 8;
+    Int_t n_z_pos = 12;
     TH1D* h_mom645[n_z_pos];
     TH1D* h_mom735[n_z_pos];
     TH1D* h_mom805[n_z_pos];

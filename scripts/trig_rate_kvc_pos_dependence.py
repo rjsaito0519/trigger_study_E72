@@ -22,12 +22,26 @@ plt.rcParams["xtick.minor.size"] = 5                 #x軸補助目盛り線の�
 plt.rcParams["ytick.minor.size"] = 5                 #y軸補助目盛り線の長さ
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
-mom = 735
 
-for z_pos in range(45, 81, 5):
-    root_file_path = os.path.join(script_dir, f"../data/kvc_pos_optimize/kvc_pos_optimize_beam_mom{mom}_{z_pos}.root")
-    if os.path.exists(root_file_path):
+data = {
+    645: [],
+    735: [],
+    805: []
+}
+
+for mom in [645, 735, 805]:
+    for z_pos in range(45, 81, 5):
+        root_file_path = os.path.join(script_dir, f"../data/kvc_pos_optimize/kvc_pos_optimize_beam_mom{mom}_{z_pos}.root")
         file = uproot.open(root_file_path)
         tree = file["tree"].arrays(library="np")
 
-        print(tree["n_trig_all"]/tree["n_kaon_all"])
+        data[mom].append([z_pos, tree["kaon_rate2024"][0]*tree["n_trig_all"][0]/tree["n_kaon_all"][0]])
+    data[mom] = np.array(data[mom])
+
+
+fig = plt.figure(figsize=(8, 8))
+ax  = fig.add_subplot(111)
+for i, mom in enumerate([645, 735, 805]):
+    ax.plot(data[mom][:, 0], data[mom][:, 1], "o", color = f"C{i}")
+
+plt.show()
