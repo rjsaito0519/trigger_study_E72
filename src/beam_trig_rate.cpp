@@ -229,6 +229,7 @@ void analyze(TString path){
     TFile fout(output_path.Data(), "create");
     TTree output_tree("tree", "");
     output_tree.Branch("kvc_eff", &conf.efficiency_kvc, "kvc_eff/D");
+    output_tree.Branch("kaon_rate2024", &Kaon_rate2024, "Kaon_rate2024/D");
     output_tree.Branch("n_kaon_all", &n_kaon_all, "n_kaon_all/I");
     output_tree.Branch("n_trig_all", &n_trig_all, "n_trig_all/I");
     output_tree.Branch("n_trig_mp2_all", &n_trig_mp2_all, "n_trig_mp2_all/I");
