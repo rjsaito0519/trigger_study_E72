@@ -228,6 +228,7 @@ void analyze(TString path){
     if (std::ifstream(output_path.Data())) std::remove(output_path.Data());
     TFile fout(output_path.Data(), "create");
     TTree output_tree("tree", "");
+    output_tree.Branch("kvc_eff", &conf.efficiency_kvc, "kvc_eff/D");
     output_tree.Branch("n_kaon_all", &n_kaon_all, "n_kaon_all/I");
     output_tree.Branch("n_trig_all", &n_trig_all, "n_trig_all/I");
     output_tree.Branch("n_trig_mp2_all", &n_trig_mp2_all, "n_trig_mp2_all/I");
@@ -237,6 +238,7 @@ void analyze(TString path){
     output_tree.Branch("n_trig", &tmp_n_trig);
     output_tree.Branch("n_trig_mp2", &tmp_n_trig_mp2);
     output_tree.Branch("n_trig_htofp", &tmp_n_trig_htofp);
+    output_tree.Branch("pdg_code", &tmp_pdg_code);
     
     output_tree.Fill();   
     output_tree.Write();
