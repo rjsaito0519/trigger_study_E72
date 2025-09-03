@@ -6,6 +6,7 @@
 #include <random>
 #include <algorithm>
 #include <set>
+#include <cctype>
 
 // ROOT
 #include <TFile.h>
@@ -161,15 +162,23 @@ void analyze(TString path){
     // | Print result |
     // +--------------+
     auto kaon_intensity = new TF1("kaon_intensity", "328.860759*x - 202920.253", 600., 900.); // fitting result (unit: /spill)
-    size_t mom_pos = filename.find("mom");
+    Ssiz_t mom_pos = path.Index("mom");
     Double_t mom_value = 735.0;
-    if (mom_pos != std::string::npos) {
+    if (mom_pos != kNPOS) {
         mom_pos += 3;
-        mom_value = std::stod(filename.substr(mom_pos));
+        Ssiz_t len = 0;
+        while (mom_pos + len < path.Length() && std::isdigit(path[mom_pos + len])) {
+            ++len;
+        }
+        if (len > 0) {
+            TString mom_str = path(mom_pos, len);
+            mom_value = mom_str.Atof();
+        }
         std::cout << "Momentum value: " << mom_value << std::endl;
     } else {
         std::cerr << "No 'mom' found. Use 735 MeV/c" << std::endl;
     }
+
 
     // Double_t Kaon_rate2024_at_735MeV = 19.2; // kHz
     Double_t Kaon_rate2024 = kaon_intensity->Eval(mom_value)/2000.0;
