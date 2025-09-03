@@ -160,12 +160,24 @@ void analyze(TString path){
     // +--------------+
     // | Print result |
     // +--------------+
-    Double_t Kaon_rate2024_at_735MeV = 19.2; // kHz
+    auto kaon_intensity = new TF1("kaon_intensity", "328.860759*x - 202920.253", 600., 900.); // fitting result (unit: /spill)
+    size_t mom_pos = filename.find("mom");
+    Double_t mom_value = 735.0;
+    if (mom_pos != std::string::npos) {
+        mom_pos += 3;
+        mom_value = std::stod(filename.substr(mom_pos));
+        std::cout << "Momentum value: " << mom_value << std::endl;
+    } else {
+        std::cerr << "No 'mom' found. Use 735 MeV/c" << std::endl;
+    }
+
+    // Double_t Kaon_rate2024_at_735MeV = 19.2; // kHz
+    Double_t Kaon_rate2024 = kaon_intensity->Eval(mom_value)/2000.0;
     std::cout << "-----------------------------------------" << std::endl;
     std::cout << "total entries: " << total_entry << std::endl;
     std::cout << "n_kaon: " << n_kaon_all << std::endl;
     std::cout << "n_trig: " << n_trig_all << std::endl;
-    std::cout << "rate: " << Kaon_rate2024_at_735MeV * static_cast<Double_t>(n_trig_all) / static_cast<Double_t>(n_kaon_all) << "\n" << std::endl;
+    std::cout << "rate: " << Kaon_rate2024 * static_cast<Double_t>(n_trig_all) / static_cast<Double_t>(n_kaon_all) << "\n" << std::endl;
  
     std::cout << "n_trig mp2: " << n_trig_mp2_all << std::endl;
     std::cout << "n_trig f-p: " << n_trig_htofp_all << std::endl;
