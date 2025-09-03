@@ -192,7 +192,14 @@ void analyze(TString path){
     std::cout << "n_trig f-p: " << n_trig_htofp_all << std::endl;
     std::cout << "------------------------------------------" << std::endl;
 
+    std::vector<Int_t> tmp_n_kaon, tmp_n_trig, tmp_n_trig_mp2, tmp_n_trig_htofp, tmp_pdg_code;
     for (Int_t pdg_code : {0, 13, 111, -211}) {
+        tmp_n_kaon.push_back(n_kaon[pdg_code]);
+        tmp_n_trig.push_back(n_trig[pdg_code]);
+        tmp_n_trig_mp2.push_back(n_trig_mp2[pdg_code]);
+        tmp_n_trig_htofp.push_back(n_trig_htofp[pdg_code]);
+        tmp_pdg_code.push_back(pdg_code);
+
         std::cout << "-----------------------------------------" << std::endl;
         std::cout << "decay particle code: " << pdg_code << std::endl;
         std::cout << "n_kaon: " << n_kaon[pdg_code] << std::endl;
@@ -204,11 +211,35 @@ void analyze(TString path){
         std::cout << "------------------------------------------" << std::endl;
     }
 
-
     // print_result(n_kaon);
     // print_result(n_trig);
     // print_result(n_trig_mp2);
     // print_result(n_trig_htofp);
+
+
+    // +--------------------------+
+    // | prepare output root file |
+    // +--------------------------+
+    TString save_name;
+    Int_t dot_index = path.Last('.');
+    Int_t sla_index = path.Last('/');
+    for (Int_t i = sla_index+1; i < dot_index; i++) save_name += path[i];
+    TString output_path = Form("%s/root/kvc_pos_optimize/%s.root", OUTPUT_DIR.Data(), save_name.Data());
+    if (std::ifstream(output_path.Data())) std::remove(output_path.Data());
+    TFile fout(output_path.Data(), "create");
+    TTree output_tree("tree", "");
+    output_tree.Branch("n_kaon_all", &n_kaon_all, "n_kaon_all/I");
+    output_tree.Branch("n_trig_all", &n_trig_all, "n_trig_all/I");
+    output_tree.Branch("n_trig_mp2_all", &n_trig_mp2_all, "n_trig_mp2_all/I");
+    output_tree.Branch("n_trig_htofp_all", &n_trig_htofp_all, "n_trig_htofp_all/I");
+
+    output_tree.Branch("n_kaon", &tmp_n_kaon);
+    output_tree.Branch("n_trig", &tmp_n_trig);
+    output_tree.Branch("n_trig_mp2", &tmp_n_trig_mp2);
+    output_tree.Branch("n_trig_htofp", &tmp_n_trig_htofp);
+    
+    output_tree.Fill();   
+    output_tree.Write();
 }
 
 Int_t main(int argc, char** argv) {
