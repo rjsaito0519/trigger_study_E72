@@ -192,10 +192,23 @@ void analyze(TString path){
     std::cout << "n_trig f-p: " << n_trig_htofp_all << std::endl;
     std::cout << "------------------------------------------" << std::endl;
 
-    print_result(n_kaon);
-    print_result(n_trig);
-    print_result(n_trig_mp2);
-    print_result(n_trig_htofp);
+    for (Int_t pdg_code : {0, 13, 111, -211}) {
+        std::cout << "-----------------------------------------" << std::endl;
+        std::cout << "decay particle code: " << pdg_code << std::endl;
+        std::cout << "n_kaon: " << n_kaon[pdg_code] << std::endl;
+        std::cout << "n_trig: " << n_trig[pdg_code] << std::endl;
+        std::cout << "rate: " << Kaon_rate2024 * static_cast<Double_t>(n_trig[pdg_code]) / static_cast<Double_t>(n_kaon[pdg_code]) << "\n" << std::endl;
+    
+        std::cout << "n_trig mp2: " << n_trig_mp2[pdg_code] << std::endl;
+        std::cout << "n_trig f-p: " << n_trig_htofp[pdg_code] << std::endl;
+        std::cout << "------------------------------------------" << std::endl;
+    }
+
+
+    // print_result(n_kaon);
+    // print_result(n_trig);
+    // print_result(n_trig_mp2);
+    // print_result(n_trig_htofp);
 }
 
 Int_t main(int argc, char** argv) {

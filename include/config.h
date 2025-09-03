@@ -17,7 +17,8 @@ public:
     Double_t refractive_index_kvc = 1.46;
     Double_t refractive_index_bac = 1.115;
     Double_t efficiency_bac = 0.99;
-    Double_t efficiency_kvc = 0.98;
+    // Double_t efficiency_kvc = 0.98;
+    Double_t efficiency_kvc = 1.0;
 
     Double_t edep_threshold = 0.2; // MeV/cm
     
