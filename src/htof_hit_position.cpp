@@ -82,6 +82,7 @@ void analyze(TString path) {
     const Int_t num_of_seg = 34;
     std::vector<std::vector<Double_t>> vx(num_of_seg), vy(num_of_seg);
     std::vector<std::vector<Double_t>> vx_high(num_of_seg), vy_high(num_of_seg);
+    std::vector<std::vector<Double_t>> vx_others(num_of_seg), vy_others(num_of_seg);
 
     // +----------------------+
     // | Event Loop & Filling |
@@ -91,8 +92,6 @@ void analyze(TString path) {
     while (reader.Next()) { displayProgressBar(++evnum, total_entry);
         if (*generator != conf.beam_generator) {
             for (const auto& item : *HTOF) {
-                if (item.GetPdgCode() != 2212) continue;  // only protons
-
                 Int_t seg = item.GetMother(1);
                 if (seg < 0 || seg >= num_of_seg) continue;
 
@@ -108,13 +107,20 @@ void analyze(TString path) {
                     x_prime -= 280.0 * ((seg - 2) / 4);
                 }
 
-                // Store in segment vector
-                vx[seg].push_back(x_prime);
-                vy[seg].push_back(y);
+                if (item.GetPdgCode() == 2212) {
+                    // Store in segment vector
+                    vx[seg].push_back(x_prime);
+                    vy[seg].push_back(y);
 
-                if (item.GetWeight() > 3.0) {
-                    vx_high[seg].push_back(x_prime);
-                    vy_high[seg].push_back(y);
+                    if (item.GetWeight() > 3.0) {
+                        vx_high[seg].push_back(x_prime);
+                        vy_high[seg].push_back(y);
+                    }
+                } else {
+                    if (item.GetWeight() > 3.0) {
+                        vx_others[seg].push_back(x_prime);
+                        vy_others[seg].push_back(y);
+                    }
                 }
             }
         }
@@ -124,7 +130,7 @@ void analyze(TString path) {
     // | Write to TTree |
     // +----------------+
     TTree output_tree("tree", "");
-    std::vector<Double_t> x, y, x_high, y_high;
+    std::vector<Double_t> x, y, x_high, y_high, x_others, y_others;
     Int_t seg;
 
     output_tree.Branch("seg", &seg, "seg/I");
@@ -132,6 +138,8 @@ void analyze(TString path) {
     output_tree.Branch("y", &y);
     output_tree.Branch("x_high", &x_high);
     output_tree.Branch("y_high", &y_high);
+    output_tree.Branch("x_others", &x_others);
+    output_tree.Branch("y_others", &y_others);
 
     for (Int_t i = 0; i < num_of_seg; i++) {
         seg = i;
@@ -139,6 +147,8 @@ void analyze(TString path) {
         y = vy[i];
         x_high = vx_high[i];
         y_high = vy_high[i];
+        x_others = vx_others[i];
+        y_others = vy_others[i];
         output_tree.Fill();
     }
 

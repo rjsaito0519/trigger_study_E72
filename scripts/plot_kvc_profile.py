@@ -54,7 +54,7 @@ ax3 = fig.add_subplot(313)
 
 i = 0
 for mom, ax in zip([645, 735, 805], [ax1, ax2, ax3]):
-    for i, z_pos in enumerate(range(450, 850, 50)):
+    for i, z_pos in enumerate(range(450, 1050, 50)):
         center, edge, value = get_hist_data(file, f"mom{mom}_{z_pos}")
         ax.hist(center-x_pos(mom, z_pos), bins=edge-x_pos(mom, z_pos), weights=value, lw = 1.5, histtype='step', color=f"C{i}", zorder = 3, label = f"{z_pos:.0f} [mm]")
     ax.set_xlim(-149, 149)
@@ -74,14 +74,27 @@ for ax in [ax1, ax2]:
 ax1.legend(loc='upper left', fontsize = 18, bbox_to_anchor=(1.0, 1), title = "KVC z-pos", title_fontsize = 20)
 fig.supxlabel(r"$x$ - mean [mm]")
 plt.subplots_adjust(left = 0.1, right=0.78, top=0.98, bottom = 0.12, hspace=0.01)
+img_save_path = os.path.join(script_dir, "../results/img/kvc_profile.png")
+os.makedirs(os.path.dirname(img_save_path), exist_ok=True)
+plt.savefig(img_save_path, format='png', bbox_inches='tight', dpi=600, transparent=True)
 plt.show()
 
-# ax1.yaxis.set_major_formatter(ptick.EngFormatter())
-# ax1.set_xlabel(r"thickness [mm]")
 
+# +--------------+
+# | plot example |
+# +--------------+
 
-# # img_save_path = os.path.join(script_dir, "../results/img/yield/beam_distribution_scan.pdf")
-# # os.makedirs(os.path.dirname(img_save_path), exist_ok=True)
-# # plt.savefig(img_save_path, format='pdf', bbox_inches='tight', dpi=600, transparent=True)
-
-# plt.show()
+fig = plt.figure(figsize=(8, 8))
+ax  = fig.add_subplot(111)
+center, edge, value = get_hist_data(file, "mom735_600")
+ax.hist(center, bins=edge, weights=value, lw = 1.5, histtype='step', color="C0", zorder = 3)
+ax.axvline(x_pos(735, 600), ls = "dashed", color = "red")
+idx = tree["mom"] == 735
+mean  = tree["mean_val"][idx][3]
+stdev = tree["stdev_val"][idx][3]
+print(mean, x_pos(735, 600))
+ax.set_xlim(mean-stdev*4, mean+stdev*4)
+ax.set_xlabel(r"$x$ position [mm]")
+ax.yaxis.set_major_formatter(ptick.EngFormatter())
+plt.subplots_adjust(left = 0.1, right=0.98, top=0.98, bottom = 0.12)
+plt.show()

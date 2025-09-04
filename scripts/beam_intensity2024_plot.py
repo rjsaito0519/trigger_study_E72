@@ -52,5 +52,10 @@ img_save_path = os.path.join( script_dir, "../results/img/yield/beam_intensity.p
 os.makedirs(os.path.dirname(img_save_path), exist_ok=True)
 plt.savefig(img_save_path, format='pdf', bbox_inches='tight', dpi=600, transparent=True)
 
+img_save_path = os.path.join( script_dir, "../results/img/yield/beam_intensity.png")
+os.makedirs(os.path.dirname(img_save_path), exist_ok=True)
+plt.savefig(img_save_path, format='png', bbox_inches='tight', dpi=600, transparent=True)
+
+
 plt.show()
 
