@@ -22,7 +22,7 @@ plt.rcParams["xtick.minor.size"] = 5                 #x軸補助目盛り線の�
 plt.rcParams["ytick.minor.size"] = 5                 #y軸補助目盛り線の長さ
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
-dir = "eff098"
+dir = ""
 
 data = {
     645: [],
