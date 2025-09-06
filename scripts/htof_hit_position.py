@@ -126,35 +126,35 @@ if __name__ == '__main__':
     transparent_flag = False
 
     arg_dict = {
-        "data": "../data/htof/htof_mom735_eta_lambda_hit_position.root",
+        "data": "./htof_proton_eta_lambda_735_hit_position.root",
         "title": r"$K^-p\rightarrow \Lambda\eta$",
         "transparent" : transparent_flag
     }
     plot(arg_dict)
 
     arg_dict = {
-        "data": "../data/htof/htof_mom735_kp_hit_position.root",
+        "data": "./htof_proton_kp_735_hit_position.root",
         "title": r"$K^-p\rightarrow K^-p$",
         "transparent" : transparent_flag
     }
     plot(arg_dict)
 
     arg_dict = {
-        "data": "../data/htof/htof_mom735_pi-sigma+_hit_position.root",
+        "data": "./htof_proton_pi-sigma+_735_hit_position.root",
         "title": r"$K^-p\rightarrow \pi^-\Sigma^+$",
         "transparent" : transparent_flag
     }
     plot(arg_dict)
 
     arg_dict = {
-        "data": "../data/htof/htof_mom735_pi0sigma0_hit_position.root",
+        "data": "../data/htof/htof_proton_pi0sigma0_735_hit_position.root",
         "title": r"$K^-p\rightarrow \pi^0\Sigma^0$",
         "transparent" : transparent_flag
     }
     plot(arg_dict)
 
     arg_dict = {
-        "data": "../data/htof/htof_mom735_pi0lambda_hit_position.root",
+        "data": "../data/htof/htof_proton_pi0lambda_735_hit_position.root",
         "title": r"$K^-p\rightarrow \pi^0\Lambda$",
         "transparent" : transparent_flag
     }
