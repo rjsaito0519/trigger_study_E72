@@ -85,7 +85,7 @@ void analyze(TString path) {
         "seg_vs_mom",
         ";segment;Momentum [MeV/c]", 
         34, -0.5, 33.5,
-        1000, 0.0, 1000.0, 
+        1000, 0.0, 1000.0
     );
     auto h_seg_vs_edep = new TH2D(
         "seg_vs_edep",
