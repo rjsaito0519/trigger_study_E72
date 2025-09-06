@@ -96,7 +96,7 @@ void analyze(TString dir){
     // +--------------------------+
     // | prepare output root file |
     // +--------------------------+
-    TString output_path = Form("%s/root/kvc_profile.root", OUTPUT_DIR.Data());
+    TString output_path = Form("%s/root/kvc_profile_for_mom.root", OUTPUT_DIR.Data());
     if (std::ifstream(output_path.Data())) std::remove(output_path.Data());
     TFile* fout = TFile::Open(output_path.Data(), "RECREATE");
 
