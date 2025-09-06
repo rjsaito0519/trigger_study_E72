@@ -72,9 +72,21 @@ void analyze(TString path) {
     Int_t slash_index = path.Last('/');
     for (Int_t i = slash_index + 1; i < dot_index; i++) save_name += path[i];
 
-    TString output_path = Form("%s/root/htof_%s_hit_position.root", OUTPUT_DIR.Data(), save_name.Data());
+    TString output_path = Form("%s/root/htof_proton/%s_hit_position.root", OUTPUT_DIR.Data(), save_name.Data());
     if (std::ifstream(output_path.Data())) std::remove(output_path.Data());
     TFile fout(output_path.Data(), "RECREATE");
+
+    // +-------------------+
+    // | Prepare Histogram |
+    // +-------------------+
+    auto h_edep_proton = new TH1D("edep_proton", ";Energy Deposit [MeV];", conf.edep_bin_num, conf.edep_min, conf.edep_max);    
+    auto h_mom_proton  = new TH1D("mom_proton",  ";Momentum [MeV/c];", 1000, 0.0, 1000.0);    
+    auto h_mom_vs_edep = new TH2D(
+        "mom_vs_edep",
+        ";Momentum [MeV/c];Energy Deposit [MeV]", 
+        1000, 0.0, 1000.0, 
+        conf.edep_bin_num, conf.edep_min, conf.edep_max
+    );
 
     // +------------------------------+
     // | Prepare Segment-wise Storage |
@@ -111,6 +123,14 @@ void analyze(TString path) {
                     // Store in segment vector
                     vx[seg].push_back(x_prime);
                     vy[seg].push_back(y);
+
+                    Double_t px = item.Px();
+                    Double_t py = item.Py();
+                    Double_t pz = item.Pz();
+                    Double_t p_mag = TMath::Sqrt(px*px + py*py + pz*pz);
+                    h_mom_proton->Fill(p_mag);
+                    h_edep_proton->Fill(item.GetWeight());
+                    h_mom_vs_edep->Fill(p_mag, item.GetWeight());
 
                     if (item.GetWeight() > 3.0) {
                         vx_high[seg].push_back(x_prime);
@@ -152,6 +172,10 @@ void analyze(TString path) {
         output_tree.Fill();
     }
 
+    fout.cd();
+    h_mom_proton->Write();
+    h_edep_proton->Write();
+    h_mom_vs_edep->Write();
     output_tree.Write();
     fout.Close();
     delete f;
