@@ -32,9 +32,9 @@ public:
     Double_t htof_seg_min = -0.5;
     Double_t htof_seg_max = 33.5;
 
-    Int_t edep_bin_num = 120;
+    Int_t edep_bin_num = 150;
     Double_t edep_min = -0.5;
-    Double_t edep_max = 11.5;
+    Double_t edep_max = 15.5;
 
     Int_t hitpos_bin_num = 800;
     Double_t hitpos_min = -400.0;

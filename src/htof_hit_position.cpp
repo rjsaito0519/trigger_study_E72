@@ -81,6 +81,18 @@ void analyze(TString path) {
     // +-------------------+
     auto h_edep_proton = new TH1D("edep_proton", ";Energy Deposit [MeV];", conf.edep_bin_num, conf.edep_min, conf.edep_max);    
     auto h_mom_proton  = new TH1D("mom_proton",  ";Momentum [MeV/c];", 1000, 0.0, 1000.0);    
+    auto h_seg_vs_mom = new TH2D(
+        "seg_vs_mom",
+        ";segment;Momentum [MeV/c]", 
+        34, -0.5, 33.5,
+        1000, 0.0, 1000.0, 
+    );
+    auto h_seg_vs_edep = new TH2D(
+        "seg_vs_edep",
+        ";segment;Energy Deposit [MeV]", 
+        34, -0.5, 33.5,
+        conf.edep_bin_num, conf.edep_min, conf.edep_max
+    );
     auto h_mom_vs_edep = new TH2D(
         "mom_vs_edep",
         ";Momentum [MeV/c];Energy Deposit [MeV]", 
@@ -130,6 +142,8 @@ void analyze(TString path) {
                     Double_t p_mag = TMath::Sqrt(px*px + py*py + pz*pz);
                     h_mom_proton->Fill(p_mag);
                     h_edep_proton->Fill(item.GetWeight());
+                    h_seg_vs_mom->Fill(seg, p_mag);
+                    h_seg_vs_edep->Fill(seg, item.GetWeight());
                     h_mom_vs_edep->Fill(p_mag, item.GetWeight());
 
                     if (item.GetWeight() > 3.0) {
@@ -175,6 +189,8 @@ void analyze(TString path) {
     fout.cd();
     h_mom_proton->Write();
     h_edep_proton->Write();
+    h_seg_vs_mom->Write();
+    h_seg_vs_edep->Write();
     h_mom_vs_edep->Write();
     output_tree.Write();
     fout.Close();
