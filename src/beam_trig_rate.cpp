@@ -100,6 +100,7 @@ void analyze(TString path){
             // if (item.GetPdgCode() == -321) is_kaon_at_bac = true;
             // -- calc beta -----
             TParticlePDG *particle = pdg_database->GetParticle(item.GetPdgCode());
+            if (!particle) continue;
             Double_t mass = particle->Mass()*1000.0; // MeV/c^2
             Double_t mom  = item.P();                // MeV/c^2
             Double_t beta = mom / TMath::Sqrt( mass*mass + mom*mom );
@@ -126,6 +127,7 @@ void analyze(TString path){
         for(const auto& item : (*KVC)) {
             // -- calc beta -----
             TParticlePDG *particle = pdg_database->GetParticle(item.GetPdgCode());
+            if (!particle) continue;
             Double_t mass = particle->Mass()*1000.0; // MeV/c^2
             Double_t mom  = item.P();                // MeV/c^2
             Double_t beta = mom / TMath::Sqrt( mass*mass + mom*mom );
