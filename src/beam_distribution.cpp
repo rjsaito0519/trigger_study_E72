@@ -31,6 +31,7 @@
 static std::vector<Double_t> n_kaon_container_scan;
 static std::vector<Double_t> n_kaon_container_all;
 
+static const TDatabasePDG *pdg_database = new TDatabasePDG();
 
 void data_fill(TString path, TH1D *h, Double_t factor, Bool_t do_fill_scan = true)
 {
@@ -59,8 +60,18 @@ void data_fill(TString path, TH1D *h, Double_t factor, Bool_t do_fill_scan = tru
         // -- kaon beam -----
         Bool_t is_kaon_at_bac = false, kaon_beam = false;   
         std::set<Int_t> bh2_seg_unique;
-        for(const auto& item : (*BAC)) if (item.GetPdgCode() == -321) is_kaon_at_bac = true;
-        for(const auto& item : (*BH2)) if (item.GetWeight() > conf.edep_threshold) bh2_seg_unique.insert(item.GetMother(1));;
+        for(const auto& item : (*BAC)) {
+            // if (item.GetPdgCode() == -321) is_kaon_at_bac = true;
+            // -- calc beta -----
+            TParticlePDG *particle = pdg_database->GetParticle(item.GetPdgCode());
+            Double_t mass = particle->Mass()*1000.0; // MeV/c^2
+            Double_t mom  = item.P();                // MeV/c^2
+            Double_t beta = mom / TMath::Sqrt( mass*mass + mom*mom );
+            if (beta < 1.0/conf.refractive_index_bac) is_kaon_at_bac = true;
+        }
+        for(const auto& item : (*BH2)) 
+            if (item.GetWeight() >conf.edep_threshold*conf.counter_thickness.at("bh2")) 
+                bh2_seg_unique.insert(item.GetMother(1));
         Int_t bh2_multi = bh2_seg_unique.size();
         if ( is_kaon_at_bac && bh2_multi != 0 ) kaon_beam = true;
 
@@ -110,83 +121,90 @@ void analyze(TString dir){
 
     auto kaon_intensity = new TF1("kaon_intensity", "328.860759*x - 202920.253", 600., 900.); // fitting result (unit: /spill)
 
-    // +-------------------+
-    // | prepare histogram |
-    // +-------------------+    
-    auto h_mom685 = new TH1D("mom685", "mom685", 600, 600., 900.);
-    auto h_mom705 = new TH1D("mom705", "mom705", 600, 600., 900.);
-    auto h_mom725 = new TH1D("mom725", "mom725", 600, 600., 900.);
-    auto h_mom745 = new TH1D("mom745", "mom745", 600, 600., 900.);
-    auto h_mom765 = new TH1D("mom765", "mom765", 600, 600., 900.);
-    auto h_mom735 = new TH1D("mom735", "mom735", 600, 600., 900.);    
-    auto h_momscan = new TH1D("mom_scan", "Kaon momentum", 600, 600., 900.);
-    auto h_momall = new TH1D("mom_all", "Kaon momentum", 600, 600., 900.);
 
-
-    // +----------------+
-    // | Fill histogram |
-    // +----------------+
-    Double_t t_measure_scan = 0.5*24.0*3600.0; // unit: sec
-    Double_t t_measure_735  = 5.5*24.0*3600.0; // unit: sec
+    // +-----------------------+
+    // | Histogram preparation |
+    // +-----------------------+
+    auto make_hist = [](Double_t m) {
+        return new TH1D(Form("mom%.0f", m), Form("mom%.0f", m), 600, 600., 900.);
+    };
     
-    Double_t factor = kaon_intensity->Eval(685.0) * t_measure_scan / conf.spill_length;
-    data_fill(Form("%s/beam_mom685.root", dir.Data()), h_mom685, factor);
-    h_mom685->Scale( factor / h_mom685->GetEntries() );
-    h_momscan->Add(h_mom685, 1.0);
-    h_momall->Add(h_mom685, 1.0);
+    auto h_momscan = new TH1D("mom_scan", "Kaon momentum (scan)", 600, 600., 900.);
+    auto h_momall  = new TH1D("mom_all",  "Kaon momentum (all)" , 600, 600., 900.);
 
-    factor = kaon_intensity->Eval(705.0) * t_measure_scan / conf.spill_length;
-    data_fill(Form("%s/beam_mom705.root", dir.Data()), h_mom705, factor);
-    h_mom705->Scale( factor / h_mom705->GetEntries() );
-    h_momscan->Add(h_mom705, 1.0);
-    h_momall->Add(h_mom705, 1.0);
+    // List of scan momenta (each with 0.5 days measurement time)
+    const std::vector<Double_t> scan_moms = {645.0, 665.0, 685.0, 705.0, 725.0, 745.0, 765.0, 785.0, 805.0};
 
-    factor = kaon_intensity->Eval(725.0) * t_measure_scan / conf.spill_length;
-    data_fill(Form("%s/beam_mom725.root", dir.Data()), h_mom725, factor);
-    h_mom725->Scale( factor / h_mom725->GetEntries() );
-    h_momscan->Add(h_mom725, 1.0);
-    h_momall->Add(h_mom725, 1.0);
+    // Special case: 735 MeV/c (3.5 days, different data_fill flag, only added to "all")
+    const Double_t special_mom = 735.0;
 
-    factor = kaon_intensity->Eval(745.0) * t_measure_scan / conf.spill_length;
-    data_fill(Form("%s/beam_mom745.root", dir.Data()), h_mom745, factor);
-    h_mom745->Scale( factor / h_mom745->GetEntries() );
-    h_momscan->Add(h_mom745, 1.0);
-    h_momall->Add(h_mom745, 1.0);
+    // Measurement times [sec]
+    const Double_t day = 24.0 * 3600.0;
+    const Double_t t_measure_scan = 0.5 * day;
+    const Double_t t_measure_735  = 3.5 * day;
 
-    factor = kaon_intensity->Eval(765.0) * t_measure_scan / conf.spill_length;
-    data_fill(Form("%s/beam_mom765.root", dir.Data()), h_mom765, factor);
-    h_mom765->Scale( factor / h_mom765->GetEntries() );
-    h_momscan->Add(h_mom765, 1.0);
-    h_momall->Add(h_mom765, 1.0);
+    // Store produced histograms for later writing
+    std::vector<std::unique_ptr<TH1D>> produced_hists;
+    produced_hists.reserve(scan_moms.size() + 1);
 
-    factor = kaon_intensity->Eval(735.0) * t_measure_735 / conf.spill_length;
-    data_fill(Form("%s/beam_mom735.root", dir.Data()), h_mom735, factor, false);
-    h_mom735->Scale( factor / h_mom735->GetEntries() );
-    h_momall->Add(h_mom735, 1.0);
+    // +-------------------+
+    // | Fill scan spectra |
+    // +-------------------+
+    for (Double_t m : scan_moms) {
+        auto h = std::unique_ptr<TH1D>(make_hist(m));
 
+        const Double_t factor = kaon_intensity->Eval(m) * t_measure_scan / conf.spill_length;
+
+        data_fill(Form("%s/beam_mom%.0f.root", dir.Data(), m), h.get(), factor);
+
+        const Double_t entries = h->GetEntries();
+        if (entries > 0.0) h->Scale(factor / entries); // Avoid division by zero
+
+        h_momscan->Add(h.get(), 1.0);
+        h_momall ->Add(h.get(), 1.0);
+
+        produced_hists.emplace_back(std::move(h));
+    }
+
+    // +-----------------------------+
+    // | Fill special 735 MeV/c case |
+    // +-----------------------------+
+    {
+        auto h735 = std::unique_ptr<TH1D>(make_hist(special_mom));
+
+        const Double_t factor = kaon_intensity->Eval(special_mom) * t_measure_735 / conf.spill_length;
+
+        // Only 735 MeV/c: last argument of data_fill set to false
+        data_fill(Form("%s/beam_mom%.0f.root", dir.Data(), special_mom), h735.get(), factor, false);
+
+        const Double_t entries = h735->GetEntries();
+        if (entries > 0.0) h735->Scale(factor / entries);
+
+        // 735 MeV/c contributes only to "all"
+        h_momall->Add(h735.get(), 1.0);
+
+        produced_hists.emplace_back(std::move(h735));
+    }
 
     // +-------------+
-    // | save object |
+    // | Save output |
     // +-------------+
     TString output_path = Form("%s/root/n_kaon.root", OUTPUT_DIR.Data());
     if (std::ifstream(output_path.Data())) std::remove(output_path.Data());
-    TFile fout(output_path.Data(), "create");
+
+    TFile fout(output_path.Data(), "RECREATE");
     TTree output_tree("tree", "");
     output_tree.Branch("n_kaon_scan", &n_kaon_container_scan);
-    output_tree.Branch("n_kaon_all", &n_kaon_container_all);
-    output_tree.Fill();    
+    output_tree.Branch("n_kaon_all",  &n_kaon_container_all);
+    output_tree.Fill();
     output_tree.Write();
 
-    h_mom685->Write();
-    h_mom705->Write();
-    h_mom725->Write();
-    h_mom745->Write();
-    h_mom765->Write();
-    h_mom735->Write();
+    // Write individual and summary histograms
+    for (auto &h : produced_hists) h->Write();
     h_momscan->Write();
     h_momall->Write();
-    fout.Close();
 
+    fout.Close();
 }
 
 

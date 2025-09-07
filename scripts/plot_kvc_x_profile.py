@@ -22,6 +22,43 @@ plt.rcParams["xtick.minor.size"] = 5                 #x軸補助目盛り線の�
 plt.rcParams["ytick.minor.size"] = 5                 #y軸補助目盛り線の長さ
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
+
+root_file_path = os.path.join(script_dir, "../results/root/kvc_profile_for_mom.root")
+file = uproot.open(root_file_path)
+tree = file["tree"].arrays(library="np")
+
+fig = plt.figure(figsize=(8, 8))
+ax  = fig.add_subplot(111)
+
+i = 0
+ax.errorbar(
+    tree["mom"],
+    tree["mean_val"],
+    yerr = tree["mean_err"],
+    fmt = "o", capsize = 0, markeredgecolor = "k", ms = 8, 
+    ecolor='k', color=f'C{i}', markeredgewidth = 0.1, zorder = 3,
+)
+model = lfm.QuadraticModel()
+params = model.guess(x = tree["mom"], data = tree["mean_val"])
+result = model.fit(x = tree["mom"], data = tree["mean_val"], weights = 1.0/tree["mean_err"], params=params, method='leastsq')
+print(result.fit_report())
+print("------------------")
+fit_x = np.linspace(min(tree["mom"]), max(tree["mom"]), 1000)
+fit_y = result.eval_components(x=fit_x)["parabolic"]
+ax.plot(fit_x, fit_y, color = f"C{i}", ls = "dashed")
+
+plt.legend(fontsize = 18)
+ax.set_xlabel(r"$p_K$ [MeV/c]")
+ax.set_ylabel("Beam Mean Position [mm]")
+plt.subplots_adjust(left = 0.15, right=0.98, top=0.98, bottom = 0.12)
+img_save_path = os.path.join(script_dir, "../results/img/kvc_beam_mean_pos.png")
+os.makedirs(os.path.dirname(img_save_path), exist_ok=True)
+plt.savefig(img_save_path, format='png', bbox_inches='tight', dpi=600, transparent=0)
+plt.show()
+
+
+sys.exit()
+
 root_file_path = os.path.join(script_dir, "../results/root/kvc_profile.root")
 file = uproot.open(root_file_path)
 tree = file["tree"].arrays(library="np")
