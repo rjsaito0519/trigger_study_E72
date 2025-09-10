@@ -452,10 +452,8 @@ int main(int argc, char** argv) {
     TString spline_root_file_path;
     if (path_yield.Contains(reaction1)) {
         // -- for create hist -----
-        // mom_left = 723.0;
+;        // mom_left = 723.0;
         // mom_right = 769.0;
-        mom_left = 621.0;
-        mom_right = 793.0;
         n_cluster = 4;
         branching_ratio = 0.641;
         // -- for fitting -----
@@ -471,7 +469,7 @@ int main(int argc, char** argv) {
         // -- for create hist -----
         // mom_left = 662.0;
         // mom_right = 782.0;
-        mom_left = 623.0;
+        mom_left = 621.0;
         mom_right = 793.0;
         n_cluster = 6;
         branching_ratio = 1.0;
@@ -485,9 +483,11 @@ int main(int argc, char** argv) {
 
     } else if (path_yield.Contains(reaction3)) {
         // -- for create hist -----
-        mom_left = 665.0;
-        mom_right = 779.0;
-        n_cluster = 4;
+        // mom_left = 665.0;
+        // mom_right = 779.0;
+        mom_left = 623.0;
+        mom_right = 793.0;
+         n_cluster = 4;
         branching_ratio = 0.692;
         // -- for fitting -----
         n_rebin = 2;
