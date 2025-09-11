@@ -85,11 +85,11 @@ void analyze(TString dir){
     // +-------------------+
     // | prepare histogram |
     // +-------------------+
-    Int_t n_mom = 9;
+    Int_t n_mom = 22;
     TH1D* h_profile[n_mom];
     
     for (Int_t i = 0; i < n_mom; i++) {
-        Int_t mom = 645 + 20*i;
+        Int_t mom = 605 + 20*i;
         h_profile[i] = new TH1D(Form("mom%d", mom), Form("mom%d", mom), 1400, 0., 700.);
     }
 
@@ -113,7 +113,7 @@ void analyze(TString dir){
     // | Fill histogram |
     // +----------------+
     for (Int_t i = 0; i < n_mom; i++) {
-        mom   = 645.0 + 20.0*i;
+        mom   = 605.0 + 20.0*i;
         z_pos = 600.0;
         FitResult result = FillHist(Form("%s/kvc_profile_mom%.0f_%.0f.root", dir.Data(), mom, z_pos/10), h_profile[i]);
         mean_val  = result.par[0]; mean_err  = result.err[0];
