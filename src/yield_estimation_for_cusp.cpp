@@ -78,7 +78,7 @@ void analyze(TString path, Int_t focus_pdg_code){
     for (Int_t i = sla_index+1; i < dot_index; i++) save_name += path[i];
     TString output_path = Form("%s/root/yield_%s_%d_for_cusp.root", OUTPUT_DIR.Data(), save_name.Data(), focus_pdg_code);
     if (std::ifstream(output_path.Data())) std::remove(output_path.Data());
-    TFile fout(output_path.Data(), "create");
+    TFile fout(output_path.Data(), "recreate");
 
     // +-------------------+
     // | prepare histogram |
@@ -247,11 +247,11 @@ Int_t main(int argc, char** argv) {
     
     TString spline_root_file_path;
     if (path.Contains(reaction1)) {
-        spline_root_file_path = Form("%s/data/spline/Kp_bubble1970_spline_for_cusp.root", WORK_DIR.Data());
+        spline_root_file_path = Form("%s/data/spline/Kp_spline_for_cusp.root", WORK_DIR.Data());
     } else if (path.Contains(reaction2)) {
-        spline_root_file_path = Form("%s/data/spline/K0n_bubble1970_spline_for_cusp.root", WORK_DIR.Data());
+        spline_root_file_path = Form("%s/data/spline/K0n_spline_for_cusp.root", WORK_DIR.Data());
     } else if (path.Contains(reaction3)) {
-        spline_root_file_path = Form("%s/data/spline/piPlusSigmaMinus_bubble1970_spline_for_cusp.root", WORK_DIR.Data());
+        spline_root_file_path = Form("%s/data/spline/piPlusSigmaMinus_spline_for_cusp.root", WORK_DIR.Data());
     } else {
         std::cerr << "Error: No matching reaction found in path: " << path << std::endl;
         return 1;

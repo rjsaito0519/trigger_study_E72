@@ -61,7 +61,7 @@ public:
     Int_t cos_theta_n_bin = 100;
 
     // -- for momentum binning -----
-    Int_t n_mom_points = 600;
+    Int_t n_mom_points = 800;
     Double_t mom_step_size = 0.5; // MeV/c
     Double_t mom_start = 600.0; // MeV
     Int_t cos_theta_bin_num = 50;
