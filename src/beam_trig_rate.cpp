@@ -163,7 +163,8 @@ void analyze(TString path){
     // +--------------+
     // | Print result |
     // +--------------+
-    auto kaon_intensity = new TF1("kaon_intensity", "328.860759*x - 202920.253", 600., 900.); // fitting result (unit: /spill)
+    // auto kaon_intensity = new TF1("kaon_intensity", "328.860759*x - 202920.253", 600., 900.); // fitting result (unit: /spill)
+    auto kaon_intensity = new TF1("kaon_intensity", "137.962111*exp(x / 126.840771) - 6979.77790", 600., 1000.); // fitting result (unit: /spill)
     Ssiz_t mom_pos = path.Index("mom");
     Double_t mom_value = 735.0;
     if (mom_pos != kNPOS) {

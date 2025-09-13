@@ -140,24 +140,25 @@ void analyze(TString dir){
     const Double_t special_mom = 735.0;
 
     // Measurement times [sec]
-    const Double_t day  = 24.0 * 3600.0;
-    const Double_t hour = 3600.0; 
+    const Double_t day    = 24.0 * 3600.0;
+    const Double_t hour   = 3600.0; 
+    const Double_t minute = 60.0; 
     const std::unordered_map<Double_t, Double_t> t_measure_scan = {
         {645.0, 12.0*hour },
         {665.0, 12.0*hour },
         {685.0, 12.0*hour },
         {705.0, 12.0*hour },
-        {725.0, 11.0*hour },
-        {745.0,  9.0*hour },
-        {765.0,  8.0*hour },
-        {785.0,  7.0*hour },
-        {805.0,  6.0*hour },
-        {825.0,  5.0*hour },
+        {725.0, 11.0*hour + 20.0*minute },
+        {745.0,  9.0*hour + 30.0*minute },
+        {765.0,  7.0*hour + 50.0*minute },
+        {785.0,  6.0*hour + 40.0*minute },
+        {805.0,  5.0*hour + 30.0*minute },
+        {825.0,  4.0*hour + 40.0*minute },
         {845.0,  4.0*hour },
-        {865.0,  3.5*hour },
-        {885.0,  2.5*hour },
-        {905.0,  2.5*hour },
-        {925.0,  1.5*hour },        
+        {865.0,  3.0*hour + 20.0*minute },
+        {885.0,  2.0*hour + 50.0*minute },
+        {905.0,  2.0*hour + 20.0*minute },
+        {925.0,  2.0*hour },        
     };
     const Double_t t_measure_735  = 3.5 * day;
 
