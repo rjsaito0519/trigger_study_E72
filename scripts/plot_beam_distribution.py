@@ -41,7 +41,7 @@ ax1 = fig.add_subplot(111)
 sum_n_kaon_scan = 0
 
 # for i, mom in enumerate([685, 705, 725, 745, 765]):
-for i, mom in enumerate(range(645, 806, 20)):
+for i, mom in enumerate(range(645, 926, 20)):
     center, edge, value = get_hist_data(file, f"mom{mom}")
     sum_n_kaon_scan += np.sum(value)
     width = (edge[1] - edge[0])
@@ -57,7 +57,7 @@ ax1.text(0.07, 0.93, f"Total = {sum_n_kaon_scan/10**9:.1f}" + r" $\times 10^9$ K
 ax1.yaxis.set_major_formatter(ptick.EngFormatter())
 ax1.set_xlabel(r"$p_{K}^{\rm Lab}$ [MeV/c]")
 ax1.set_ylabel("Counts [/(MeV/c)]")
-ax1.set_xlim(609, 831)
+# ax1.set_xlim(609, 831)
 
 plt.subplots_adjust(left = 0.15, right=0.98, top=0.98, bottom = 0.12)
 img_save_path = os.path.join(script_dir, "../results/img/yield/beam_distribution_scan.pdf")
@@ -82,7 +82,7 @@ ax1.text(0.07, 0.93, f"Total = {np.sum(value)/10**9:.1f}" + r" $\times 10^9$ Kao
 ax1.yaxis.set_major_formatter(ptick.EngFormatter())
 ax1.set_xlabel(r"$p_{K}^{\rm Lab}$ [MeV/c]")
 ax1.set_ylabel("Counts [/(MeV/c)]")
-ax1.set_xlim(649, 791)
+# ax1.set_xlim(649, 791)
 
 plt.subplots_adjust(left = 0.16, right=0.98, top=0.98, bottom = 0.12)
 img_save_path = os.path.join(script_dir, "../results/img/yield/beam_distribution_735.pdf")
@@ -90,5 +90,3 @@ os.makedirs(os.path.dirname(img_save_path), exist_ok=True)
 plt.savefig(img_save_path, format='pdf', bbox_inches='tight', dpi=600, transparent=True)
 
 plt.show()
-
-print( format(sum_n_kaon_scan + np.sum(value), "E") )

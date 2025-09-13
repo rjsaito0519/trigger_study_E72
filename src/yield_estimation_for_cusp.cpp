@@ -289,7 +289,6 @@ Int_t main(int argc, char** argv) {
         // -- calc n react -----
         Double_t n_kaon = (*n_kaon_container)[ana_helper::get_index(mom)] > 500.0 ? (*n_kaon_container)[ana_helper::get_index(mom)] : 0.0;
         Double_t tmp_n_react = cs*TMath::Power(10.0, -27.0) * n_kaon * conf.density_LH2 * conf.Na * conf.d;
-        std::cout << mom << ", " << ana_helper::get_index(mom) << ", " << n_kaon << std::endl;
         if (mom_min <= mom && mom <= mom_max) n_react_container.push_back(tmp_n_react);
         else n_react_container.push_back(0.0);
     }

@@ -154,10 +154,10 @@ void analyze(TString dir){
         {805.0,  6.0*hour },
         {825.0,  5.0*hour },
         {845.0,  4.0*hour },
-        {865.0,  3.0*hour },
-        {885.0,  3.0*hour },
-        {905.0,  2.0*hour },
-        {925.0,  2.0*hour },        
+        {865.0,  3.5*hour },
+        {885.0,  2.5*hour },
+        {905.0,  2.5*hour },
+        {925.0,  1.5*hour },        
     };
     const Double_t t_measure_735  = 3.5 * day;
 
