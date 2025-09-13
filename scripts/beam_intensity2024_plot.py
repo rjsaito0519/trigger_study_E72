@@ -25,21 +25,35 @@ plt.rcParams["ytick.minor.size"] = 5                 #y軸補助目盛り線の�
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
 data = np.array([
-    [700, 27.4*10**3],
-    [735, 38.4*10**3],
-    [750, 44.0*10**3]
+    [ 700.,  27.4*10**3],
+    [ 735.,  38.4*10**3],
+    [ 750.,  44.0*10**3],
+    [1000., 359.2*10**3]
 ])
 
-model = lfm.LinearModel()
-params = model.guess(x = data[:, 0], data = data[:, 1] )
+def f(x, amp, tau, c):
+    return amp*np.exp( x/tau ) + c
+
+# model = lfm.LinearModel()
+# model = lfm.ExponentialModel()
+# params = model.guess(x = data[:, 0], data = data[:, 1])
+
+model = lfm.Model(f, name = "f")
+params = model.make_params()
+params.add('amp', value=2.74e4, min=0)
+# params.add('x0',  value=700)
+params.add('tau', value=115, min=1)
+params.add('c',  value=1.0)
+
 result = model.fit(x = data[:, 0], data = data[:, 1], params=params, method='leastsq')
 print(result.fit_report())
-fit_x = np.linspace(650, 800, 2)
-fit_y = result.eval_components(x=fit_x)["linear"]
+fit_x = np.linspace(600, 1000, 10000)
+fit_y = result.eval_components(x=fit_x)["f"]
 
 fig = plt.figure(figsize=(8, 8))
 ax = fig.add_subplot(111)
 ax.plot(fit_x, fit_y, color = "C1")
+# ax.plot(data[:, 0], result.best_fit, 'r-', label='best fit')
 ax.plot(data[:, 0], data[:, 1], "o", ms = 10, color = "C0")
 
 ax.set_xlabel(r"$p_K$ [MeV/c]")

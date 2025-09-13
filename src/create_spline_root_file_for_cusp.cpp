@@ -205,25 +205,25 @@ Int_t main(int argc, char** argv) {
     // +----+
     // | Kp |
     // +----+
-    TString save_name = "Kp_bubble1970";
-    mom_kaons = DiffCrossSection::mom_kaons_Kp_bubble1970;
-    legendre_coeff = DiffCrossSection::legendre_coeff_Kp_bubble1970;
+    TString save_name = "Kp";
+    mom_kaons = DiffCrossSection::mom_kaons_Kp_for_cusp;
+    legendre_coeff = DiffCrossSection::legendre_coeff_Kp_for_cusp;
     analyze(save_name);
 
     // +-----+
     // | K0n |
     // +-----+
-    save_name = "K0n_bubble1970";
-    mom_kaons = DiffCrossSection::mom_kaons_K0n_bubble1970;
-    legendre_coeff = DiffCrossSection::legendre_coeff_K0n_bubble1970;
+    save_name = "K0n";
+    mom_kaons = DiffCrossSection::mom_kaons_K0n_for_cusp;
+    legendre_coeff = DiffCrossSection::legendre_coeff_K0n_for_cusp;
     analyze(save_name);
     
     // +------------------+
     // | piPlusSigmaMinus |
     // +------------------+
-    save_name = "piPlusSigmaMinus_bubble1970";
-    mom_kaons = DiffCrossSection::mom_kaons_piPlusSigmaMinus_bubble1970;
-    legendre_coeff = DiffCrossSection::legendre_coeff_piPlusSigmaMinus_bubble1970;
+    save_name = "piPlusSigmaMinus";
+    mom_kaons = DiffCrossSection::mom_kaons_piPlusSigmaMinus_for_cusp;
+    legendre_coeff = DiffCrossSection::legendre_coeff_piPlusSigmaMinus_for_cusp;
     analyze(save_name);
 
     return 0;

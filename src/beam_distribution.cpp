@@ -120,28 +120,45 @@ void analyze(TString dir){
     gStyle->SetPadBottomMargin(0.15);
     gROOT->GetColor(0)->SetAlpha(0.01);
 
-    auto kaon_intensity = new TF1("kaon_intensity", "328.860759*x - 202920.253", 600., 900.); // fitting result (unit: /spill)
-
+    // auto kaon_intensity = new TF1("kaon_intensity", "328.860759*x - 202920.253", 600., 900.); // fitting result (unit: /spill)
+    auto kaon_intensity = new TF1("kaon_intensity", "137.962111*exp(x / 126.840771) - 6979.77790", 600., 1000.); // fitting result (unit: /spill)
 
     // +-----------------------+
     // | Histogram preparation |
     // +-----------------------+
     auto make_hist = [](Double_t m) {
-        return new TH1D(Form("mom%.0f", m), Form("mom%.0f", m), 600, 600., 900.);
+        return new TH1D(Form("mom%.0f", m), Form("mom%.0f", m), 1000, 500., 1000.);
     };
     
-    auto h_momscan = new TH1D("mom_scan", "Kaon momentum (scan)", 600, 600., 900.);
-    auto h_momall  = new TH1D("mom_all",  "Kaon momentum (all)" , 600, 600., 900.);
+    auto h_momscan = new TH1D("mom_scan", "Kaon momentum (scan)", 1000, 500., 1000.);
+    auto h_momall  = new TH1D("mom_all",  "Kaon momentum (all)" , 1000, 500., 1000.);
 
     // List of scan momenta (each with 0.5 days measurement time)
-    const std::vector<Double_t> scan_moms = {645.0, 665.0, 685.0, 705.0, 725.0, 745.0, 765.0, 785.0, 805.0};
+    const std::vector<Double_t> scan_moms = {645.0, 665.0, 685.0, 705.0, 725.0, 745.0, 765.0, 785.0, 805.0, 825.0, 845.0, 865.0, 885.0, 905.0, 925.0};
 
     // Special case: 735 MeV/c (3.5 days, different data_fill flag, only added to "all")
     const Double_t special_mom = 735.0;
 
     // Measurement times [sec]
-    const Double_t day = 24.0 * 3600.0;
-    const Double_t t_measure_scan = 0.5 * day;
+    const Double_t day  = 24.0 * 3600.0;
+    const Double_t hour = 3600.0; 
+    const std::unordered_map<Double_t, Double_t> t_measure_scan = {
+        {645.0, 12.0*hour },
+        {665.0, 12.0*hour },
+        {685.0, 12.0*hour },
+        {705.0, 12.0*hour },
+        {725.0, 11.0*hour },
+        {745.0,  9.0*hour },
+        {765.0,  8.0*hour },
+        {785.0,  7.0*hour },
+        {805.0,  6.0*hour },
+        {825.0,  5.0*hour },
+        {845.0,  4.0*hour },
+        {865.0,  3.0*hour },
+        {885.0,  3.0*hour },
+        {905.0,  2.0*hour },
+        {925.0,  2.0*hour },        
+    };
     const Double_t t_measure_735  = 3.5 * day;
 
     // Store produced histograms for later writing
@@ -154,7 +171,7 @@ void analyze(TString dir){
     for (Double_t m : scan_moms) {
         auto h = std::unique_ptr<TH1D>(make_hist(m));
 
-        const Double_t factor = kaon_intensity->Eval(m) * t_measure_scan / conf.spill_length;
+        const Double_t factor = kaon_intensity->Eval(m) * t_measure_scan.at(m) / conf.spill_length;
 
         data_fill(Form("%s/beam_mom%.0f.root", dir.Data(), m), h.get(), factor);
 
