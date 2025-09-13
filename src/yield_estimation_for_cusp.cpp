@@ -97,8 +97,8 @@ void analyze(TString path, Int_t focus_pdg_code){
             conf.cos_theta_bin_num, -1.0, 1.0
         );
     }
-    auto *h_mom_dist_raw = new TH1D("mom_dist_raw", "mom_dist", 600, 600.0, 900.0);
-    auto *h_mom_dist_trig = new TH1D("mom_dist_trig", "mom_dist", 600, 600.0, 900.0);
+    auto *h_mom_dist_raw = new TH1D("mom_dist_raw", "mom_dist", 1000, 500.0, 1000.0);
+    auto *h_mom_dist_trig = new TH1D("mom_dist_trig", "mom_dist", 1000, 500.0, 1000.0);
 
     // +----------------------+
     // | check and fill event |
