@@ -24,6 +24,50 @@ script_dir = os.path.dirname(os.path.abspath(__file__))
 
 dir = ""
 
+data = []
+
+for mom in list(range(605, 1006, 20)):
+    root_file_path = os.path.join(script_dir, f"../data/kvc_pos_optimize/{dir}/beam_mom{mom}.root")
+    if os.path.exists(root_file_path):
+        file = uproot.open(root_file_path)
+        tree = file["tree"].arrays(library="np")
+        print(tree["n_trig"])
+        data.append([
+            mom,
+            tree["kaon_rate2024"][0]*tree["n_trig_all"][0]/tree["n_kaon_all"][0],
+            tree["kaon_rate2024"][0]*tree["n_trig"][0][0]/tree["n_kaon_all"][0], # no decay
+            tree["kaon_rate2024"][0]*tree["n_trig"][0][1]/tree["n_kaon_all"][0], # muon
+            tree["kaon_rate2024"][0]*(tree["n_trig"][0][2]+tree["n_trig"][0][3])/tree["n_kaon_all"][0], # pion
+        ])
+data = np.array(data)
+
+fig = plt.figure(figsize=(8, 8))
+ax  = fig.add_subplot(111)
+ax.plot(data[:, 0], data[:, 1], "o", color = "C0")
+# plt.legend(fontsize = 18)
+ax.set_xlabel("KVC Z position[mm]")
+ax.set_ylabel("Accidental Trigger Rate [kHz]")
+# img_save_path = os.path.join(script_dir, "../results/img/01.png")
+# os.makedirs(os.path.dirname(img_save_path), exist_ok=True)
+# plt.savefig(img_save_path, format='png', bbox_inches='tight', dpi=600, transparent=True)
+plt.show()
+
+fig = plt.figure(figsize=(8, 8))
+ax  = fig.add_subplot(111)
+ax.plot(data[:, 0], data[:, 2], "--o", color = "C0", label = "no decay")
+ax.plot(data[:, 0], data[:, 3], "--s", color = "C1", label = r"decay to $\mu$")
+ax.plot(data[:, 0], data[:, 4], "--^", color = "C2", label = r"decay to $\pi$")
+# plt.legend(fontsize = 18)
+ax.set_xlabel("KVC Z position[mm]")
+ax.set_ylabel("Accidental Trigger Rate [kHz]")
+# img_save_path = os.path.join(script_dir, "../results/img/02.png")
+# os.makedirs(os.path.dirname(img_save_path), exist_ok=True)
+# plt.savefig(img_save_path, format='png', bbox_inches='tight', dpi=600, transparent=True)
+plt.show()
+
+
+sys.exit()
+
 data = {
     645: [],
     735: [],

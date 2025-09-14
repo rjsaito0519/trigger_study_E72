@@ -76,7 +76,7 @@ void analyze(TString path, Int_t focus_pdg_code){
     Int_t dot_index = path.Last('.');
     Int_t sla_index = path.Last('/');
     for (Int_t i = sla_index+1; i < dot_index; i++) save_name += path[i];
-    TString output_path = Form("%s/root/yield_%s_%d_for_cusp.root", OUTPUT_DIR.Data(), save_name.Data(), focus_pdg_code);
+    TString output_path = Form("%s/root/for_cusp/yield_%s_%d_for_cusp.root", OUTPUT_DIR.Data(), save_name.Data(), focus_pdg_code);
     if (std::ifstream(output_path.Data())) std::remove(output_path.Data());
     TFile fout(output_path.Data(), "recreate");
 
@@ -160,7 +160,7 @@ void analyze(TString path, Int_t focus_pdg_code){
     Int_t rows = 4;
     Int_t cols = 4;
     Int_t max_pads = rows * cols;
-    TString pdf_name = Form("%s/img/yield_%s_%d_for_cusp.pdf", OUTPUT_DIR.Data(), save_name.Data(), focus_pdg_code);
+    TString pdf_name = Form("%s/img/for_cusp/yield_%s_%d_for_cusp.pdf", OUTPUT_DIR.Data(), save_name.Data(), focus_pdg_code);
 
     auto *c = new TCanvas("yield", "", 1500, 1200);
     c->Divide(cols, rows);

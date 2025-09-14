@@ -219,7 +219,6 @@ void analyze(TString path){
     // print_result(n_trig_mp2);
     // print_result(n_trig_htofp);
 
-
     // +--------------------------+
     // | prepare output root file |
     // +--------------------------+

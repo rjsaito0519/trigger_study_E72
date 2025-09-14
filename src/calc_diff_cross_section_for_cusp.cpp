@@ -158,9 +158,9 @@ void analyze(TString path_yield, TString path_acceptance){
     Int_t dot_index = path_yield.Last('.');
     Int_t sla_index = path_yield.Last('/');
     for (Int_t i = sla_index+7; i < dot_index; i++) save_name += path_yield[i];
-    TString output_path = Form("%s/root/dcs_%s_for_cusp.root", OUTPUT_DIR.Data(), save_name.Data());
+    TString output_path = Form("%s/root/for_cusp/dcs_%s_for_cusp.root", OUTPUT_DIR.Data(), save_name.Data());
     if (std::ifstream(output_path.Data())) std::remove(output_path.Data());
-    TFile fout(output_path.Data(), "create");
+    TFile fout(output_path.Data(), "recreate");
 
 
     // +-------------------+
@@ -271,7 +271,7 @@ void analyze(TString path_yield, TString path_acceptance){
     Int_t rows = 2;
     Int_t cols = 2;
     Int_t max_pads = rows * cols;
-    TString pdf_name = Form("%s/img/dcs_%s_for_cusp.pdf", OUTPUT_DIR.Data(), save_name.Data());
+    TString pdf_name = Form("%s/img/for_cusp/dcs_%s_for_cusp.pdf", OUTPUT_DIR.Data(), save_name.Data());
 
     // -- prepare coeff graph -----
     TGraphErrors *g_coeff[n_coeff];

@@ -75,9 +75,9 @@ void analyze(TString path, Int_t focus_pdg_code){
     Int_t dot_index = path.Last('.');
     Int_t sla_index = path.Last('/');
     for (Int_t i = sla_index+1; i < dot_index; i++) save_name += path[i];
-    TString output_path = Form("%s/root/acceptance_%s_%d.root", OUTPUT_DIR.Data(), save_name.Data(), focus_pdg_code);
+    TString output_path = Form("%s/root/for_cusp/acceptance_%s_%d.root", OUTPUT_DIR.Data(), save_name.Data(), focus_pdg_code);
     if (std::ifstream(output_path.Data())) std::remove(output_path.Data());
-    TFile fout(output_path.Data(), "create");
+    TFile fout(output_path.Data(), "recreate");
 
 
     // +-------------------+
@@ -127,7 +127,7 @@ void analyze(TString path, Int_t focus_pdg_code){
     Int_t rows = 2;
     Int_t cols = 2;
     Int_t max_pads = rows * cols;
-    TString pdf_name = Form("%s/img/acceptance_%s_%d.pdf", OUTPUT_DIR.Data(), save_name.Data(), focus_pdg_code);
+    TString pdf_name = Form("%s/img/for_cusp/acceptance_%s_%d.pdf", OUTPUT_DIR.Data(), save_name.Data(), focus_pdg_code);
 
 
     auto *c = new TCanvas("acceptance", "", 1500, 1200);
