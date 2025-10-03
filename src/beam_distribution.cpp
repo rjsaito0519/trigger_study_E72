@@ -101,6 +101,16 @@ void data_fill(TString path, TH1D *h, Double_t factor, Bool_t do_fill_scan = tru
     std::cout << "finish: " << path << std::endl;
 }
 
+
+Double_t kaon_intensity_max() {
+    return 137.962111 * TMath::Exp(884.5 / 126.840771) - 6979.77790;
+}
+
+Double_t kaon_intensity_func(Double_t* x, Double_t* /*p*/) {
+    Double_t val = 137.962111 * TMath::Exp(x[0] / 126.840771) - 6979.77790;
+    return TMath::Min(val, kaon_intensity_max());
+}
+
 void analyze(TString dir){
     Config& conf = Config::getInstance();
     
@@ -121,7 +131,8 @@ void analyze(TString dir){
     gROOT->GetColor(0)->SetAlpha(0.01);
 
     // auto kaon_intensity = new TF1("kaon_intensity", "328.860759*x - 202920.253", 600., 900.); // fitting result (unit: /spill)
-    auto kaon_intensity = new TF1("kaon_intensity", "137.962111*exp(x / 126.840771) - 6979.77790", 600., 1000.); // fitting result (unit: /spill)
+    // auto kaon_intensity = new TF1("kaon_intensity", "137.962111*exp(x / 126.840771) - 6979.77790", 600., 1000.); // fitting result (unit: /spill)
+    auto kaon_intensity = new TF1("kaon_intensity", kaon_intensity_func, 600., 1000., 0);
 
     // +-----------------------+
     // | Histogram preparation |
