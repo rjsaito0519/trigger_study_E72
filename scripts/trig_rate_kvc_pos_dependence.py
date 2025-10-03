@@ -22,6 +22,9 @@ plt.rcParams["xtick.minor.size"] = 5                 #x軸補助目盛り線の�
 plt.rcParams["ytick.minor.size"] = 5                 #y軸補助目盛り線の長さ
 script_dir = os.path.dirname(os.path.abspath(__file__))
 
+def f(x, amp, tau, c):
+    return amp*np.exp( x/tau ) + c
+
 dir = ""
 
 data = []
@@ -39,18 +42,56 @@ for mom in list(range(605, 1006, 20)):
             tree["kaon_rate2024"][0]*tree["n_trig"][0][1]/tree["n_kaon_all"][0], # muon
             tree["kaon_rate2024"][0]*(tree["n_trig"][0][2]+tree["n_trig"][0][3])/tree["n_kaon_all"][0], # pion
         ])
-data = np.array(data)
+data = np.asarray(data)
+
 
 fig = plt.figure(figsize=(8, 8))
 ax  = fig.add_subplot(111)
 ax.plot(data[:, 0], data[:, 1], "o", color = "C0")
+
+# --------------------
+model = lfm.Model(f, name = "f")
+params = model.make_params()
+params.add('amp', value=2.74e4, min=0)
+# params.add('x0',  value=700)
+params.add('tau', value=115, min=1)
+params.add('c',  value=1.0)
+result = model.fit(x = data[:, 0], data = data[:, 1], params=params, method='leastsq')
+print(result.fit_report())
+fit_x = np.linspace(600, 1000, 10000)
+fit_y = result.eval_components(x=fit_x)["f"]
+ax.plot(fit_x, fit_y, "--")
+
+target = 1.5 # kHz
+max_iter = 50
+tol = 1e-12,
+n_step = 100
+min_mom = data[:, 0].min()
+max_mom = data[:, 0].max()
+target_mom = None
+for _ in range(max_iter):
+    moms = np.linspace(min_mom, max_mom, n_step)
+    rate = result.eval_components(x=moms)["f"]
+    diff = np.abs( np.full_like(rate, target) - rate )
+    target_mom = moms[np.argmin(diff)]
+    mom_range = max_mom - min_mom
+    min_mom = target_mom - mom_range/n_step * 2
+    max_mom = target_mom + mom_range/n_step * 2
+    if np.min(diff) < tol:
+        break
+print(target_mom, result.eval_components(x=[884.5])["f"])
+# --------------------
+
+
 # plt.legend(fontsize = 18)
-ax.set_xlabel("KVC Z position[mm]")
+ax.set_xlabel(r"$p_K$ [MeV/c]")
 ax.set_ylabel("Accidental Trigger Rate [kHz]")
 # img_save_path = os.path.join(script_dir, "../results/img/01.png")
 # os.makedirs(os.path.dirname(img_save_path), exist_ok=True)
 # plt.savefig(img_save_path, format='png', bbox_inches='tight', dpi=600, transparent=True)
 plt.show()
+
+
 
 fig = plt.figure(figsize=(8, 8))
 ax  = fig.add_subplot(111)
@@ -58,7 +99,7 @@ ax.plot(data[:, 0], data[:, 2], "--o", color = "C0", label = "no decay")
 ax.plot(data[:, 0], data[:, 3], "--s", color = "C1", label = r"decay to $\mu$")
 ax.plot(data[:, 0], data[:, 4], "--^", color = "C2", label = r"decay to $\pi$")
 # plt.legend(fontsize = 18)
-ax.set_xlabel("KVC Z position[mm]")
+ax.set_xlabel(r"$p_K$ [MeV/c]")
 ax.set_ylabel("Accidental Trigger Rate [kHz]")
 # img_save_path = os.path.join(script_dir, "../results/img/02.png")
 # os.makedirs(os.path.dirname(img_save_path), exist_ok=True)

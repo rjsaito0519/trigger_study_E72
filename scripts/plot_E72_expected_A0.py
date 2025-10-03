@@ -27,8 +27,8 @@ mass_proton  =  938.27208816
 mass_neutron = 939.56542052
 
 mass_tot = mass_Lambda + mass_eta
-range_left  = mass_tot - 75
-range_right = mass_tot + 75
+range_left  = mass_tot -  75
+range_right = mass_tot + 105
 
 color_dict = dict(
     bubble       = "C0",
@@ -65,7 +65,7 @@ def sqrt_s_err(mom_kaon, mom_kaon_err):
 
 def plot(arg_dict1, arg_dict2, arg_dict3):
 
-    fig = plt.figure(figsize=(15, 10))
+    fig = plt.figure(figsize=(13, 10))
     ax1 = fig.add_subplot(231)
     ax2 = fig.add_subplot(232)
     ax3 = fig.add_subplot(233)
@@ -189,7 +189,7 @@ def plot(arg_dict1, arg_dict2, arg_dict3):
 
 def plot_up_panel(arg_dict1, arg_dict2, arg_dict3):
 
-    fig = plt.figure(figsize=(15, 5))
+    fig = plt.figure(figsize=(14, 5))
     ax1 = fig.add_subplot(131)
     ax2 = fig.add_subplot(132)
     ax3 = fig.add_subplot(133)
@@ -226,7 +226,7 @@ def plot_up_panel(arg_dict1, arg_dict2, arg_dict3):
                 sqrt_s(tree["mom"])/1000, a0, 
                 xerr = sqrt_s_err(tree["mom"], tree["mom_err"])/1000, 
                 yerr = a0_err, 
-                fmt = "o", capsize = 0, markeredgecolor = "red", ms = 0, ecolor='red', color = "w", zorder = 5, elinewidth = 2, label = "E72"
+                fmt = "o", capsize = 0, markeredgecolor = "red", ms = 0, ecolor='red', color = "w", zorder = 5, elinewidth = 1.5, label = "E72"
             )
                     
         ax.axvline(mass_tot/1000, ls = "dashed", color="red", lw = 1.0, zorder = 0)
@@ -392,7 +392,7 @@ if __name__ == '__main__':
             np.genfromtxt(os.path.join(script_dir, "../data/legendre/Kp_bubble_chamber1970_legendre.csv"), skip_header=1, delimiter=","),
             np.genfromtxt(os.path.join(script_dir, "../data/legendre/Kp_spark_chamber_legendre.csv"), skip_header=1, delimiter=","),
         ],
-        "rootdata": "dcs_kp_9999_for_cusp_for_cusp.root",
+        "rootdata": "for_cusp/dcs_kp_9999_for_cusp.root",
         "data_key": ["bubble1970", "spark"],
         "title": r"$K^-p\rightarrow K^-p$",
     }
@@ -412,7 +412,7 @@ if __name__ == '__main__':
             np.genfromtxt(os.path.join(script_dir, "../data/legendre/K0n_counter_legendre.csv"), skip_header=1, delimiter=","),
             
         ],
-        "rootdata": "dcs_k0n_211_for_cusp_for_cusp.root",
+        "rootdata": "for_cusp/dcs_k0n_211_for_cusp.root",
         "data_key": ["bubble1970", "bubble1968", "bubble1975", "crystal_ball", "counter"],
         "title": r"$K^-p \rightarrow \overline{K}^0n$",
         "savename": "k0n_coeff_result"
@@ -427,7 +427,7 @@ if __name__ == '__main__':
             np.genfromtxt(os.path.join(script_dir, "../data/legendre/pi+Sigma-_bubble_chamber1968_legendre.csv"), skip_header=1, delimiter=","),
             np.genfromtxt(os.path.join(script_dir, "../data/legendre/pi+Sigma-_bubble_chamber1975_legendre.csv"), skip_header=1, delimiter=","),            
         ],
-        "rootdata": "dcs_pi+sigma-_2112_for_cusp_for_cusp.root",
+        "rootdata": "for_cusp/dcs_pi+sigma-_2112_for_cusp.root",
         "data_key": ["bubble1970", "bubble1968", "bubble1975"],
         "title": r"$K^-p \rightarrow \pi^+\Sigma^-$",
         "savename": "pi+sigma-_coeff_result"

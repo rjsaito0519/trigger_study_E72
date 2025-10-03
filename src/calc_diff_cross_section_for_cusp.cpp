@@ -158,7 +158,7 @@ void analyze(TString path_yield, TString path_acceptance){
     Int_t dot_index = path_yield.Last('.');
     Int_t sla_index = path_yield.Last('/');
     for (Int_t i = sla_index+7; i < dot_index; i++) save_name += path_yield[i];
-    TString output_path = Form("%s/root/for_cusp/dcs_%s_for_cusp.root", OUTPUT_DIR.Data(), save_name.Data());
+    TString output_path = Form("%s/root/for_cusp/dcs_%s.root", OUTPUT_DIR.Data(), save_name.Data());
     if (std::ifstream(output_path.Data())) std::remove(output_path.Data());
     TFile fout(output_path.Data(), "recreate");
 
@@ -271,7 +271,7 @@ void analyze(TString path_yield, TString path_acceptance){
     Int_t rows = 2;
     Int_t cols = 2;
     Int_t max_pads = rows * cols;
-    TString pdf_name = Form("%s/img/for_cusp/dcs_%s_for_cusp.pdf", OUTPUT_DIR.Data(), save_name.Data());
+    TString pdf_name = Form("%s/img/for_cusp/dcs_%s.pdf", OUTPUT_DIR.Data(), save_name.Data());
 
     // -- prepare coeff graph -----
     TGraphErrors *g_coeff[n_coeff];
@@ -452,8 +452,8 @@ int main(int argc, char** argv) {
     TString spline_root_file_path;
     if (path_yield.Contains(reaction1)) {
         // -- for create hist -----
-;        // mom_left = 723.0;
-        // mom_right = 769.0;
+        mom_left = 723.0;
+        mom_right = 769.0;
         n_cluster = 4;
         branching_ratio = 0.641;
         // -- for fitting -----
@@ -469,9 +469,9 @@ int main(int argc, char** argv) {
         // -- for create hist -----
         // mom_left = 662.0;
         // mom_right = 782.0;
-        mom_left = 621.0;
-        mom_right = 793.0;
-        n_cluster = 6;
+        mom_left = 626.0;
+        mom_right = 942.0;
+        n_cluster = 4;
         branching_ratio = 1.0;
         n_rebin = 1;
         fit_left_index_offset  = 1;
@@ -485,9 +485,9 @@ int main(int argc, char** argv) {
         // -- for create hist -----
         // mom_left = 665.0;
         // mom_right = 779.0;
-        mom_left = 623.0;
-        mom_right = 793.0;
-         n_cluster = 4;
+        mom_left = 624.0;
+        mom_right = 940.0;
+        n_cluster = 4;
         branching_ratio = 0.692;
         // -- for fitting -----
         n_rebin = 2;
@@ -500,8 +500,10 @@ int main(int argc, char** argv) {
 
     } else if (path_yield.Contains(reaction4)) {
         // -- for create hist -----
-        mom_left = 663.0;
-        mom_right = 779.0;
+        // mom_left = 663.0;
+        // mom_right = 779.0;
+        mom_left = 624.0;
+        mom_right = 940.0;
         n_cluster = 4;
         branching_ratio = 0.99848;
         // -- for fitting -----

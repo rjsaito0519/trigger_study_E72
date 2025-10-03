@@ -104,6 +104,53 @@ def plot(arg_dict):
     plt.savefig(img_save_path, format='png', bbox_inches='tight', dpi=300, transparent=True)
     plt.show()
 
+def plot_onlyhist(arg_dict):
+    root_file_path = os.path.join(script_dir, "../results/root/{}".format(arg_dict["data"]))
+    file = uproot.open(root_file_path)
+
+    prefix = ""
+    if arg_dict["mp1"]:
+        prefix = "multi1_"
+    
+    edep_list = [
+        # hist_name       color  label
+        # [f"{prefix}edep_proton",   "C3", "proton"],
+        [f"{prefix}edep_piplus",   "C1", r"$\pi^+$"],
+        [f"{prefix}edep_piminus",  "C0", r"$\pi^-$"],
+        [f"{prefix}edep_kminus",   "C2", r"$K^-$"],
+        # [f"{prefix}edep_electron", "C5", r"$e^-, e^+$"],
+        [f"{prefix}edep_muon",     "C6", r"$\mu^-, \mu^+$"],
+    ]
+
+    fig, ax = plt.subplots(1, 1, figsize=(10, 8))
+
+    # -- edep -----
+    ax1 = ax[0]
+    for keys in edep_list:
+        center, edge, value = get_hist_data(file, keys[0])
+        ax1.hist(center, bins=edge, weights=value, lw = 1.5, histtype='step', color=keys[1], label = keys[2])
+
+    ax1.yaxis.set_major_formatter(ptick.EngFormatter())
+    ax1.set_xticks([0, 2, 4, 6, 8, 10, 12])
+    # ax1.set_xticklabels([])
+    ax1.grid(True)
+    ax1.set_axisbelow(True)
+    ax1.set_title(arg_dict["title"])
+    ax1.legend(fontsize = 20, handletextpad = 0.5, handlelength=0.7, loc = "upper left", bbox_to_anchor=(1.01, 1.0), borderaxespad=0)
+    ax1.set_xlim(0, 11.9)
+    ax1.set_xlabel("Energy deposit [MeV]")
+
+    plt.subplots_adjust(left = 0.11, right=0.85, top=0.93, bottom = 0.1, wspace=0.02, hspace=0.01)
+
+    # img_save_path = os.path.join(
+    #     script_dir, 
+    #     "../results/img/htof/{}{}.png".format(prefix, os.path.splitext(os.path.basename(arg_dict["data"]))[0])
+    # )
+    # os.makedirs(os.path.dirname(img_save_path), exist_ok=True)
+    # plt.savefig(img_save_path, format='png', bbox_inches='tight', dpi=300, transparent=True)
+    plt.show()
+
+
 
 if __name__ == '__main__':
 
@@ -114,7 +161,7 @@ if __name__ == '__main__':
         "log": True,
         "rec": True
     }
-    plot(arg_dict)
+    plot_onlyhist(arg_dict)
     sys.exit()
 
     # +------------+
