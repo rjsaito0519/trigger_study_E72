@@ -28,9 +28,11 @@ def f(x, amp, tau, c):
 dir = ""
 
 data = []
+momenta = np.asarray([645.0, 665.0, 685.0, 705.0, 725.0, 745.0, 765.0, 790.0, 814.0, 842.0, 870.0, 902.0, 933.0])
 
-for mom in list(range(605, 1006, 20)):
-    root_file_path = os.path.join(script_dir, f"../data/kvc_pos_optimize/{dir}/beam_mom{mom}.root")
+# for mom in list(range(605, 1006, 20)):
+for mom in momenta:
+    root_file_path = os.path.join(script_dir, f"../data/kvc_pos_optimize/{dir}/beam_mom{mom:.0f}.root")
     if os.path.exists(root_file_path):
         file = uproot.open(root_file_path)
         tree = file["tree"].arrays(library="np")
@@ -49,38 +51,38 @@ fig = plt.figure(figsize=(8, 8))
 ax  = fig.add_subplot(111)
 ax.plot(data[:, 0], data[:, 1], "o", color = "C0")
 
-# --------------------
-model = lfm.Model(f, name = "f")
-params = model.make_params()
-params.add('amp', value=2.74e4, min=0)
-# params.add('x0',  value=700)
-params.add('tau', value=115, min=1)
-params.add('c',  value=1.0)
-result = model.fit(x = data[:, 0], data = data[:, 1], params=params, method='leastsq')
-print(result.fit_report())
-fit_x = np.linspace(600, 1000, 10000)
-fit_y = result.eval_components(x=fit_x)["f"]
-ax.plot(fit_x, fit_y, "--")
+# # --------------------
+# model = lfm.Model(f, name = "f")
+# params = model.make_params()
+# params.add('amp', value=2.74e4, min=0)
+# # params.add('x0',  value=700)
+# params.add('tau', value=115, min=1)
+# params.add('c',  value=1.0)
+# result = model.fit(x = data[:, 0], data = data[:, 1], params=params, method='leastsq')
+# print(result.fit_report())
+# fit_x = np.linspace(600, 1000, 10000)
+# fit_y = result.eval_components(x=fit_x)["f"]
+# ax.plot(fit_x, fit_y, "--")
 
-target = 1.5 # kHz
-max_iter = 50
-tol = 1e-12,
-n_step = 100
-min_mom = data[:, 0].min()
-max_mom = data[:, 0].max()
-target_mom = None
-for _ in range(max_iter):
-    moms = np.linspace(min_mom, max_mom, n_step)
-    rate = result.eval_components(x=moms)["f"]
-    diff = np.abs( np.full_like(rate, target) - rate )
-    target_mom = moms[np.argmin(diff)]
-    mom_range = max_mom - min_mom
-    min_mom = target_mom - mom_range/n_step * 2
-    max_mom = target_mom + mom_range/n_step * 2
-    if np.min(diff) < tol:
-        break
-print(target_mom, result.eval_components(x=[884.5])["f"])
-# --------------------
+# target = 1.5 # kHz
+# max_iter = 50
+# tol = 1e-12,
+# n_step = 100
+# min_mom = data[:, 0].min()
+# max_mom = data[:, 0].max()
+# target_mom = None
+# for _ in range(max_iter):
+#     moms = np.linspace(min_mom, max_mom, n_step)
+#     rate = result.eval_components(x=moms)["f"]
+#     diff = np.abs( np.full_like(rate, target) - rate )
+#     target_mom = moms[np.argmin(diff)]
+#     mom_range = max_mom - min_mom
+#     min_mom = target_mom - mom_range/n_step * 2
+#     max_mom = target_mom + mom_range/n_step * 2
+#     if np.min(diff) < tol:
+#         break
+# print(target_mom, result.eval_components(x=[884.5])["f"])
+# # --------------------
 
 
 # plt.legend(fontsize = 18)
