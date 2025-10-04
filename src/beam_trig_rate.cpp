@@ -228,7 +228,7 @@ void analyze(TString path){
     for (Int_t i = sla_index+1; i < dot_index; i++) save_name += path[i];
     TString output_path = Form("%s/root/kvc_pos_optimize/%s.root", OUTPUT_DIR.Data(), save_name.Data());
     if (std::ifstream(output_path.Data())) std::remove(output_path.Data());
-    TFile fout(output_path.Data(), "create");
+    TFile fout(output_path.Data(), "RECREATE");
     TTree output_tree("tree", "");
     output_tree.Branch("kvc_eff", &conf.efficiency_kvc, "kvc_eff/D");
     output_tree.Branch("kaon_rate2024", &Kaon_rate2024, "Kaon_rate2024/D");

@@ -40,9 +40,12 @@ fig = plt.figure(figsize=(10, 8))
 ax1 = fig.add_subplot(111)
 sum_n_kaon_scan = 0
 
+momenta = np.asarray([655.0, 685.0, 705.0, 725.0, 745.0, 765.0, 790.0, 814.0, 842.0, 870.0, 902.0, 933.0])
+
 # for i, mom in enumerate([685, 705, 725, 745, 765]):
-for i, mom in enumerate(list(range(645, 926, 20))):
-    center, edge, value = get_hist_data(file, f"mom{mom}")
+# for i, mom in enumerate(list(range(645, 926, 20))):
+for i, mom in enumerate(momenta):
+    center, edge, value = get_hist_data(file, f"mom{mom:.0f}")
     sum_n_kaon_scan += np.sum(value)
     width = (edge[1] - edge[0])
     ax1.hist(center, bins=edge, weights=value/width, lw = 1.5, histtype='step', color=f"C{i}", zorder = 3, label = f"{mom:.0f} MeV/c")

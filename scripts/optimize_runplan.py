@@ -192,7 +192,7 @@ def main():
     step = 10.0 / 60.0  # 10 minutes
 
     # momenta = np.arange(645, 926, 20, dtype=float)  # 645, 665, ..., 925
-    momenta = np.asarray([655.0, 685.0, 705.0, 725.0, 745.0, 765.0, 790.0, 814.0, 842.0, 870.0, 902.0, 933.0])
+    momenta = np.asarray([645.0, 665.0, 685.0, 705.0, 725.0, 745.0, 765.0, 790.0, 814.0, 842.0, 870.0, 902.0, 933.0])
     r = kaon_intensity(momenta)
     if np.any(r <= 0):
         raise RuntimeError("Non-positive rate encountered; check function/range.")

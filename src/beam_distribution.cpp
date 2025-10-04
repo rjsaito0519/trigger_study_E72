@@ -146,7 +146,7 @@ void analyze(TString dir){
 
     // List of scan momenta (each with 0.5 days measurement time)
     // const std::vector<Double_t> scan_moms = {645.0, 665.0, 685.0, 705.0, 725.0, 745.0, 765.0, 785.0, 805.0, 825.0, 845.0, 865.0, 885.0, 905.0, 925.0};
-    const std::vector<Double_t> scan_moms = {655.0, 685.0, 705.0, 725.0, 745.0, 765.0, 790.0, 814.0, 842.0, 870.0, 902.0, 933.0};
+    const std::vector<Double_t> scan_moms = {645.0, 665.0, 685.0, 705.0, 725.0, 745.0, 765.0, 790.0, 814.0, 842.0, 870.0, 902.0, 933.0};
 
     // Special case: 735 MeV/c (3.5 days, different data_fill flag, only added to "all")
     const Double_t special_mom = 735.0;
@@ -173,18 +173,19 @@ void analyze(TString dir){
     //     {925.0,  2.0*hour },        
     // };
     const std::unordered_map<Double_t, Double_t> t_measure_scan = {
-        {655.0, 12.0*hour },
+        {645.0, 12.0*hour },
+        {665.0, 12.0*hour },
         {685.0, 12.0*hour },
-        {705.0, 12.0*hour },
-        {725.0, 10.0*hour + 20.0*minute },
-        {745.0,  8.0*hour + 30.0*minute },
-        {765.0,  7.0*hour + 10.0*minute },
-        {790.0,  5.0*hour + 40.0*minute },
-        {814.0,  4.0*hour + 40.0*minute },
-        {842.0,  3.0*hour + 40.0*minute },
-        {870.0,  2.0*hour + 50.0*minute },
-        {902.0,  2.0*hour + 30.0*minute },
-        {933.0,  2.0*hour + 40.0*minute },
+        {705.0, 10.0*hour },                 // 10:00
+        {725.0,  8.0*hour + 10.0*minute },   // 08:10
+        {745.0,  6.0*hour + 50.0*minute },   // 06:50
+        {765.0,  5.0*hour + 40.0*minute },   // 05:40
+        {790.0,  4.0*hour + 30.0*minute },   // 04:30
+        {814.0,  3.0*hour + 40.0*minute },   // 03:40
+        {842.0,  2.0*hour + 50.0*minute },   // 02:50
+        {870.0,  2.0*hour + 20.0*minute },   // 02:20
+        {902.0,  2.0*hour },                 // 02:00
+        {933.0,  2.0*hour },                 // 02:00
     };
     const Double_t t_measure_735  = 4.5 * day;
 
