@@ -40,7 +40,7 @@ fig = plt.figure(figsize=(10, 8))
 ax1 = fig.add_subplot(111)
 sum_n_kaon_scan = 0
 
-momenta = np.asarray([655.0, 685.0, 705.0, 725.0, 745.0, 765.0, 790.0, 814.0, 842.0, 870.0, 902.0, 933.0])
+momenta = np.asarray([645.0, 665.0, 685.0, 705.0, 725.0, 745.0, 765.0, 790.0, 814.0, 842.0, 870.0, 902.0, 933.0])
 
 # for i, mom in enumerate([685, 705, 725, 745, 765]):
 # for i, mom in enumerate(list(range(645, 926, 20))):

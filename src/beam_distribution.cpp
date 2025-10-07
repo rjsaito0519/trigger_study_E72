@@ -187,7 +187,15 @@ void analyze(TString dir){
         {902.0,  2.0*hour },                 // 02:00
         {933.0,  2.0*hour },                 // 02:00
     };
+    Double_t total_seconds = 0.0;
+    for (const auto& pair : t_measure_scan) {
+        total_seconds += pair.second;
+    }
+    Double_t total_days = total_seconds / day;
+    std::cout << total_days << ", "  << 8.0 - total_days << std::endl;
+
     const Double_t t_measure_735  = 4.5 * day;
+
 
     // Store produced histograms for later writing
     std::vector<std::unique_ptr<TH1D>> produced_hists;
