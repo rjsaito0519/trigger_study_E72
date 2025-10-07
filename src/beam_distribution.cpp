@@ -152,9 +152,11 @@ void analyze(TString dir){
     const Double_t special_mom = 735.0;
 
     // Measurement times [sec]
+    const Double_t physics_run_days = 8.0;
     const Double_t day    = 24.0 * 3600.0;
     const Double_t hour   = 3600.0; 
     const Double_t minute = 60.0; 
+
     // const std::unordered_map<Double_t, Double_t> t_measure_scan = {
     //     {645.0, 12.0*hour },
     //     {665.0, 12.0*hour },
@@ -187,15 +189,31 @@ void analyze(TString dir){
         {902.0,  2.0*hour },                 // 02:00
         {933.0,  2.0*hour },                 // 02:00
     };
-    Double_t total_seconds = 0.0;
+
+    // --- 計算と標準出力 ---
+    std::cout << "--- Individual Scan Durations ---" << std::endl;
+    // 小数点以下の表示を固定
+    std::cout << std::fixed << std::setprecision(4);
+
+    Double_t total_scan_seconds = 0.0;
     for (const auto& pair : t_measure_scan) {
-        total_seconds += pair.second;
+        // pair.first = キー, pair.second = 値（秒）
+        Double_t scan_item_days = pair.second / day;
+        total_scan_seconds += pair.second;
+        
+        // 各スキャンが何日分かを出力
+        std::cout << "Scan at key " << pair.first << ": " << scan_item_days << " days" << std::endl;
     }
-    Double_t total_days = total_seconds / day;
-    std::cout << total_days << ", "  << 8.0 - total_days << std::endl;
 
-    const Double_t t_measure_735  = 4.5 * day;
+    Double_t total_scan_days = total_scan_seconds / day;
+    const Double_t t_measure_735 = physics_run_days - total_scan_days;
 
+    std::cout << "\n--- Summary ---" << std::endl;
+    // 合計スキャン日数を出力
+    std::cout << "Total scan time: " << total_scan_days << " days" << std::endl;
+    // 残りの日数を出力
+    std::cout << "Remaining time (t_measure_735): " << t_measure_735 << " days" << std::endl;
+    
 
     // Store produced histograms for later writing
     std::vector<std::unique_ptr<TH1D>> produced_hists;
