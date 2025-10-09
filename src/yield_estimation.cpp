@@ -78,8 +78,8 @@ void analyze(TString path, Int_t focus_pdg_code){
     for (Int_t i = sla_index+1; i < dot_index; i++) save_name += path[i];
     TString output_path = Form("%s/root/yield_%s_%d.root", OUTPUT_DIR.Data(), save_name.Data(), focus_pdg_code);
     if (std::ifstream(output_path.Data())) std::remove(output_path.Data());
-    TFile fout(output_path.Data(), "create");
-
+    TFile fout(output_path.Data(), "RECREATE");
+    
     // +-------------------+
     // | prepare histogram |
     // +-------------------+
