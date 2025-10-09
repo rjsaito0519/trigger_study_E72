@@ -175,21 +175,21 @@ void analyze(TString dir){
     //     {925.0,  2.0*hour },        
     // };
 
-    const std::unordered_map<Double_t, Double_t> t_measure_scan = { // 4.5 days scan
-        {645.0, 12.0*hour},                  // 12:00
-        {665.0, 12.0*hour},                  // 12:00
-        {685.0, 12.0*hour},                  // 12:00
-        {705.0, 12.0*hour},                  // 12:00
-        {725.0, 12.0*hour},                  // 12:00
-        {745.0, 10.0*hour + 50.0*minute},    // 10:50
-        {765.0,  9.0*hour},                  // 09:00
-        {790.0,  7.0*hour + 20.0*minute},    // 07:20
-        {814.0,  5.0*hour + 50.0*minute},    // 05:50
-        {842.0,  4.0*hour + 40.0*minute},    // 04:40
-        {870.0,  3.0*hour + 40.0*minute},    // 03:40
-        {902.0,  3.0*hour + 20.0*minute},    // 03:20
-        {933.0,  3.0*hour + 20.0*minute},    // 03:20
-    };
+    // const std::unordered_map<Double_t, Double_t> t_measure_scan = { // 4.5 days scan
+    //     {645.0, 12.0*hour},                  // 12:00
+    //     {665.0, 12.0*hour},                  // 12:00
+    //     {685.0, 12.0*hour},                  // 12:00
+    //     {705.0, 12.0*hour},                  // 12:00
+    //     {725.0, 12.0*hour},                  // 12:00
+    //     {745.0, 10.0*hour + 50.0*minute},    // 10:50
+    //     {765.0,  9.0*hour},                  // 09:00
+    //     {790.0,  7.0*hour + 20.0*minute},    // 07:20
+    //     {814.0,  5.0*hour + 50.0*minute},    // 05:50
+    //     {842.0,  4.0*hour + 40.0*minute},    // 04:40
+    //     {870.0,  3.0*hour + 40.0*minute},    // 03:40
+    //     {902.0,  3.0*hour + 20.0*minute},    // 03:20
+    //     {933.0,  3.0*hour + 20.0*minute},    // 03:20
+    // };
 
     // const std::unordered_map<Double_t, Double_t> t_measure_scan = { // 3.5 days scan
     //     {645.0, 12.0*hour },
@@ -207,21 +207,21 @@ void analyze(TString dir){
     //     {933.0,  2.0*hour },                 // 02:00
     // };
 
-    // const std::unordered_map<Double_t, Double_t> t_measure_scan = { // 2.5 days scan
-    //     {645.0, 12.0*hour },                 // 12:00
-    //     {665.0,  9.0*hour + 30.0*minute },   // 09:30
-    //     {685.0,  7.0*hour + 50.0*minute },   // 07:50
-    //     {705.0,  6.0*hour + 20.0*minute },   // 06:20
-    //     {725.0,  5.0*hour + 10.0*minute },   // 05:10
-    //     {745.0,  4.0*hour + 20.0*minute },   // 04:20
-    //     {765.0,  3.0*hour + 40.0*minute },   // 03:40
-    //     {790.0,  2.0*hour + 50.0*minute },   // 02:50
-    //     {814.0,  2.0*hour + 20.0*minute },   // 02:20
-    //     {842.0,  1.0*hour + 50.0*minute },   // 01:50
-    //     {870.0,  1.0*hour + 30.0*minute },   // 01:30
-    //     {902.0,  1.0*hour + 20.0*minute },   // 01:20
-    //     {933.0,  1.0*hour + 20.0*minute },   // 01:20
-    // };
+    const std::unordered_map<Double_t, Double_t> t_measure_scan = { // 2.5 days scan
+        {645.0, 12.0*hour },                 // 12:00
+        {665.0,  9.0*hour + 30.0*minute },   // 09:30
+        {685.0,  7.0*hour + 50.0*minute },   // 07:50
+        {705.0,  6.0*hour + 20.0*minute },   // 06:20
+        {725.0,  5.0*hour + 10.0*minute },   // 05:10
+        {745.0,  4.0*hour + 20.0*minute },   // 04:20
+        {765.0,  3.0*hour + 40.0*minute },   // 03:40
+        {790.0,  2.0*hour + 50.0*minute },   // 02:50
+        {814.0,  2.0*hour + 20.0*minute },   // 02:20
+        {842.0,  1.0*hour + 50.0*minute },   // 01:50
+        {870.0,  1.0*hour + 30.0*minute },   // 01:30
+        {902.0,  1.0*hour + 20.0*minute },   // 01:20
+        {933.0,  1.0*hour + 20.0*minute },   // 01:20
+    };
 
     // --- 計算と標準出力 ---
     std::cout << "--- Individual Scan Durations ---" << std::endl;
