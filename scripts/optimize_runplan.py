@@ -186,7 +186,7 @@ def kaon_intensity(x: np.ndarray) -> np.ndarray:
 
 def main():
     # Problem setup
-    days = 4.5
+    days = 2.5
     T = days * 24.0  # 108 h
     lower, upper = 1.0, 12.0
     step = 10.0 / 60.0  # 10 minutes
