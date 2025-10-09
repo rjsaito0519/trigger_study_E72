@@ -34,6 +34,17 @@ data = np.array([
 def f(x, amp, tau, c):
     return amp*np.exp( x/tau ) + c
 
+def kaon_intensity_max() -> float:
+    return 137.962111 * np.exp(884.5 / 126.840771) - 6979.77790
+
+def kaon_intensity_func_scalar(x0: float) -> float:
+    val = 137.962111 * np.exp(x0 / 126.840771) - 6979.77790
+    return min(val, kaon_intensity_max())
+
+def kaon_intensity_func(x: np.ndarray) -> np.ndarray:
+    val = 137.962111 * np.exp(x / 126.840771) - 6979.77790
+    return np.minimum(val, kaon_intensity_max())
+
 # model = lfm.LinearModel()
 # model = lfm.ExponentialModel()
 # params = model.guess(x = data[:, 0], data = data[:, 1])
@@ -52,9 +63,11 @@ fit_y = result.eval_components(x=fit_x)["f"]
 
 fig = plt.figure(figsize=(8, 8))
 ax = fig.add_subplot(111)
-ax.plot(fit_x, fit_y, color = "C1")
+ax.plot(fit_x, fit_y, "--", color = "C1")
 # ax.plot(data[:, 0], result.best_fit, 'r-', label='best fit')
 ax.plot(data[:, 0], data[:, 1], "o", ms = 10, color = "C0")
+
+ax.plot(fit_x, kaon_intensity_func(fit_x), color = "C1")
 
 ax.set_xlabel(r"$p_K$ [MeV/c]")
 ax.set_ylabel(r"$K^-$ Beam Intensity [$\times 10^3$/spill]")

@@ -30,7 +30,8 @@ def get_hist_data(file, key):
     return bin_centers, bin_edges, bin_values
 
 
-root_file_path = os.path.join(script_dir, "../data/n_kaon.root")
+# root_file_path = os.path.join(script_dir, "../data/n_kaon.root")
+root_file_path = os.path.join(script_dir, "../data/beam_dist/n_kaon_3.5scan.root")
 file = uproot.open(root_file_path)
 
 # +-----------------------------+

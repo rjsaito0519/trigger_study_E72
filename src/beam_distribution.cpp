@@ -239,13 +239,13 @@ void analyze(TString dir){
     }
 
     Double_t total_scan_days = total_scan_seconds / day;
-    const Double_t t_measure_735 = physics_run_days - total_scan_days;
+    const Double_t t_measure_735 = (physics_run_days - total_scan_days) * day;
 
     std::cout << "\n--- Summary ---" << std::endl;
     // 合計スキャン日数を出力
     std::cout << "Total scan time: " << total_scan_days << " days" << std::endl;
     // 残りの日数を出力
-    std::cout << "Remaining time (t_measure_735): " << t_measure_735 << " days" << std::endl;
+    std::cout << "Remaining time (t_measure_735): " << t_measure_735/day << " days" << std::endl;
     
 
     // Store produced histograms for later writing

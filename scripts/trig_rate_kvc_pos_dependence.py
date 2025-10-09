@@ -49,7 +49,7 @@ data = np.asarray(data)
 
 fig = plt.figure(figsize=(8, 8))
 ax  = fig.add_subplot(111)
-ax.plot(data[:, 0], data[:, 1], "o", color = "C0")
+ax.plot(data[:, 0], data[:, 1], "--o", color = "C0")
 
 # # --------------------
 # model = lfm.Model(f, name = "f")
@@ -88,9 +88,9 @@ ax.plot(data[:, 0], data[:, 1], "o", color = "C0")
 # plt.legend(fontsize = 18)
 ax.set_xlabel(r"$p_K$ [MeV/c]")
 ax.set_ylabel("Accidental Trigger Rate [kHz]")
-# img_save_path = os.path.join(script_dir, "../results/img/01.png")
-# os.makedirs(os.path.dirname(img_save_path), exist_ok=True)
-# plt.savefig(img_save_path, format='png', bbox_inches='tight', dpi=600, transparent=True)
+img_save_path = os.path.join(script_dir, "../results/img/01.png")
+os.makedirs(os.path.dirname(img_save_path), exist_ok=True)
+plt.savefig(img_save_path, format='png', bbox_inches='tight', dpi=600, transparent=True)
 plt.show()
 
 

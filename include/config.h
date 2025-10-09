@@ -64,7 +64,7 @@ public:
     Int_t n_mom_points = 800;
     Double_t mom_step_size = 0.5; // MeV/c
     Double_t mom_start = 600.0; // MeV/c
-    Int_t cos_theta_bin_num = 15;
+    Int_t cos_theta_bin_num = 50;
 
     // -- for yield estimation -----
     Double_t spill_length = 4.24; // second
