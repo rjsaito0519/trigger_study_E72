@@ -1,0 +1,18 @@
+# 3.5 days scan plan
+physics_run_days 7.0
+special_mom 735.0
+
+# scan_point [momentum] [time]
+scan_point 645.0 12h
+scan_point 665.0 12h
+scan_point 685.0 12h
+scan_point 705.0 10h
+scan_point 725.0 8h10m
+scan_point 745.0 6h50m
+scan_point 765.0 5h40m
+scan_point 790.0 4h30m
+scan_point 814.0 3h40m
+scan_point 842.0 2h50m
+scan_point 870.0 2h20m
+scan_point 902.0 2h
+scan_point 933.0 2h

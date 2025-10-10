@@ -78,5 +78,4 @@ namespace ana_helper {
         h->SetMaximum(0x1000);
     }
 
-
 }

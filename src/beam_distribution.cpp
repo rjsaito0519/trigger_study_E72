@@ -6,6 +6,10 @@
 #include <random>
 #include <algorithm>
 #include <set>
+#include <string>
+#include <sstream>
+#include <cctype>
+#include <unordered_map>
 
 // ROOT
 #include <TFile.h>
@@ -32,6 +36,93 @@ static std::vector<Double_t> n_kaon_container_scan;
 static std::vector<Double_t> n_kaon_container_all;
 
 static const TDatabasePDG *pdg_database = new TDatabasePDG();
+
+#include <TString.h>
+#include <fstream>
+#include <string>
+#include <sstream>
+#include <cctype>
+#include <vector>
+#include <unordered_map>
+#include <algorithm>
+
+// Helper function to parse a time string like "1h30m" into seconds (Double_t).
+Double_t parse_time_string(TString s) {
+    Double_t total_seconds = 0.0;
+    Double_t current_number = 0.0;
+    TString number_buffer; // Buffer to temporarily hold number characters
+
+    for (Int_t i = 0; i < s.Length(); ++i) {
+        char c = s[i];
+        // If c is a digit or a decimal point, append it to the buffer.
+        if (std::isdigit(c) || c == '.') {
+            number_buffer += c;
+        } else {
+            // If c is a unit character, convert the number in the buffer and add to total.
+            if (number_buffer.Length() > 0) {
+                current_number = number_buffer.Atof(); // Convert TString to Double_t
+                number_buffer.Clear();
+            }
+
+            if (c == 'h' || c == 'H') total_seconds += current_number * 3600.0;
+            else if (c == 'm' || c == 'M') total_seconds += current_number * 60.0;
+            else if (c == 's' || c == 'S') total_seconds += current_number;
+            current_number = 0.0;
+        }
+    }
+    // Case where the string ends with a number (e.g., "3600" for seconds).
+    if (number_buffer.Length() > 0) {
+        total_seconds += number_buffer.Atof();
+    }
+    return total_seconds;
+}
+
+// Function to load parameters from the configuration file.
+bool load_config(
+    const TString& filename,
+    Double_t& physics_run_days,
+    Double_t& special_mom,
+    std::vector<Double_t>& scan_moms,
+    std::unordered_map<Double_t, Double_t>& t_measure_scan
+) {
+    // Get const char* using .Data() for ifstream.
+    std::ifstream config_file(filename.Data());
+    if (!config_file.is_open()) {
+        std::cerr << "Error: Could not open config file: " << filename.Data() << std::endl;
+        return false;
+    }
+
+    scan_moms.clear();
+    t_measure_scan.clear();
+
+    // getline requires std::string, so we receive it here first.
+    std::string line_std;
+    while (std::getline(config_file, line_std)) {
+        TString line = line_std; // Convert from std::string to TString
+        
+        // Skip empty lines or lines starting with '#'.
+        if (line.IsNull() || line.BeginsWith("#")) continue;
+
+        std::stringstream ss(line.Data());
+        std::string key_std;
+        ss >> key_std;
+        TString key = key_std;
+
+        if (key == "physics_run_days") ss >> physics_run_days;
+        else if (key == "special_mom") ss >> special_mom;
+        else if (key == "scan_point") {
+            Double_t mom;
+            std::string time_str_std;
+            ss >> mom >> time_str_std;
+            
+            scan_moms.push_back(mom);
+            t_measure_scan[mom] = parse_time_string(TString(time_str_std));
+        }
+    }
+    std::sort(scan_moms.begin(), scan_moms.end());
+    std::cout << "Successfully loaded config file: " << filename.Data() << std::endl;
+    return true;
+}
 
 void data_fill(TString path, TH1D *h, Double_t factor, Bool_t do_fill_scan = true)
 {
@@ -111,7 +202,7 @@ Double_t kaon_intensity_func(Double_t* x, Double_t* /*p*/) {
     return TMath::Min(val, kaon_intensity_max());
 }
 
-void analyze(TString dir){
+void analyze(TString dir, TString config_filename){
     Config& conf = Config::getInstance();
     
     // +---------+
@@ -130,6 +221,7 @@ void analyze(TString dir){
     gStyle->SetPadBottomMargin(0.15);
     gROOT->GetColor(0)->SetAlpha(0.01);
 
+    // --- Prepare intensity function and histograms ---
     // auto kaon_intensity = new TF1("kaon_intensity", "328.860759*x - 202920.253", 600., 900.); // fitting result (unit: /spill)
     // auto kaon_intensity = new TF1("kaon_intensity", "137.962111*exp(x / 126.840771) - 6979.77790", 600., 1000.); // fitting result (unit: /spill)
     auto kaon_intensity = new TF1("kaon_intensity", kaon_intensity_func, 600., 1000., 0);
@@ -144,84 +236,26 @@ void analyze(TString dir){
     auto h_momscan = new TH1D("mom_scan", "Kaon momentum (scan)", 1000, 500., 1000.);
     auto h_momall  = new TH1D("mom_all",  "Kaon momentum (all)" , 1000, 500., 1000.);
 
-    // List of scan momenta (each with 0.5 days measurement time)
-    // const std::vector<Double_t> scan_moms = {645.0, 665.0, 685.0, 705.0, 725.0, 745.0, 765.0, 785.0, 805.0, 825.0, 845.0, 865.0, 885.0, 905.0, 925.0};
-    const std::vector<Double_t> scan_moms = {645.0, 665.0, 685.0, 705.0, 725.0, 745.0, 765.0, 790.0, 814.0, 842.0, 870.0, 902.0, 933.0};
 
-    // Special case: 735 MeV/c (3.5 days, different data_fill flag, only added to "all")
-    const Double_t special_mom = 735.0;
+    // +--------------------------+
+    // | Prepare momentum setting |
+    // +--------------------------+
 
     // Measurement times [sec]
-    const Double_t physics_run_days = 8.0;
     const Double_t day    = 24.0 * 3600.0;
     const Double_t hour   = 3600.0; 
     const Double_t minute = 60.0; 
 
-    // const std::unordered_map<Double_t, Double_t> t_measure_scan = {
-    //     {645.0, 12.0*hour },
-    //     {665.0, 12.0*hour },
-    //     {685.0, 12.0*hour },
-    //     {705.0, 12.0*hour },
-    //     {725.0, 11.0*hour + 20.0*minute },
-    //     {745.0,  9.0*hour + 30.0*minute },
-    //     {765.0,  7.0*hour + 50.0*minute },
-    //     {785.0,  6.0*hour + 40.0*minute },
-    //     {805.0,  5.0*hour + 30.0*minute },
-    //     {825.0,  4.0*hour + 40.0*minute },
-    //     {845.0,  4.0*hour },
-    //     {865.0,  3.0*hour + 20.0*minute },
-    //     {885.0,  2.0*hour + 50.0*minute },
-    //     {905.0,  2.0*hour + 20.0*minute },
-    //     {925.0,  2.0*hour },        
-    // };
+    // --- Load settings from config file ---
+    Double_t physics_run_days, special_mom;
+    std::vector<Double_t> scan_moms;
+    std::unordered_map<Double_t, Double_t> t_measure_scan;
 
-    // const std::unordered_map<Double_t, Double_t> t_measure_scan = { // 4.5 days scan
-    //     {645.0, 12.0*hour},                  // 12:00
-    //     {665.0, 12.0*hour},                  // 12:00
-    //     {685.0, 12.0*hour},                  // 12:00
-    //     {705.0, 12.0*hour},                  // 12:00
-    //     {725.0, 12.0*hour},                  // 12:00
-    //     {745.0, 10.0*hour + 50.0*minute},    // 10:50
-    //     {765.0,  9.0*hour},                  // 09:00
-    //     {790.0,  7.0*hour + 20.0*minute},    // 07:20
-    //     {814.0,  5.0*hour + 50.0*minute},    // 05:50
-    //     {842.0,  4.0*hour + 40.0*minute},    // 04:40
-    //     {870.0,  3.0*hour + 40.0*minute},    // 03:40
-    //     {902.0,  3.0*hour + 20.0*minute},    // 03:20
-    //     {933.0,  3.0*hour + 20.0*minute},    // 03:20
-    // };
+    if (!load_config(config_filename, physics_run_days, special_mom, scan_moms, t_measure_scan)) {
+        std::cerr << "Failed to load config. Aborting." << std::endl;
+        return;
+    }
 
-    // const std::unordered_map<Double_t, Double_t> t_measure_scan = { // 3.5 days scan
-    //     {645.0, 12.0*hour },
-    //     {665.0, 12.0*hour },
-    //     {685.0, 12.0*hour },
-    //     {705.0, 10.0*hour },                 // 10:00
-    //     {725.0,  8.0*hour + 10.0*minute },   // 08:10
-    //     {745.0,  6.0*hour + 50.0*minute },   // 06:50
-    //     {765.0,  5.0*hour + 40.0*minute },   // 05:40
-    //     {790.0,  4.0*hour + 30.0*minute },   // 04:30
-    //     {814.0,  3.0*hour + 40.0*minute },   // 03:40
-    //     {842.0,  2.0*hour + 50.0*minute },   // 02:50
-    //     {870.0,  2.0*hour + 20.0*minute },   // 02:20
-    //     {902.0,  2.0*hour },                 // 02:00
-    //     {933.0,  2.0*hour },                 // 02:00
-    // };
-
-    const std::unordered_map<Double_t, Double_t> t_measure_scan = { // 2.5 days scan
-        {645.0, 12.0*hour },                 // 12:00
-        {665.0,  9.0*hour + 30.0*minute },   // 09:30
-        {685.0,  7.0*hour + 50.0*minute },   // 07:50
-        {705.0,  6.0*hour + 20.0*minute },   // 06:20
-        {725.0,  5.0*hour + 10.0*minute },   // 05:10
-        {745.0,  4.0*hour + 20.0*minute },   // 04:20
-        {765.0,  3.0*hour + 40.0*minute },   // 03:40
-        {790.0,  2.0*hour + 50.0*minute },   // 02:50
-        {814.0,  2.0*hour + 20.0*minute },   // 02:20
-        {842.0,  1.0*hour + 50.0*minute },   // 01:50
-        {870.0,  1.0*hour + 30.0*minute },   // 01:30
-        {902.0,  1.0*hour + 20.0*minute },   // 01:20
-        {933.0,  1.0*hour + 20.0*minute },   // 01:20
-    };
 
     // --- 計算と標準出力 ---
     std::cout << "--- Individual Scan Durations ---" << std::endl;
@@ -312,19 +346,27 @@ void analyze(TString dir){
     fout.Close();
 }
 
-
 Int_t main(int argc, char** argv) {
     Config& conf = Config::getInstance();
 
-    // -- check argments -----
-    if (argc < 2) {
-        std::cerr << "Usage: " << argv[0] << " <root file dir>" << std::endl;
-        return 1;
+    // --- Check Command-Line Arguments ---
+    // Expect 3 arguments: 1. program name, 2. data directory, 3. config file
+    if (argc < 3) {
+        std::cerr << "Usage: " << argv[0] << " <data_directory> <config_file>" << std::endl;
+        return 1; // Exit with an error code
     }
-    TString dir = argv[1];
-    
+
+    // --- Get Arguments ---
+    TString data_dir = argv[1];
+    TString config_filename = argv[2];
+
+    // --- Initialize Global Containers ---
     n_kaon_container_scan.resize(conf.n_mom_points, 0.0);
     n_kaon_container_all.resize(conf.n_mom_points, 0.0);
-    analyze(dir);
-    return 0;
+
+    // --- Run Analysis ---
+    analyze(data_dir, config_filename);
+
+    std::cout << "Analysis finished." << std::endl;
+    return 0; // Exit successfully
 }
