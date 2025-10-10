@@ -286,10 +286,6 @@ void analyze(TString dir, TString config_filename){
     std::vector<std::unique_ptr<TH1D>> produced_hists;
     produced_hists.reserve(scan_moms.size() + 1);
 
-    TString output_path = Form("%s/root/n_kaon_%1fdays_scan.root", OUTPUT_DIR.Data(), total_scan_days);
-    if (std::ifstream(output_path.Data())) std::remove(output_path.Data());
-
-
     // +-------------------+
     // | Fill scan spectra |
     // +-------------------+
@@ -332,8 +328,8 @@ void analyze(TString dir, TString config_filename){
     // +-------------+
     // | Save output |
     // +-------------+
-    // TString output_path = Form("%s/root/n_kaon_%1fdays_scan.root", OUTPUT_DIR.Data(), total_scan_days);
-    // if (std::ifstream(output_path.Data())) std::remove(output_path.Data());
+    TString output_path = Form("%s/root/n_kaon_%1fdays_scan.root", OUTPUT_DIR.Data(), total_scan_days);
+    if (std::ifstream(output_path.Data())) std::remove(output_path.Data());
 
     TFile fout(output_path.Data(), "RECREATE");
     TTree output_tree("tree", "");
