@@ -25,26 +25,24 @@
 #include <TApplication.h>
 #include <TDatabasePDG.h>
 #include <TParticle.h>
+#include <TComplex.h>
+#include <TF1Convolution.h>
+
 
 // Custom headers
 #include "config.h"
 #include "ana_helper.h"
 #include "paths.h"
 #include "progress_bar.h"
+#include "fit_functions.h"
 
 static std::vector<Double_t> n_kaon_container_scan;
 static std::vector<Double_t> n_kaon_container_all;
 
 static const TDatabasePDG *pdg_database = new TDatabasePDG();
 
-#include <TString.h>
-#include <fstream>
-#include <string>
-#include <sstream>
-#include <cctype>
-#include <vector>
-#include <unordered_map>
-#include <algorithm>
+// namespace alias
+namespace FF = fit_functions;
 
 // Helper function to parse a time string like "1h30m" into seconds (Double_t).
 Double_t parse_time_string(TString s) {
@@ -124,7 +122,7 @@ bool load_config(
     return true;
 }
 
-void data_fill(TString path, TH1D *h, Double_t factor, Bool_t do_fill_scan = true)
+void data_fill(TString path, TH1D *h, TH1D *h_w, Double_t factor, Bool_t do_fill_scan = true)
 {
     Config& conf = Config::getInstance();
     // +-----------+
@@ -173,6 +171,7 @@ void data_fill(TString path, TH1D *h, Double_t factor, Bool_t do_fill_scan = tru
                 if (item.GetPdgCode() == -321) {
                     Double_t mom = item.P();
                     h->Fill(mom);
+                    h_w->Fill(FF::cal_sqrt_s(mom));
                     Int_t index = ana_helper::get_index(mom);
                     if (index != -1) {
                         tmp_n_kaon_container[index]++;
@@ -230,11 +229,16 @@ void analyze(TString dir, TString config_filename){
     // | Histogram preparation |
     // +-----------------------+
     auto make_hist = [](Double_t m) {
-        return new TH1D(Form("mom%.0f", m), Form("mom%.0f", m), 1000, 500., 1000.);
+        return new TH1D(Form("mom%.0f", m), Form("mom%.0f;p_K [MeV/c];", m), 1000, 500., 1000.);
+    };
+    auto make_hist_w = [](Double_t m) {
+        return new TH1D(Form("mom%.0f_w", m), Form("mom%.0f;#sqrt{s} [MeV];", m), 1000, 1560., 1800.);
     };
     
-    auto h_momscan = new TH1D("mom_scan", "Kaon momentum (scan)", 1000, 500., 1000.);
-    auto h_momall  = new TH1D("mom_all",  "Kaon momentum (all)" , 1000, 500., 1000.);
+    auto h_momscan = new TH1D("mom_scan", "Kaon momentum (scan);p_K [MeV/c];", 1000, 500., 1000.);
+    auto h_momall  = new TH1D("mom_all",  "Kaon momentum (all);p_K [MeV/c];" , 1000, 500., 1000.);
+    auto h_momscan_w = new TH1D("mom_scan_w", "Kaon momentum (scan);#sqrt{s} [MeV];", 1000, 1560., 1800.);
+    auto h_momall_w  = new TH1D("mom_all_w",  "Kaon momentum (all);#sqrt{s} [MeV];" , 1000, 1560., 1800.);
 
 
     // +--------------------------+
@@ -255,7 +259,6 @@ void analyze(TString dir, TString config_filename){
         std::cerr << "Failed to load config. Aborting." << std::endl;
         return;
     }
-
 
     // --- 計算と標準出力 ---
     std::cout << "--- Individual Scan Durations ---" << std::endl;
@@ -284,25 +287,32 @@ void analyze(TString dir, TString config_filename){
 
     // Store produced histograms for later writing
     std::vector<std::unique_ptr<TH1D>> produced_hists;
-    produced_hists.reserve(scan_moms.size() + 1);
+    produced_hists.reserve(2*(scan_moms.size() + 1));
 
     // +-------------------+
     // | Fill scan spectra |
     // +-------------------+
     for (Double_t m : scan_moms) {
-        auto h = std::unique_ptr<TH1D>(make_hist(m));
+        auto h   = std::unique_ptr<TH1D>(make_hist(m));
+        auto h_w = std::unique_ptr<TH1D>(make_hist_w(m));
 
         const Double_t factor = kaon_intensity->Eval(m) * t_measure_scan.at(m) / conf.spill_length;
 
-        data_fill(Form("%s/beam_mom%.0f.root", dir.Data(), m), h.get(), factor);
+        data_fill(Form("%s/beam_mom%.0f.root", dir.Data(), m), h.get(), h_w.get(), factor);
 
         const Double_t entries = h->GetEntries();
-        if (entries > 0.0) h->Scale(factor / entries); // Avoid division by zero
+        if (entries > 0.0) { // Avoid division by zero
+            h  ->Scale(factor / entries); 
+            h_w->Scale(factor / entries); 
+        }
 
-        h_momscan->Add(h.get(), 1.0);
-        h_momall ->Add(h.get(), 1.0);
+        h_momscan  ->Add(h.get(), 1.0);
+        h_momall   ->Add(h.get(), 1.0);
+        h_momscan_w->Add(h_w.get(), 1.0);
+        h_momall_w ->Add(h_w.get(), 1.0);
 
         produced_hists.emplace_back(std::move(h));
+        produced_hists.emplace_back(std::move(h_w));
     }
 
     // +-----------------------------+
@@ -310,25 +320,31 @@ void analyze(TString dir, TString config_filename){
     // +-----------------------------+
     {
         auto h735 = std::unique_ptr<TH1D>(make_hist(special_mom));
+        auto h735_w = std::unique_ptr<TH1D>(make_hist_w(special_mom));
 
         const Double_t factor = kaon_intensity->Eval(special_mom) * t_measure_735 / conf.spill_length;
 
         // Only 735 MeV/c: last argument of data_fill set to false
-        data_fill(Form("%s/beam_mom%.0f.root", dir.Data(), special_mom), h735.get(), factor, false);
+        data_fill(Form("%s/beam_mom%.0f.root", dir.Data(), special_mom), h735.get(), h735_w.get(), factor, false);
 
         const Double_t entries = h735->GetEntries();
-        if (entries > 0.0) h735->Scale(factor / entries);
+        if (entries > 0.0) {
+            h735  ->Scale(factor / entries);
+            h735_w->Scale(factor / entries);
+        }
 
         // 735 MeV/c contributes only to "all"
-        h_momall->Add(h735.get(), 1.0);
+        h_momall  ->Add(h735.get(), 1.0);
+        h_momall_w->Add(h735_w.get(), 1.0);
 
         produced_hists.emplace_back(std::move(h735));
+        produced_hists.emplace_back(std::move(h735_w));
     }
 
     // +-------------+
     // | Save output |
     // +-------------+
-    TString output_path = Form("%s/root/n_kaon_%1fdays_scan.root", OUTPUT_DIR.Data(), total_scan_days);
+    TString output_path = Form("%s/root/n_kaon_%.1fdays_scan.root", OUTPUT_DIR.Data(), total_scan_days);
     if (std::ifstream(output_path.Data())) std::remove(output_path.Data());
 
     TFile fout(output_path.Data(), "RECREATE");
@@ -342,6 +358,8 @@ void analyze(TString dir, TString config_filename){
     for (auto &h : produced_hists) h->Write();
     h_momscan->Write();
     h_momall->Write();
+    h_momscan_w->Write();
+    h_momall_w->Write();
 
     fout.Close();
 }
