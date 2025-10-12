@@ -186,10 +186,12 @@ def kaon_intensity(x: np.ndarray) -> np.ndarray:
 
 def main():
     # Problem setup
-    days = 2.5
+    days = 4.5
     T = days * 24.0  # 108 h
     lower, upper = 1.0, 12.0
-    step = 10.0 / 60.0  # 10 minutes
+    # step = 10.0 / 60.0  # 10 minutes
+    step = 5.0 / 60.0   # 5 minutes
+
 
     # momenta = np.arange(645, 926, 20, dtype=float)  # 645, 665, ..., 925
     momenta = np.asarray([645.0, 665.0, 685.0, 705.0, 725.0, 745.0, 765.0, 790.0, 814.0, 842.0, 870.0, 902.0, 933.0])

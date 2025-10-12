@@ -31,7 +31,7 @@ def get_hist_data(file, key):
 
 
 # root_file_path = os.path.join(script_dir, "../data/n_kaon.root")
-root_file_path = os.path.join(script_dir, "../data/beam_dist/n_kaon_3.5scan.root")
+root_file_path = os.path.join(script_dir, "../data/beam_dist/n_kaon_2.5days_scan.root")
 file = uproot.open(root_file_path)
 
 # +-----------------------------+
@@ -46,12 +46,12 @@ momenta = np.asarray([645.0, 665.0, 685.0, 705.0, 725.0, 745.0, 765.0, 790.0, 81
 # for i, mom in enumerate([685, 705, 725, 745, 765]):
 # for i, mom in enumerate(list(range(645, 926, 20))):
 for i, mom in enumerate(momenta):
-    center, edge, value = get_hist_data(file, f"mom{mom:.0f}")
+    center, edge, value = get_hist_data(file, f"mom{mom:.0f}_w")
     sum_n_kaon_scan += np.sum(value)
     width = (edge[1] - edge[0])
     ax1.hist(center, bins=edge, weights=value/width, lw = 1.5, histtype='step', color=f"C{i}", zorder = 3, label = f"{mom:.0f} MeV/c")
 
-center, edge, value = get_hist_data(file, "mom_scan")
+center, edge, value = get_hist_data(file, "mom_scan_w")
 ax1.hist(center, bins=edge, weights=value/width, lw = 1.5, histtype='step', color="gray", zorder = 3)
 ax1.text(0.02, 0.93, f"Total = {sum_n_kaon_scan/10**9:.1f}" + r" $\times 10^9$ Kaons", 
         transform=ax1.transAxes,  # 軸の座標系を基準
@@ -62,15 +62,17 @@ ax1.yaxis.set_major_formatter(ptick.EngFormatter())
 ax1.set_xlabel(r"$p_{K}^{\rm Lab}$ [MeV/c]")
 ax1.set_ylabel("Counts [/(MeV/c)]")
 # ax1.set_xlim(609, 831)
-ax1.set_xlim(600, 960)
+# ax1.set_xlim(600, 960)
 
-plt.subplots_adjust(left = 0.15, right=0.98, top=0.98, bottom = 0.12)
-img_save_path = os.path.join(script_dir, "../results/img/yield/beam_distribution_scan.pdf")
-os.makedirs(os.path.dirname(img_save_path), exist_ok=True)
-plt.savefig(img_save_path, format='pdf', bbox_inches='tight', dpi=600, transparent=True)
-img_save_path = os.path.join(script_dir, "../results/img/yield/beam_distribution_scan.png")
-plt.savefig(img_save_path, format='png', bbox_inches='tight', dpi=600, transparent=True)
+# plt.subplots_adjust(left = 0.15, right=0.98, top=0.98, bottom = 0.12)
+# img_save_path = os.path.join(script_dir, "../results/img/yield/beam_distribution_scan.pdf")
+# os.makedirs(os.path.dirname(img_save_path), exist_ok=True)
+# plt.savefig(img_save_path, format='pdf', bbox_inches='tight', dpi=600, transparent=True)
+# img_save_path = os.path.join(script_dir, "../results/img/yield/beam_distribution_scan.png")
+# plt.savefig(img_save_path, format='png', bbox_inches='tight', dpi=600, transparent=True)
 plt.show()
+
+sys.exit()
 
 # +------------------------+
 # | Kaon beam distribution |
