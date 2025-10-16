@@ -255,6 +255,7 @@ void analyze(TString path){
     
     output_tree.Fill();   
     output_tree.Write();
+    fout.Close(); 
 }
 
 Int_t main(int argc, char** argv) {

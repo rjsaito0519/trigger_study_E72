@@ -31,7 +31,7 @@ def get_hist_data(file, key):
 
 
 # root_file_path = os.path.join(script_dir, "../data/n_kaon.root")
-root_file_path = os.path.join(script_dir, "../data/beam_dist/n_kaon_2.5days_scan.root")
+root_file_path = os.path.join(script_dir, "../data/n_kaon_3.0days_scan.root")
 file = uproot.open(root_file_path)
 
 # +-----------------------------+
@@ -59,17 +59,20 @@ ax1.text(0.02, 0.93, f"Total = {sum_n_kaon_scan/10**9:.1f}" + r" $\times 10^9$ K
         color='k')
 
 ax1.yaxis.set_major_formatter(ptick.EngFormatter())
-ax1.set_xlabel(r"$p_{K}^{\rm Lab}$ [MeV/c]")
-ax1.set_ylabel("Counts [/(MeV/c)]")
+# ax1.set_xlabel(r"$p_{K}^{\rm Lab}$ [MeV/c]")
+ax1.set_xlabel(r"$\sqrt{s}$ [MeV]")
+# ax1.set_ylabel("Counts [/(MeV/c)]")
+ax1.set_ylabel("Counts [/(MeV)]")
 # ax1.set_xlim(609, 831)
 # ax1.set_xlim(600, 960)
+ax1.set_xlim(1610, 1780)
 
-# plt.subplots_adjust(left = 0.15, right=0.98, top=0.98, bottom = 0.12)
-# img_save_path = os.path.join(script_dir, "../results/img/yield/beam_distribution_scan.pdf")
-# os.makedirs(os.path.dirname(img_save_path), exist_ok=True)
-# plt.savefig(img_save_path, format='pdf', bbox_inches='tight', dpi=600, transparent=True)
-# img_save_path = os.path.join(script_dir, "../results/img/yield/beam_distribution_scan.png")
-# plt.savefig(img_save_path, format='png', bbox_inches='tight', dpi=600, transparent=True)
+plt.subplots_adjust(left = 0.15, right=0.98, top=0.98, bottom = 0.12)
+img_save_path = os.path.join(script_dir, "../results/img/yield/beam_distribution_scan.pdf")
+os.makedirs(os.path.dirname(img_save_path), exist_ok=True)
+plt.savefig(img_save_path, format='pdf', bbox_inches='tight', dpi=600, transparent=True)
+img_save_path = os.path.join(script_dir, "../results/img/yield/beam_distribution_scan.png")
+plt.savefig(img_save_path, format='png', bbox_inches='tight', dpi=600, transparent=True)
 plt.show()
 
 sys.exit()
