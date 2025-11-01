@@ -30,6 +30,8 @@
 #include "paths.h"
 #include "progress_bar.h"
 
+static const TDatabasePDG *pdg_database = new TDatabasePDG();
+
 
 void analyze(TString path){
     Config& conf = Config::getInstance();
@@ -61,7 +63,7 @@ void analyze(TString path){
         return;
     }
     TTreeReader reader("g4hyptpc", f);
-    TTreeReaderValue<Int_t> decay_particle_code(reader, "decay_particle_code");
+    TTreeReaderValue<std::vector<TParticle>> BAC(reader,  "BAC");
     TTreeReaderValue<std::vector<TParticle>> TGT(reader,  "TGT");
     Int_t total_entry = reader.GetEntries();
 
@@ -69,16 +71,38 @@ void analyze(TString path){
     // +--------------------+
     // | prepare histograms |
     // +--------------------+
-    auto h_xhit = new TH1D("x_profile", "x_profile", 200, -50.0, 50.0);
+    HistPair h_xhit("x_profile", "x_profile", 200, -50.0, 50.0);
 
     // +----------------------+
     // | check and fill event |
     // +----------------------+
     Int_t evnum = 0;
+    Int_t n_kaon = 0;
+    Int_t n_hit_kaon = 0;
     reader.Restart();
     while (reader.Next()){ displayProgressBar(++evnum, total_entry);
+        // -- kaon beam -----
+        Bool_t is_kaon_at_bac = false;   
+        for(const auto& item : (*BAC)) {
+            TParticlePDG *particle = pdg_database->GetParticle(item.GetPdgCode());
+            if (!particle) continue;
+            Double_t mass = particle->Mass()*1000.0; // MeV/c^2
+            Double_t mom  = item.P();                // MeV/c^2
+            Double_t beta = mom / TMath::Sqrt( mass*mass + mom*mom );
+            if (beta < 1.0/conf.refractive_index_bac) is_kaon_at_bac = true;
+        }
+
+        Bool_t do_hit_tgt = false;
         for(const auto& item : (*TGT)) if (item.GetPdgCode() == -321) {
-            h_xhit->Fill(item.Vx());
+            h_xhit.raw->Fill(item.Vx());
+            if (is_kaon_at_bac) {
+                h_xhit.trig->Fill(item.Vx());
+                do_hit_tgt = true;
+            }
+        }
+        if (is_kaon_at_bac) {
+            n_kaon++;
+            if (do_hit_tgt) n_hit_kaon++;
         }
     }
 
@@ -92,7 +116,14 @@ void analyze(TString path){
     TString output_path = Form("%s/root/bac_pos_optimize/%s.root", OUTPUT_DIR.Data(), save_name.Data());
     if (std::ifstream(output_path.Data())) std::remove(output_path.Data());
     TFile fout(output_path.Data(), "RECREATE");
-    h_xhit->Write();
+    h_xhit.raw->Write();
+    h_xhit.trig->Write();
+
+    TTree output_tree("tree", "");
+    output_tree.Branch("n_kaon", &n_kaon, "n_kaon/I");
+    output_tree.Branch("n_hit_kaon", &n_hit_kaon, "n_hit_kaon/I");
+    output_tree.Fill();   
+    output_tree.Write();
     fout.Close(); 
 
 }

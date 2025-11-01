@@ -40,6 +40,23 @@ struct FitResult {
     std::vector<Double_t> additional; // 何か追加で値を返したいときのコンテナ
 };
 
+// raw と trig をペアで管理する構造体
+struct HistPair {
+    TH1D* raw;  // raw histogram
+    TH1D* trig; // trigged histogram
+
+    HistPair(const TString& object_name, const TString& title, Int_t bins, Double_t range_min, Double_t range_max) {
+        raw  = new TH1D(object_name+"_raw",  title, bins, range_min, range_max);
+        trig = new TH1D(object_name+"_trig", title, bins, range_min, range_max);
+    }
+
+    // // デストラクタでメモリを解放 (これをするとグラフが消えてしまう。ちゃんと動作はするので、グラフ化しないんだったらOK)
+    // ~HistPair() {
+    //     delete raw;
+    //     delete trig;
+    // }
+};
+
 namespace ana_helper {
     TCanvas* add_tab(TGTab *tab, const char* tabName);
     Int_t get_index(Double_t mom_value);
