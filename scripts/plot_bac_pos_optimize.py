@@ -45,7 +45,7 @@ for mom in [645, 735, 933]:
         file = uproot.open(root_file_path)
         tree = file["tree"].arrays(library="np")
         ratio = tree["n_hit_kaon"][0]/tree["n_kaon"][0]
-        data[mom].append([pos, ratio])
+        data[mom].append([pos, ratio, tree["n_hit_tgt"][0]])
     data[mom] = np.array(data[mom])
 
 pprint.pprint(data)
@@ -55,7 +55,7 @@ fig = plt.figure(figsize=(8, 8))
 ax = fig.add_subplot(111)
 
 for mom in [645, 735, 933]:
-    ax.plot(data[mom][:, 0], data[mom][:, 1], "--o")
+    ax.plot(data[mom][:, 0], data[mom][:, 2], "--o")
 
 plt.subplots_adjust(left = 0.15, right=0.98, top=0.98, bottom = 0.12)
 

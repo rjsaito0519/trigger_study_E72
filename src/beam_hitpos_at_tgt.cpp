@@ -124,6 +124,7 @@ void analyze(TString path){
     TTree output_tree("tree", "");
     output_tree.Branch("n_kaon", &n_kaon, "n_kaon/I");
     output_tree.Branch("n_hit_kaon", &n_hit_kaon, "n_hit_kaon/I");
+    output_tree.Branch("n_hit_tgt", &n_hit_tgt, "n_hit_tgt/I");
     output_tree.Fill();   
     output_tree.Write();
     fout.Close(); 
