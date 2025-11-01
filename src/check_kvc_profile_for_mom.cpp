@@ -85,7 +85,7 @@ void analyze(TString dir){
     // +-------------------+
     // | prepare histogram |
     // +-------------------+
-    Int_t n_mom = 22;
+    Int_t n_mom = 18;
     TH1D* h_profile[n_mom];
     
     for (Int_t i = 0; i < n_mom; i++) {
@@ -114,7 +114,7 @@ void analyze(TString dir){
     // +----------------+
     for (Int_t i = 0; i < n_mom; i++) {
         mom   = 605.0 + 20.0*i;
-        z_pos = 600.0;
+        z_pos = 610.0;
         FitResult result = FillHist(Form("%s/kvc_profile_mom%.0f_%.0f.root", dir.Data(), mom, z_pos/10), h_profile[i]);
         mean_val  = result.par[0]; mean_err  = result.err[0];
         stdev_val = result.par[1]; stdev_err = result.err[1];

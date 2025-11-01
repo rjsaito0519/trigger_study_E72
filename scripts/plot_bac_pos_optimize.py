@@ -40,7 +40,7 @@ data = {
     933: []
 }
 for mom in [645, 735, 933]:
-    for pos in np.arange(-11, -14.1, -0.5):
+    for pos in np.arange(-5, -25.1, -0.5):
         root_file_path = os.path.join(script_dir, f"../results/root/bac_pos_optimize/bac_optimize_mom{mom:.0f}_{pos:.1f}.root")
         file = uproot.open(root_file_path)
         tree = file["tree"].arrays(library="np")
@@ -54,10 +54,29 @@ pprint.pprint(data)
 fig = plt.figure(figsize=(8, 8))
 ax = fig.add_subplot(111)
 
-for mom in [645, 735, 933]:
-    ax.plot(data[mom][:, 0], data[mom][:, 2], "--o")
+for i, mom in enumerate([645, 735, 933]):
+    x = data[mom][:, 0]
+    y = data[mom][:, 2]/1000000
+    ax.plot(x, y, "--o", color = f"C{i}", label = r"$p_K = ${} [MeV/c]".format(mom))
+    
+    model = lfm.GaussianModel()
+    params = model.guess(x = x, data = y)
 
-plt.subplots_adjust(left = 0.15, right=0.98, top=0.98, bottom = 0.12)
+    result = model.fit(x = x, data = y, params=params, method='leastsq')
+    # print(result.fit_report())
+    fit_x = np.linspace(-0.5, -25.5, 10000)
+    fit_y = result.eval_components(x=fit_x)["gaussian"]
+    ax.plot(fit_x, fit_y, "--", color = f"C{i}")
+
+    # ax.axvline(result.params["center"].value, ls = "dashed", color = f"C{i}")
+
+    print(result.params["center"].value)
+
+ax.set_ylabel(r"$N_{\text{hit TGT}}\ /\ N_{\text{generate}}$")
+ax.set_xlabel("Baem and BAC offset [mm]")
+
+plt.legend(fontsize = 20)
+plt.subplots_adjust(left = 0.17, right=0.98, top=0.98, bottom = 0.12)
 
 # img_save_path = os.path.join( script_dir, "../results/img/cvc.png")
 # os.makedirs(os.path.dirname(img_save_path), exist_ok=True)
