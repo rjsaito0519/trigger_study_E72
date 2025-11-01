@@ -79,6 +79,7 @@ void analyze(TString path){
     Int_t evnum = 0;
     Int_t n_kaon = 0;
     Int_t n_hit_kaon = 0;
+    Int_t n_hit_tgt = 0;
     reader.Restart();
     while (reader.Next()){ displayProgressBar(++evnum, total_entry);
         // -- kaon beam -----
@@ -97,9 +98,10 @@ void analyze(TString path){
             h_xhit.raw->Fill(item.Vx());
             if (is_kaon_at_bac) {
                 h_xhit.trig->Fill(item.Vx());
-                do_hit_tgt = true;
             }
+            do_hit_tgt = true;
         }
+        if (do_hit_tgt) n_hit_tgt++;
         if (is_kaon_at_bac) {
             n_kaon++;
             if (do_hit_tgt) n_hit_kaon++;
