@@ -28,7 +28,7 @@ mass_neutron = 939.56542052
 
 mass_tot = mass_Lambda + mass_eta
 range_left  = mass_tot -  75
-range_right = mass_tot + 105
+range_right = mass_tot +  75
 
 color_dict = dict(
     bubble       = "C0",
@@ -219,15 +219,17 @@ def plot_up_panel(arg_dict1, arg_dict2, arg_dict3):
                 zorder = 3
             )
             
-            # -- E72 -----
-            a0     = [item[0] for item in tree["coeff"]]
-            a0_err = [item[0] for item in tree["coeff_err"]]
-            ax.errorbar(
-                sqrt_s(tree["mom"])/1000, a0, 
-                xerr = sqrt_s_err(tree["mom"], tree["mom_err"])/1000, 
-                yerr = a0_err, 
-                fmt = "o", capsize = 0, markeredgecolor = "red", ms = 0, ecolor='red', color = "w", zorder = 5, elinewidth = 1.5, label = "E72"
-            )
+            # # -- E72 -----
+            # a0     = [item[0] for item in tree["coeff"]]
+            # a0_err = [item[0] for item in tree["coeff_err"]]
+            # ax.errorbar(
+            #     sqrt_s(tree["mom"])/1000, a0, 
+            #     xerr = sqrt_s_err(tree["mom"], tree["mom_err"])/1000, 
+            #     yerr = a0_err, 
+            #     fmt = "o", capsize = 0, markeredgecolor = "red", ms = 0, ecolor='red', color = "w", zorder = 5, elinewidth = 1.5, label = "E72"
+            # )
+
+        ax.axvspan(1.626, 1.732, color='red', alpha=0.1, zorder = 0)
                     
         ax.axvline(mass_tot/1000, ls = "dashed", color="red", lw = 1.0, zorder = 0)
         ax.grid(color="gray", linestyle="dotted", linewidth=1)

@@ -1,0 +1,17 @@
+# Total duration of the physics run.
+physics_run_days 7.0
+special_mom 735.0
+
+# Format: scan_point [momentum_in_MeV/c] [measurement_time]
+scan_point 645 12h
+scan_point 665 12h
+scan_point 685 12h
+scan_point 705 12h
+scan_point 725 12h
+scan_point 745 10h55m
+scan_point 765 9h5m
+scan_point 790 7h15m
+scan_point 814 5h55m
+scan_point 842 4h40m
+scan_point 870 3h40m
+scan_point 933 3h15m
