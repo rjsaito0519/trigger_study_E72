@@ -6,10 +6,8 @@ special_mom 735.0
 scan_point 645 12h
 scan_point 665 12h
 scan_point 685 12h
-scan_point 705 12h
-scan_point 725 12h
-scan_point 745 10h55m
-scan_point 765 9h5m
+scan_point 715 12h
+scan_point 755 10h55m
 scan_point 790 7h15m
 scan_point 814 5h55m
 scan_point 842 4h40m
